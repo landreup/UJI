@@ -1,0 +1,10 @@
+/*
+  Estilos temporales para la editora antigua de la UJI 
+  fecha: 2010/04/30
+-------------------------------------------------------------	*/
+#uji-antiguo {
+  display: none;
+}
+#uji-nuevo {
+  display: block;
+}

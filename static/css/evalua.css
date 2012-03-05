@@ -1,0 +1,10 @@
+#autocompletado {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+#textarea_auto {
+	width: 100%;
+	height: 200px;
+	display: none;
+}

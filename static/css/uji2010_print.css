@@ -1,0 +1,75 @@
+/* SOLUCIONAR PROBLEMAS DE IMPRESION */
+.bloque, .bloque-doble {
+	float:none;
+	overflow:visible;
+}
+#contenido {
+	float:none;
+	overflow:visible;
+}
+#contenedor {
+  display:block;
+}
+
+/* ESCONDER ELEMENTOIS DE NAVEGACION Y EN GENERAL AJENOS A LA INFO QUE INTERESA IMPRIMIR */
+/* Cambiar a blanco y negor elementos que den problemas de contraste y puedan producir un gasto innecesario en la impresión */
+body, body.registrado {
+  background:none repeat scroll 0 0 #FFFFFF;
+}
+#cabecera {
+  background: none repeat scroll 0 0 #FFFFFF;
+}
+#cabecera.cap-servicios h1 {
+  background:url("../imagenes/logo_uji_vertical_negro.png") no-repeat scroll right center transparent;
+}
+#head-r-block {
+  display:none;
+}
+#cabecera #titulo-servicios #titulo2-servicios, 
+#cabecera #titulo-servicios #titulo1-servicios {
+  color:#222222;
+}
+#cabecera #titulo-servicios {
+	float:none;
+	width:auto;
+}
+#contenedor-menu-primario  {
+  display:none;
+}
+#region-lateral-der {
+	display: none;
+}
+#region-contenido,
+#region-contenido .bloque {
+  width:100%;
+}
+#contacto {
+	background: none;
+	background-color:#ffffff;
+	border-top:1px solid #CCCCCC;
+	color:#222222;
+}
+#contacto h3, #contacto h2 {
+	color:#222222;
+}
+#contacto #pie-info-modificacion-fecha {
+  color:#222222;
+}
+#pie {
+	background-color:#FFFFFF;
+	color:#222222;
+}
+
+/* EUJIER */
+#cabecera #titulo-servicios {
+  width: auto;
+}
+#idiomas {
+  display:none;
+}
+#usuario {
+  display:none;
+}
+#region-operaciones {
+  display: none;
+}

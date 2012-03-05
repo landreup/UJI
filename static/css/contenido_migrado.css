@@ -1,0 +1,47 @@
+#contenido-migrado ul li {
+   list-style-image: url("/xpf/fichero/IMATGES_GENERIQUES/211415/ARXIU/guion.gif");
+/*   margin: 10px 10px 10px 40px;*/
+}
+
+#contenido-migrado .bloque {
+    padding: 20px;
+    width: 674px;
+}
+#contenido-migrado img {
+    padding: 5px 10px 5px 20px;
+}
+
+#region-contenido a {
+  text-align: left !important;
+}
+
+#region-contenido {
+  border-bottom: 1px solid #CCCCCC;
+}
+
+#contenido-migrado h3, #contenido-migrado h2{
+  text-align: left;
+  background: none;
+  color: #555555;
+  padding: 15px 0;
+}
+
+#contacto h3, #contacto h2{
+  margin-top: 15px;
+}
+#contacto table {
+  color: #999;
+}
+#contacto table a{
+  color: #22ccfd;
+}
+
+#pie-info-modificacion-fecha  {
+  margin:15px 20px;
+  text-transform:lowercase;
+}
+
+#contacto #pie-info-modificacion-fecha  {
+  color:#999999;
+  float:left;
+}
