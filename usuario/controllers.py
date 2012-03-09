@@ -4,7 +4,7 @@ def tutorActivo(request):
     return ""
 
 def usuarioPorId(usuarioId):
-    return Usuario.objects.filter(usuarioUJI=usuarioId)
+    return Usuario.objects.get(usuarioUJI=usuarioId)
 
 def creaUsuario(usuario):
     usuario.save()
@@ -17,7 +17,7 @@ def editaUsuario(usuarioId, usuario):
     usuarioDB.save()
 
 def nombreTutor(usuarioId):
-    return usuarioPorId(usuarioId)[0].nombre
+    return usuarioPorId(usuarioId).nombre
 
 def usuarioPorRol(rol):
     return Usuario.objects.filter(rol=rol)

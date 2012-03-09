@@ -5,3 +5,7 @@ class Curso(models.Model):
     
     def __str__(self):
         return self.curso
+    
+    def get(self, campo):
+        if (campo=="curso"): return self.curso
+        return ""

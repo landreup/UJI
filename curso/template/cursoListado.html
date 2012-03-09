@@ -1,0 +1,17 @@
+{% extends 'frontend.html' %}
+
+{% load static %}
+
+{% block title %}Gestió de Cursos{% endblock %}
+
+{% block ruta %}Coordinació: Gestió de Cursos{% endblock %}
+
+{% block tituloPagina %}Gestió de Cursos{% endblock %}
+
+{% block menuPagina %}{% include 'menu.html' %}{% endblock %}
+
+{% block contenido %}
+	{% with "detalleCurso.html" as detalle %}
+	{% include 'listado.html' %}
+	{% endwith %}	  
+{% endblock %}

@@ -8,10 +8,9 @@ urlpatterns = patterns('',
 
 """ URLs de Coordinacio """
 urlpatterns += (patterns('',
-                url(r'^coordinacio/', include('evalua.urls_coordinacio')),
-                url(r'^coordinacio/projectes/?', include('proyecto.urls.coordinacio')),
-                url(r'^coordinacio/professorat/?', include('usuario.urls')),
-                url(r'^coordinacio/cursos/?', include('curso.urls')),
+                url(r'^coordinacio/projectes/', include('proyecto.urls.coordinacio')),
+                url(r'^coordinacio/professorat/', include('usuario.urls')),
+                url(r'^coordinacio/cursos/', include('curso.urls')),
 ))
 
 

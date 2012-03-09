@@ -1,0 +1,17 @@
+{% extends 'frontend.html' %}
+
+{% block title %}{{ titulo }}{% endblock %}
+
+{% block ruta %}{% if "coordinador" in rol %}Coordinació:{% else %}Tutorització:{% endif %} {{ titulo }}{% endblock %}
+
+{% block tituloPagina %}{{ titulo }}{% endblock %}
+
+{% block menuPagina %}{% include 'menu.html' %}{% endblock %}
+
+{% block contenido %}
+	{% with "theadProyecto.html" as cabecera %}
+		{% with "tbodyProyecto.html" as detalle %}
+			{% include 'listado.html' %}
+		{% endwith %}
+	{% endwith %}
+{% endblock %}

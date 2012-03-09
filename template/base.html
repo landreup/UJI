@@ -1,0 +1,16 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN">
+<html lang="ca_CA">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>{% autoescape on %}{% block title %}{% endblock %}{% endautoescape %}</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+    {% block stylesheets %}{% endblock %}
+  </head>
+  <body class="registrado">
+    <div id="contenedor">
+      {% block body %}{% endblock %}
+      
+      {% block javascripts %}{% endblock %}
+    </div>
+  </body>
+</html>

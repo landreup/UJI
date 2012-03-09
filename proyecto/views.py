@@ -3,14 +3,15 @@ from django.http import HttpResponseRedirect
 
 from forms import ProyectoAlumnoForm
 
-from evalua.controllers.titulos import tituloListadoProyectos
-from controllers import listaProyectos
+from controllers import listaProyectos, tituloListadoProyectos
 
 def listadoProyectos(request, vista, profesorid=""):
     titulo = tituloListadoProyectos(vista, profesorid)
-    listadoProyectos = listaProyectos(request, vista, profesorid)
-    
-    return render_to_response('alumnoListado.html', {'listaProyectos': listadoProyectos, 'rol': vista, 'titulo': titulo})
+    listado = listaProyectos(request, vista, profesorid)
+    campo = "Projectes"
+    muestraTutor = ("tutor" not in vista)
+    anyadir = True
+    return render_to_response('proyectoListado.html', locals())
 
 def gestionProyectos(request, accion="nuevo", alumnoid=""):
     if (request.method == "POST") :
@@ -21,10 +22,15 @@ def gestionProyectos(request, accion="nuevo", alumnoid=""):
     else: 
         form = ProyectoAlumnoForm(request, accion, alumnoid)
     
+    ocultaCurso=True
+    grupos = True
+    
     # CAMBIAR PLANTILLA PARA QUE RECIBA SOLO UN FORMULARIO
-    return render_to_response('alumnoGestion.html', {
+    return render_to_response('proyectoGestion.html', {
                                                    'accion': accion,
                                                    'alumnoid': alumnoid,
                                                    'form_alumno': form.alumnoForm, 
                                                    'form_proyecto': form.proyectoForm,
+                                                   'ocultaCurso': ocultaCurso,
+                                                   'grupos': grupos,
                                                    })

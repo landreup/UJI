@@ -19,11 +19,11 @@ class ProfesorForm():
                 self.usuarioForm = UsuarioForm()
             else : # Edicion
                 self.usuario = usuarioPorId(profesorid)
-                self.usuario = self.usuario[0]
+                self.usuario = self.usuario
                 self.usuarioForm = UsuarioForm(initial = {
-                                'nombre': self.profesor.nombre,
-                                'usuarioUJI': self.profesor.usuarioUJI,
-                                'rol': self.profesor.rol
+                                'nombre': self.usuario.nombre,
+                                'usuarioUJI': self.usuario.usuarioUJI,
+                                'rol': self.usuario.rol
                 })
         else: # Leer
             if (request.method != "POST") : 
@@ -32,7 +32,12 @@ class ProfesorForm():
             self.usuarioForm = UsuarioForm(request.POST, instance=self.usuario)
             
     def is_valid(self):
-        return self.usuarioForm.is_valid()
+        esValido = self.usuarioForm.is_valid()
+        if ( not esValido and self.accion == "editar"):
+            if ( self.usuarioForm.data["usuarioUJI"] == self.profesorid ):
+                esValido = True
+        return esValido
+                    
     
     def save(self):
         if (self.accion == "nuevo"):

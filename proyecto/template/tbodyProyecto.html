@@ -1,0 +1,7 @@
+<td><a href="#">{{ elemento.alumno.nombre }}</a></td>
+{% if muestraTutor %}
+<td><a href="/coordinacio/{{ elemento.tutor.usuarioUJI }}/alumnes">{{ elemento.tutor.nombre }}</a></td>
+{% endif %}
+<td>{{ elemento.empresa }}</td>
+<td>{{ elemento.titulo }}</td>
+<td>No disponible</td>

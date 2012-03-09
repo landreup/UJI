@@ -1,0 +1,43 @@
+{% extends 'frontend.html' %}
+
+{% block title %}{% if accion == nuevo %}Nou professor{% else %}Edició professor{% endif %} | Gestió de Cursos{% endblock %}
+
+{% block ruta %}Coordinació: <a href="/coordinacio/professorat">Gestió del Professorat</a> | {% if accion == nuevo %}Nou professor{% else %}Edició professor{% endif %}{% endblock %}
+
+{% block tituloPagina %}{% if accion == nuevo %}Nou professor{% else %}Edició professor{% endif %}{% endblock %}
+
+{% block menuPagina %}{% include 'menu.html' %}{% endblock %}
+
+{% block contenido %}
+					  <form action="{% if accion == nuevo %}./nou{% else %}./edita{% endif %}" method="post">
+					  <table border="0" cellpadding="0" cellspacing="0" width="100%"> 
+					  	  <tr>
+					  	  	<td class="list">
+					  	  	<b>Informació</b><br/>
+					  	  	<ul>
+						  	  	<li>
+							  	  	<table>
+							  	  		<tr>
+							  	  			<td width="125px"><label for="id_nombre">Nom:</label></td>
+							  	  			<td>{{ form.usuarioForm.nombre }}</td>
+							  	  			<td>{{ form.usuarioForm.nombre.errors }}</td>
+							  	  		</tr>
+							  	  		<tr>
+							  	  			<td width="125px"><label for="id_usuarioUJI">Usuari UJI:</label></td>
+							  	  			<td>{{ form.usuarioForm.usuarioUJI }}</td>
+							  	  			<td>{{ form.usuarioForm.usuarioUJI.errors }}</td>
+							  	  		</tr>
+							  	  		<tr>
+							  	  			<td width="125px"><label for="id_rol">Rol:</label></td>
+							  	  			<td>{{ form.usuarioForm.rol }}</td>
+							  	  			<td>{{ form.usuarioForm.rol.errors }}</td>
+							  	  		</tr>
+							  	  	</table>
+						  	  	</li>
+					  	  	</ul>
+					  	  	</td>
+					  	</tr>
+					  </table>
+					  <input type="submit" value="Guarda canvis" onclick="if (!confirm('Estas segur de guardar els canvis?')) return false;"/>
+					  </form>
+{% endblock %}

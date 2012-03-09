@@ -23,7 +23,7 @@
   padding: 0 10px;
 }
 
-/* Grupos de enlaces de las páginas del ujier (3 y 4 nivel)
+/* Grupos de enlaces de las pï¿½ginas del ujier (3 y 4 nivel)
 ------------------------------------------------------------------*/
 #region-contenido #contenido-ujier  a {
 		color: #999;
@@ -51,6 +51,11 @@
   float: right;
   margin: 10px 20px;
 }
+
+#botones-colapsar-ujier{
+	text-align: right;
+}
+
 #region-contenido #contenido-ujier #botones-colapsar-ujier span {
   font-weight: bold;
   color: #999;
@@ -67,7 +72,7 @@
 }
 #region-contenido #contenido-ujier .list ul li a {
   display: block;
-  /*width: 300px; /* tamaño fijo por culpa de IE6 */
+  /*width: 300px; /* tamaï¿½o fijo por culpa de IE6 */
   /*height: 100%;*/
   color: #999;
   /*border-bottom: 1px solid #eee;*/
@@ -79,4 +84,15 @@
 
 #region-contenido #contenido-ujier .list {
   padding-right:15px;
+}
+
+#cambioCurso {
+	text-align: right;
+	border: 1px;
+	margin: 0px 20px;
+	float: right;
+	font-weight: bold;
+  color: #999;
+  cursor: pointer;
+  /*margin-bottom: 3px;*/
 }

@@ -1,7 +1,7 @@
 from proyecto.models import Proyecto
 
 from curso.controllers import cursoSeleccionado
-from usuario.controllers import tutorActivo, usuarioPorId
+from usuario.controllers import tutorActivo, usuarioPorId, nombreTutor
 
 def proyectoPorId(alumno, curso):
     return Proyecto.objects.get(alumno=alumno, curso=curso)
@@ -54,3 +54,9 @@ def editaProyecto(request, alumno, proyecto):
     
     proyectoDB.save()
     
+def tituloListadoProyectos(vista, profesorid):
+    if (len(vista) == 1 ):
+        titulo = "Projectes Assignats" if vista == ["tutor"] else "Gesti&oacute; de Projectes"
+    else :
+        titulo = "Projectes que tutoritza " + nombreTutor(profesorid)    
+    return titulo

@@ -1,0 +1,17 @@
+{% extends 'frontend.html' %}
+
+{% load static %}
+
+{% block title %}Gestió del Professorat{% endblock %}
+
+{% block ruta %}Coordinació: Gestió del Professorat{% endblock %}
+
+{% block tituloPagina %}Gestió del Professorat{% endblock %}
+
+{% block menuPagina %}{% include 'menu.html' %}{% endblock %}
+
+{% block contenido %}
+	{% with "detalleProfesor.html" as detalle %}
+	{% include 'listado.html' %}	  
+	{% endwith %}
+{% endblock %}

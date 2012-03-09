@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block stylesheets %}
+	{% get_static_prefix as STATIC_PREFIX %}
+    <!--<link type="image/x-icon" rel="shortcut icon" href="/img/portal2/favicon.ico">-->
+    <link media="all" rel="stylesheet" href="{{ STATIC_PREFIX }}css/base.css" type="text/css">
+    <link media="all" type="text/css" rel="stylesheet" href="{{ STATIC_PREFIX }}css/contenido.css">
+    <link media="all" type="text/css" rel="stylesheet" href="{{ STATIC_PREFIX }}css/old_temp_contenido.css">
+    <link media="all" type="text/css" rel="stylesheet" href="{{ STATIC_PREFIX }}css/contenido_migrado.css">
+    <link media="all" type="text/css" rel="stylesheet" href="{{ STATIC_PREFIX }}css/evalua.css">
+    <link media="screen" type="text/css" rel="stylesheet" href="{{ STATIC_PREFIX }}css/ujier.css">
+{% endblock %}
+
+{% block javascripts %}
+	{% get_static_prefix as STATIC_PREFIX %}
+    <script src="{{ STATIC_PREFIX }}js/jquery-1.4.2.min.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/jquery.vticker.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/jquery.cookie.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/jquery.cycle.all.latest.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/big.banner.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/mid.banner.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/menu1.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/menu2.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/buscadoruji.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/ujier.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/front.js" type="text/javascript"></script>
+    <script src="{{ STATIC_PREFIX }}js/main.js" type="text/javascript"></script>
+    <script type="text/javascript">    
+	$(document).ready(function() {
+		var protocolo = (window.location.href.substring(0, 5) == "https") ? "https" : "http";       
+		$("#searchForm").submit(function (event) {          
+			var target = $("#buscador-categoria");          
+			var query = $("#buscador-buscar").val();          
+			if (target.val() == "directori") {              
+				window.location = "http://ldap.uji.es:8888/indexldap.ca.html?search=" + eliminaaccents(query) + "&dn=&class=search";          
+			}          
+			else if (target.val() == "www.uji.es") {              
+				window.location = protocolo +"://www.uji.es/search/search.jsp?cx=004019238985738265552:j_idco9cbki&sa=Search&cof=FORID:11&q=" + query.replace(/ /g, "+");
+			}
+			return false;
+		});    
+	}); 
+    </script>
+    <script type="text/javascript">           
+	function doOpenWindow(url, params) {
+		if (params) {
+			window.open(url,'',params);
+		} 
+		else  {                  
+			window.open(url,'','width=965,height=560,status=yes,toolbar=no,menubar=no,location=no,scrollbars=yes,resizable=yes');
+		}           
+	}
+    </script>
+    <script type="text/javascript">_uacct = "UA-225624-1";urchinTracker();</script>
+    
+    <script src="{{ STATIC_PREFIX }}js/evalua.js" type="text/javascript"></script>
+    
+{% endblock %}
+
+{% block body %}
+	{% get_static_prefix as STATIC_PREFIX %}
+      <div id="region">
+        <div id="cabecera" class="cap-servicios">
+          <h1> <a accesskey="0" title="Ir a la pagina principal" href="http://www.uji.es/">Universitat
+              Jaume I - <acronym title="Universitat Jaume I">UJI</acronym> -
+              Castello</a> </h1>
+          <div id="titulo-servicios">
+            <div id="titulo1-servicios">Evaluació d'estudiants de Projecte Fi de Grau</div>
+            <div id="titulo2-servicios">Grau en Enginyeria Informàtica - UJI</div>
+          </div>
+          <div id="head-r-block">
+            <div id="usuario"> <a accesskey="5" id="usuario-registrado" title="Desconnectar"
+                href="http://xmlrpc.uji.es/lsm/logout_sso.php">desconnecteu-vos</a>
+            </div>
+          </div>
+        </div>
+        <div id="contenido">
+          <div id="region-contenido">
+            <div class="bloque" id="contenido-ujier">
+              <table align="center" border="0" cellpadding="0" cellspacing="0" width="690">
+                <tbody>
+                  <tr>
+                    <td valign="top">
+                      <table border="0" cellpadding="0" cellspacing="0" width="690">
+                        <tbody>
+                          <tr>
+                            <td colspan="9">
+                              <table border="0" cellpadding="0" cellspacing="0"
+                                width="100%">
+                                <tbody>
+                                  <tr>
+                                    <td class="grupoRojo">{% autoescape on %}{% block ruta %}{% endblock %}{% endautoescape %}
+                                    {% if not ocultaCurso %}
+                                    <div id="cambioCurso"><!-- Selector dels cursos -->
+                                      Curs
+                                      <select name="Curso">
+                                        <option>2011/2012</option>
+                                        <option>2010/2011</option>
+                                        <option>2009/2010</option>
+                                      </select>
+                                      {% endif %}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="noticiatitular" valign="bottom"><h2 class="bocadillo-rojo">{% autoescape on %}{% block tituloPagina %}{% endblock %}{% endautoescape %}</h2>
+                    <div id="botones-colapsar-ujier">{% block menuPagina %}{% endblock %}</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td valign="top">
+		      			{% block contenido %}{% endblock %}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div id="region-lateral-der">
+            {% include 'menuSecundario.html' %}
+          </div>
+          <div id="pie">
+            Aplicació realitzada per Luis Andreu Puchol
+          </div>
+        </div>
+      </div>
+{% endblock %}
