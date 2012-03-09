@@ -123,7 +123,6 @@ INSTALLED_APPS = (
     #'django.contrib.messages',
     'alumno',
     'curso',
-    'evalua',
     'proyecto',
     'usuario',
     'django.contrib.staticfiles',
