@@ -3,7 +3,7 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 """ URLs de Tutoritzacio """
 urlpatterns = patterns('',
-              url(r'^professorat/', include('evalua.urls_professorat')),
+              url(r'^professorat/projectes/', include('proyecto.urls.professorat')),
 )
 
 """ URLs de Coordinacio """
