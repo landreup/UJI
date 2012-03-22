@@ -1,0 +1,24 @@
+{% if cursos %}
+<div id="cambioCurso">
+	Curs
+	<select name="curso" id="cambiaCurso">
+		{% for curso in cursos %}
+		<option value="{{ curso.id }}"
+				data-url="{{ request.path }}curso/{{ curso.curso }}"
+				{% if curso.esActual %}selected="selected"{% endif %}>
+				{{ curso.curso }}
+		</option>
+    	{% endfor %}
+	</select>
+</div>
+
+<script type="text/javascript">
+    var lista = document.getElementById('cambiaCurso');
+
+    lista.onchange = function() {
+        var url = lista.options[lista.selectedIndex].getAttribute('data-url');
+        window.location = url;
+    };
+</script>
+
+{% endif %}
