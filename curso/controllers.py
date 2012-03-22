@@ -4,22 +4,33 @@ from usuario.controllers import cambiaTutoresAProfesores
 
 import datetime
 
-def cambiarCurso(request):
-    curso = Curso.objects.order_by("-id")[0]
+def cambiarCurso(request, curso):
+    curso = Curso.objects.get(curso=curso)
     request.session['curso'] = curso
 
-def listaCursoTodos():
-    return Curso.objects.all().order_by("-id")
+def listaCurso(request):
+    cursos = Curso.objects.all().order_by("-id")
+    
+    cursoSelec = cursoSeleccionado(request)
+    
+    for curso in cursos:
+        if ( curso.curso == cursoSelec.curso ) :
+            curso.esActual = True
+    return cursos
+    
 
-def cursoActual():
+def esCursoActual(request):
+    return  ultimoCurso() == cursoSeleccionado(request)
+
+def ultimoCurso():
     return Curso.objects.order_by("-id")[0]
 
 def cursoSeleccionado(request):
-#    if 'curso' in request.session:
-#        return request.session['curso']
-#    else:
-#        return cursoActual()
-    return cursoActual()
+    if 'curso' in request.session:
+        curso = request.session['curso']
+    else:
+        curso = ultimoCurso().curso
+    return curso
 
 def cursoNuevo():
     curso = int(datetime.date.today().year)
