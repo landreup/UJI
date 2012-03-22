@@ -2,7 +2,7 @@
 
 {% block title %}{{ titulo }}{% endblock %}
 
-{% block ruta %}{% if "coordinador" in rol %}Coordinació:{% else %}Tutorització:{% endif %} {{ titulo }}{% endblock %}
+{% block ruta %}{% if "coordinacio" in request.path %}Coordinació:{% else %}Tutorització:{% endif %} {{ titulo }}{% endblock %}
 
 {% block tituloPagina %}{{ titulo }}{% endblock %}
 

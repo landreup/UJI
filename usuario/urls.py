@@ -4,5 +4,6 @@ urlpatterns = patterns('usuario.views',
         url(r'^$', 'listadoProfesores'),
         url(r'^nou$', 'gestionProfesor'),
         url(r'^(?P<profesorid>\w+)/edita$', 'gestionProfesor', {'accion': "editar"}),
+        url(r'^cambia/(?P<profesorid>\w+)/?', 'cambiaUsuario'),
         
 )

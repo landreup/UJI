@@ -1,10 +1,14 @@
 from usuario.models import Usuario
 
-def tutorActivo(request):
-    return ""
-
 def usuarioPorId(usuarioId):
     return Usuario.objects.get(usuarioUJI=usuarioId)
+
+def cambiarUsuario(request, usuarioid):
+    usuario = usuarioPorId(usuarioid)
+    request.session['usuario'] = usuario
+
+def usuarioActivo(request):
+    return request.session['usuario']
 
 def creaUsuario(usuario):
     usuario.save()

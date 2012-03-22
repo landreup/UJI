@@ -1,11 +1,11 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 
-from curso.controllers import cursoNuevo, listaCursoTodos, creaCurso
+from curso.controllers import cursoNuevo, listaCurso, creaCurso
 
 def listadoCursos(request):
     campo =  "Cursos"
-    listado = listaCursoTodos()
+    listado = listaCurso(request)
     anyadir = True
     return render_to_response('cursoListado.html', locals())
 

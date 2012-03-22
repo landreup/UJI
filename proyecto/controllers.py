@@ -1,7 +1,7 @@
 from proyecto.models import Proyecto
 
 from curso.controllers import cursoSeleccionado
-from usuario.controllers import tutorActivo, usuarioPorId, nombreTutor
+from usuario.controllers import usuarioActivo, usuarioPorId, nombreTutor
 
 def proyectoPorId(alumno, curso):
     return Proyecto.objects.get(alumno=alumno, curso=curso)
@@ -13,7 +13,8 @@ def proyectosPorCurso(request):
 
 def proyectosPorCursoTutor(request):
     curso = cursoSeleccionado(request)
-    proyectos = Proyecto.objects.filter(curso=curso, tutor=tutorActivo(request))
+    proyectos = Proyecto.objects.filter(curso=curso)
+    #proyectos = Proyecto.objects.filter(curso=curso, tutor=usuarioActivo(request))
     return proyectos
 
 def proyectosPorCursoTutorid(request, tutorId):

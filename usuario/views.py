@@ -2,7 +2,7 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 
 from forms import ProfesorForm
-from controllers import listaCoordinador, listaTutor, listaProfesor
+from controllers import listaCoordinador, listaTutor, listaProfesor, cambiarUsuario
 
 def listadoProfesores(request):
     grupos = [
@@ -19,8 +19,12 @@ def gestionProfesor(request, accion="nuevo", profesorid=""):
         form = ProfesorForm(request, accion, profesorid, "lee")
         if (form.is_valid()):
             form.save()
-            return HttpResponseRedirect('/coordinacio/professorat/')
+            #return HttpResponseRedirect('/coordinacio/professorat/')
     else:
         form = ProfesorForm(request, accion, profesorid)
-    ocultaCurso=True
     return render_to_response('profesorGestion.html', locals())
+
+def cambiaUsuario(request, profesorid):
+    cambiarUsuario(request, profesorid)
+    return HttpResponseRedirect('/professorat/projectes/')
+    

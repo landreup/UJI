@@ -4,15 +4,23 @@ from django.http import HttpResponseRedirect
 from forms import ProyectoAlumnoForm
 
 from controllers import listaProyectos, tituloListadoProyectos
+from curso.controllers import listaCurso, cambiarCurso, esCursoActual
 
 def listadoProyectos(request, vista, profesorid=""):
     titulo = tituloListadoProyectos(vista, profesorid)
     listado = listaProyectos(request, vista, profesorid)
     campo = "Projectes"
     muestraTutor = ("tutor" not in vista)
-    anyadir = True
+    
+    anyadir = esCursoActual(request)
+    cursos = listaCurso(request)
     return render_to_response('proyectoListado.html', locals())
 
+def cambiaCurso(request, curso):
+    cambiarCurso(request, curso)
+    return HttpResponseRedirect(request.path.split('curso/')[0])
+    
+    
 def gestionProyectos(request, accion="nuevo", alumnoid=""):
     if (request.method == "POST") :
         form = ProyectoAlumnoForm(request, accion, alumnoid, "lee")
