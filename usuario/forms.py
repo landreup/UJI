@@ -13,6 +13,7 @@ class ProfesorForm():
         self.accion = accion
         self.request= request
         self.profesorid = profesorid
+        self.obligatorios = ["nombre", "usuarioUJI", "rol"]
         
         if (form_action == "crea"):
             if (accion == "nuevo"):
@@ -37,7 +38,6 @@ class ProfesorForm():
             if ( self.usuarioForm.data["usuarioUJI"] == self.profesorid ):
                 esValido = True
         return esValido
-                    
     
     def save(self):
         if (self.accion == "nuevo"):

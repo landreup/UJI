@@ -36,7 +36,7 @@ def listaProyectos(request, rol, profesorid):
 
 def creaProyecto(request, proyecto, alumno):
     proyecto.alumno = alumno
-    proyecto.curso = cursoSeleccionado()
+    proyecto.curso = cursoSeleccionado(request)
     proyecto.save()
     
 def editaProyecto(request, alumno, proyecto):

@@ -1,15 +1,15 @@
 {% extends 'frontend.html' %}
 
-{% block title %}{% if accion == nuevo %}Nou professor{% else %}Edició professor{% endif %} | Gestió de Cursos{% endblock %}
+{% block title %}{% ifequal form.accion "nuevo" %}Nou professor{% else %}Edició professor{% endifequal %} | Gestió de Cursos{% endblock %}
 
-{% block ruta %}Coordinació: <a href="/coordinacio/professorat">Gestió del Professorat</a> | {% if accion == nuevo %}Nou professor{% else %}Edició professor{% endif %}{% endblock %}
+{% block ruta %}Coordinació: <a href="/coordinacio/professorat/">Gestió del Professorat</a> | {% ifequal form.accion "nuevo" %}Nou professor{% else %}Edició professor{% endifequal %}{% endblock %}
 
-{% block tituloPagina %}{% if accion == nuevo %}Nou professor{% else %}Edició professor{% endif %}{% endblock %}
+{% block tituloPagina %}{% ifequal form.accion "nuevo" %}Nou professor{% else %}Edició professor{% endifequal %}{% endblock %}
 
 {% block menuPagina %}{% include 'menu.html' %}{% endblock %}
 
 {% block contenido %}
-					  <form action="{% if accion == nuevo %}./nou{% else %}./edita{% endif %}" method="post">
+					  <form action="{% ifequal form.accion "nuevo" %}./nou{% else %}./edita{% endifequal %}" method="post">
 					  <table border="0" cellpadding="0" cellspacing="0" width="100%"> 
 					  	  <tr>
 					  	  	<td class="list">

@@ -5,7 +5,7 @@
 			<td class="list">
 				<b>{{ grupo.campo }}</b><br/>
 				{% with grupo.lista as listado %}
-				{% with grupo.titulo as titulo %}
+				{% with grupo.campo as campo %}
 					{% include 'tabla.html' %}
 				{% endwith %}
 				{% endwith %}

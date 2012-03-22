@@ -19,7 +19,7 @@ def gestionProfesor(request, accion="nuevo", profesorid=""):
         form = ProfesorForm(request, accion, profesorid, "lee")
         if (form.is_valid()):
             form.save()
-            #return HttpResponseRedirect('/coordinacio/professorat/')
+            return HttpResponseRedirect('/coordinacio/professorat/')
     else:
         form = ProfesorForm(request, accion, profesorid)
     return render_to_response('profesorGestion.html', locals())
