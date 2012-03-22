@@ -91,16 +91,8 @@
                                 width="100%">
                                 <tbody>
                                   <tr>
-                                    <td class="grupoRojo">{% autoescape on %}{% block ruta %}{% endblock %}{% endautoescape %}
-                                    {% if not ocultaCurso %}
-                                    <div id="cambioCurso"><!-- Selector dels cursos -->
-                                      Curs
-                                      <select name="Curso">
-                                        <option>2011/2012</option>
-                                        <option>2010/2011</option>
-                                        <option>2009/2010</option>
-                                      </select>
-                                      {% endif %}
+                                    <td class="grupoRojo">{% autoescape off %}{% block ruta %}{% endblock %}{% endautoescape %}
+                                    	{% include 'cursoSeleccion.html' %}
                                     </td>
                                   </tr>
                                 </tbody>
@@ -112,7 +104,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td class="noticiatitular" valign="bottom"><h2 class="bocadillo-rojo">{% autoescape on %}{% block tituloPagina %}{% endblock %}{% endautoescape %}</h2>
+                    <td class="noticiatitular" valign="bottom"><h2 class="bocadillo-rojo">{% autoescape off %}{% block tituloPagina %}{% endblock %}{% endautoescape %}</h2>
                     <div id="botones-colapsar-ujier">{% block menuPagina %}{% endblock %}</div>
                     </td>
                   </tr>
