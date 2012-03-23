@@ -29,7 +29,7 @@ def cursoSeleccionado(request):
     if 'curso' in request.session:
         curso = request.session['curso']
     else:
-        curso = ultimoCurso().curso
+        curso = ultimoCurso()
     return curso
 
 def cursoNuevo():

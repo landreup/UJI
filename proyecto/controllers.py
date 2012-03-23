@@ -1,14 +1,16 @@
+from django.shortcuts import get_object_or_404, get_list_or_404
+
 from proyecto.models import Proyecto
 
 from curso.controllers import cursoSeleccionado
 from usuario.controllers import usuarioActivo, usuarioPorId, nombreTutor
 
 def proyectoPorId(alumno, curso):
-    return Proyecto.objects.get(alumno=alumno, curso=curso)
+    return get_object_or_404(Proyecto, alumno=alumno, curso=curso)
 
 def proyectosPorCurso(request):
     curso = cursoSeleccionado(request)
-    proyectos = Proyecto.objects.filter(curso=curso) 
+    proyectos = Proyecto.objects.filter(curso=curso)
     return proyectos
 
 def proyectosPorCursoTutor(request):
@@ -46,6 +48,7 @@ def editaProyecto(request, alumno, proyecto):
     
     proyectoDB.tutor = proyecto.tutor
     proyectoDB.supervisor = proyecto.supervisor
+    proyectoDB.email = proyecto.email
     proyectoDB.empresa = proyecto.empresa
     proyectoDB.telefono = proyecto.telefono
     proyectoDB.titulo = proyecto.titulo

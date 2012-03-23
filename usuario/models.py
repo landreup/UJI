@@ -1,7 +1,8 @@
 from django.db import models
 
 class Usuario(models.Model):
-    nombre = models.CharField(max_length=100)
+    nombre = models.CharField(max_length=50)
+    apellidos = models.CharField(max_length=100)
     usuarioUJI = models.CharField(max_length=30, unique=True)
     ROL_CHOICES = (
                     ('P', 'Professor'),
@@ -11,4 +12,7 @@ class Usuario(models.Model):
     rol = models.CharField(max_length=1, choices=ROL_CHOICES)
     
     def __str__(self):
-        return self.nombre
+        return self.apellidos + ", " + self.nombre
+    
+    class Meta:
+        ordering = ["apellidos"]

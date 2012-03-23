@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 
 from forms import ProyectoAlumnoForm
 
@@ -22,6 +22,9 @@ def cambiaCurso(request, curso):
     
     
 def gestionProyectos(request, accion="nuevo", alumnoid=""):
+    if not esCursoActual(request):
+        return HttpResponseForbidden()
+    
     if (request.method == "POST") :
         form = ProyectoAlumnoForm(request, accion, alumnoid, "lee")
         if (form.is_valid()):
@@ -33,12 +36,4 @@ def gestionProyectos(request, accion="nuevo", alumnoid=""):
     ocultaCurso=True
     grupos = True
     
-    # CAMBIAR PLANTILLA PARA QUE RECIBA SOLO UN FORMULARIO
-    return render_to_response('proyectoGestion.html', {
-                                                   'accion': accion,
-                                                   'alumnoid': alumnoid,
-                                                   'form_alumno': form.alumnoForm, 
-                                                   'form_proyecto': form.proyectoForm,
-                                                   'ocultaCurso': ocultaCurso,
-                                                   'grupos': grupos,
-                                                   })
+    return render_to_response('proyectoGestion.html', locals()) 

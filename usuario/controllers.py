@@ -1,7 +1,10 @@
+from django.shortcuts import get_object_or_404
+
 from usuario.models import Usuario
 
 def usuarioPorId(usuarioId):
-    return Usuario.objects.get(usuarioUJI=usuarioId)
+    return get_object_or_404(Usuario, usuarioUJI=usuarioId)
+    #return Usuario.objects.get(usuarioUJI=usuarioId)
 
 def cambiarUsuario(request, usuarioid):
     usuario = usuarioPorId(usuarioid)
@@ -24,7 +27,7 @@ def nombreTutor(usuarioId):
     return usuarioPorId(usuarioId).nombre
 
 def usuarioPorRol(rol):
-    return Usuario.objects.filter(rol=rol)
+    return Usuario.objects.filter(rol=rol).order_by("apellidos")
 
 def listaCoordinador():
     return usuarioPorRol("C")

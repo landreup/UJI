@@ -1,21 +1,21 @@
 {% extends 'frontend.html' %}
 
-{% block title %}{% if accion == "nuevo" %}Nou Alumne{% else %}Edició Alumne{% endif %} | Gestió d'Alumnes{% endblock %}
+{% block title %}{% ifequal form.accion "nuevo" %}Nou Projecte{% else %}Edició Projecte{% endifequal %} | Gestió de Projectes{% endblock %}
 
-{% block ruta %}Coordinació: <a href="/coordinacio/alumnes">Gestió d'Alumnes</a> | {% if accion == "nuevo" %}Nou Alumne{% else %}Edició Alumne{% endif %}{% endblock %}
+{% block ruta %}Coordinació: <a href="/coordinacio/projectes/">Gestió de Projectes</a> | {% ifequal accion "nuevo" %}Nou Projectes{% else %}Edició Projecte{% endifequal %}{% endblock %}
 
-{% block tituloPagina %}{% if accion == "nuevo" %}Nou Alumne{% else %}Edició Alumne{% endif %}{% endblock %}
+{% block tituloPagina %}{% ifequal accion "nuevo" %}Nou Projecte{% else %}Edició Projecte{% endifequal %}{% endblock %}
 
 {% block menuPagina %}{% include 'menu.html' %}{% endblock %}
 
 {% block contenido %}
-					{% if accion == "nuevo" %}
+					{% ifequal form.accion "nuevo" %}
 					<div id="autocompletado">
 					<textarea  id="textarea_auto"></textarea>
 					<input type="button" id="button_auto" onclick="autocompletadoAction();" value="Omplir a partir del correu"></input>
 					</div>
-					{% endif %}
-					<form action="{% if accion == "nuevo" %}./nou{% else %}./edita{% endif %}" method="post">
+					{% endifequal %}
+					<form action="{% ifequal form.accion "nuevo" %}./nou{% else %}.{% endifequal %}" method="post">
 					  <table border="0" cellpadding="0" cellspacing="0" width="100%"> 
 					  	  <tr>
 					  	  	<td class="list">
@@ -25,18 +25,18 @@
 							  	  	<table>
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_alumno-nombre">Nom:</label></td>
-							  	  			<td>{{ form_alumno.nombre }}</td>
-							  	  			<td>{{ form_alumno.nombre.errors }}</td>
+							  	  			<td>{{ form.alumnoForm.nombre }}</td>
+							  	  			<td>{{ form.alumnoForm.nombre.errors }}</td>
 							  	  		</tr>
 							  	  		<tr>
-							  	  			<td width="125px"><label for="id_alumno-dni">Dni:</label></td>
-							  	  			<td>{{ form_alumno.dni }}</td>
-							  	  			<td>{{ form_alumno.dni.errors }}</td>
+							  	  			<td width="125px"><label for="id_alumno-apellidos">Cognoms:</label></td>
+							  	  			<td>{{ form.alumnoForm.apellidos }}</td>
+							  	  			<td>{{ form.alumnoForm.apellidos.errors }}</td>
 							  	  		</tr>
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_alumno-usuarioUJI">Usuari UJI:</label></td>
-							  	  			<td>{{ form_alumno.usuarioUJI }}</td>
-							  	  			<td>{{ form_alumno.usuarioUJI.errors }}</td>
+							  	  			<td>{{ form.alumnoForm.usuarioUJI }}</td>
+							  	  			<td>{{ form.alumnoForm.usuarioUJI.errors }}</td>
 							  	  		</tr>
 							  	  	</table>
 						  	  	</li>
@@ -48,28 +48,34 @@
 					  	  			<table>
 					  	  				<tr>
 							  	  			<td width="125px"><label for="id_proyecto-empresa">Empresa:</label></td>
-							  	  			<td>{{ form_proyecto.empresa }}</td>
-							  	  			<td>{{ form_proyecto.empresa.errors }}</td>
+							  	  			<td>{{ form.proyectoForm.empresa }}</td>
+							  	  			<td>{{ form.proyectoForm.empresa.errors }}</td>
 							  	  		</tr>
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_proyecto-supervisor">Supervisor:</label></td>
-							  	  			<td>{{ form_proyecto.supervisor }}</td>
-							  	  			<td>{{ form_proyecto.supervisor.errors }}</td>
+							  	  			<td>{{ form.proyectoForm.supervisor }}</td>
+							  	  			<td>{{ form.proyectoForm.supervisor.errors }}</td>
+							  	  		</tr>
+							  	  		<tr>
+							  	  			<td width="125px"><label for="id_proyecto-email">Email supervisor:</label></td>
+							  	  			<td>{{ form.proyectoForm.email }}</td>
+							  	  			<td>{{ form.proyectoForm.email.errors }}</td>
+							  	  		
 							  	  		</tr>
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_proyecto-telefono">Telèfon:</label></td>
-							  	  			<td>{{ form_proyecto.telefono }}</td>
-							  	  			<td>{{ form_proyecto.telefono.errors }}</td>
+							  	  			<td>{{ form.proyectoForm.telefono }}</td>
+							  	  			<td>{{ form.proyectoForm.telefono.errors }}</td>
 							  	  		</tr>
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_proyecto-inicio">Data d'inici</label></td>
-							  	  			<td>{{ form_proyecto.inicio }}</td>
-							  	  			<td>{{ form_proyecto.inicio.errors }}</td>
+							  	  			<td>{{ form.proyectoForm.inicio }}</td>
+							  	  			<td>{{ form.proyectoForm.inicio.errors }}</td>
 							  	  		</tr>
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_proyecto-dedicacionSemanal">Dedicació semanal:</label></td>
-							  	  			<td>{{ form_proyecto.dedicacionSemanal }}</td>
-							  	  			<td>{{ form_proyecto.dedicacionSemanal.errors }}</td>
+							  	  			<td>{{ form.proyectoForm.dedicacionSemanal }}</td>
+							  	  			<td>{{ form.proyectoForm.dedicacionSemanal.errors }}</td>
 							  	  		</tr>
 					  	  			</table>
 					  	  		</li>
@@ -81,8 +87,8 @@
 					  	  			<table>
 					  	  				<tr>
 							  	  			<td width="125px"><label for="id_proyecto-titulo">Títol:</label></td>
-							  	  			<td>{{ form_proyecto.titulo }}</td>
-							  	  			<td>{{ form_proyecto.titulo.errors }}</td>
+							  	  			<td>{{ form.proyectoForm.titulo }}</td>
+							  	  			<td>{{ form.proyectoForm.titulo.errors }}</td>
 							  	  		</tr>
 					  	  			</table>
 					  	  		</li>
@@ -94,8 +100,8 @@
 					  	  			<table>
 					  	  				<tr>
 							  	  			<td width="125px"><label for="id_proyecto-tutor">Nom:</label></td>
-							  	  			<td>{{ form_proyecto.tutor }}</td>
-							  	  			<td>{{ form_proyecto.tutor.errors }}</td>
+							  	  			<td>{{ form.proyectoForm.tutor }}</td>
+							  	  			<td>{{ form.proyectoForm.tutor.errors }}</td>
 							  	  		</tr>
 					  	  			</table>
 					  	  		</li>
@@ -103,11 +109,18 @@
 					  		
 					  		<b>Altra Informació</b><br/>
 					  		<ul>
-					  			{{ form_proyecto.otrosDatos }}
+					  			<li>
+					  			{{ form.proyectoForm.otrosDatos }}
+					  			</li>
 					  		</ul>
 					  		</td>
 					  	</tr>
 					  </table>
+					  ##
+					  {{ form.alumnoForm.errors }}
+					  ##
+					  {{ form.proyectoForm.errors }}
+					  ## 
 					  <input type="submit" value="Guarda canvis" onclick="if (!confirm('Estas segur de guardar els canvis?')) return false;"/>
 					  </form>
 {% endblock %}

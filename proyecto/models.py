@@ -7,7 +7,8 @@ from usuario.models import Usuario
 class Proyecto(models.Model):
     alumno = models.ForeignKey(Alumno, null=True)
     tutor = models.ForeignKey(Usuario)
-    supervisor = models.CharField(max_length=100)
+    supervisor = models.CharField(max_length=100, null=True)
+    email = models.EmailField()
     curso = models.ForeignKey(Curso, null=True)
     
     empresa= models.CharField(max_length=100)
@@ -25,3 +26,4 @@ class Proyecto(models.Model):
     
     class Meta:
         unique_together = [("alumno", "curso")]
+        order_with_respect_to = "alumno"

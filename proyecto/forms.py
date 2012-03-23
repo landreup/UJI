@@ -29,26 +29,19 @@ class ProyectoAlumnoForm():
                 self.proyectoForm.fields["tutor"].queryset = listaTutor()
             else: # Edicion
                 self.alumno = alumnoPorId(alumnoid)
-                if (not self.alumno):
-                    # ERROR
-                    pass
-                self.alumno = self.alumno[0]
                 
                 self.alumnoForm = AlumnoForm(prefix='alumno', initial={
-                            'dni' : self.alumno.dni, 
                             'nombre': self.alumno.nombre, 
+                            'apellidos': self.alumno.apellidos,
                             'usuarioUJI': self.alumno.usuarioUJI
                 })
                 
                 self.proyecto = proyectoPorId(self.alumno, cursoSeleccionado(request))
-                if (not self.proyecto):
-                    # ERROR
-                    pass
-                self.proyecto = self.proyecto[0]
             
                 self.proyectoForm = ProyectoForm(prefix='proyecto', initial={
                             'tutor': self.proyecto.tutor, 
-                            'supervisor': self.proyecto.supervisor, 
+                            'supervisor': self.proyecto.supervisor,
+                            'email': self.proyecto.email, 
                             'empresa': self.proyecto.empresa, 
                             'telefono': self.proyecto.telefono,
                             'titulo': self.proyecto.titulo,
@@ -67,7 +60,13 @@ class ProyectoAlumnoForm():
                 
                 
     def is_valid(self):
-        return (self.alumnoForm.is_valid() and self.proyectoForm.is_valid())
+        alumnoEsValido = self.alumnoForm.is_valid()
+        if ( not alumnoEsValido and self.accion == "editar"):
+            alumnoEsValido =True
+            if ( self.alumnoForm.data["usuarioUJI"] == self.alumnoid ):
+                alumnoEsValido = True
+        
+        return (alumnoEsValido and self.proyectoForm.is_valid())
     
     def getAlumnoProyecto(self):
         return self.alumno, self.proyecto

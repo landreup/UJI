@@ -1,7 +1,8 @@
-<td><a href="#">{{ elemento.alumno.nombre }}</a></td>
+<td><a href="{{ elemento.alumno.usuarioUJI }}/edita/">{{ elemento.alumno }}</a></td>
 {% if muestraTutor %}
-<td><a href="/coordinacio/{{ elemento.tutor.usuarioUJI }}/alumnes">{{ elemento.tutor.nombre }}</a></td>
+<td><a href="/coordinacio/projectes/{{ elemento.tutor.usuarioUJI }}/">{{ elemento.tutor }}</a></td>
 {% endif %}
 <td>{{ elemento.empresa }}</td>
 <td>{{ elemento.titulo }}</td>
 <td>No disponible</td>
+<td width="16px"><a href="{{ elemento.alumno.usuarioUJI }}/edita/"><img src="/media/img/lapiz.png" alt="editar"/></a></td>
