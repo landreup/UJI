@@ -30,19 +30,33 @@
 		text-decoration: none;
 	}
 #region-contenido #contenido-ujier .cap-nivel3 {
-  display: block;
+  /*display: block;*/
   padding: 4px 6px 2px 15px;
   font-size: 1.2em;
 	font-weight: bold;
   color: #555;
 	background-color: #eee;
-  cursor: pointer;
   margin-bottom: 3px;
 }
+
+#region-contenido #contenido-ujier .cap-nivel3 b, #region-contenido #contenido-ujier .cap-nivel3 img {
+	cursor: pointer;
+}
+/*
+#region-contenido #contenido-ujier .cap-nivel4 {
+	display: inline-block;
+}*/
+
+
+#region-contenido #contenido-ujier .cap-nivel4 b, #region-contenido #contenido-ujier img {
+	cursor: pointer;
+}
+
 #region-contenido #contenido-ujier .cap-nivel3 img.ujier-arrow {
   float: right;
   margin: 4px 7px;
 }
+
 #region-contenido #contenido-ujier img {
   vertical-align: middle;
 }
@@ -70,21 +84,35 @@
 #region-contenido #contenido-ujier .list ul {
   margin: 0 0 10px 0;
 }
-#region-contenido #contenido-ujier .list ul li a {
-  display: block;
+#region-contenido #contenido-ujier .list ul li a{
+  /*display: block;*/
   /*width: 300px; /* tama�o fijo por culpa de IE6 */
   /*height: 100%;*/
   color: #999;
   /*border-bottom: 1px solid #eee;*/
-  padding: 2px 10px 2px 15px;
+  /*padding: 2px 10px 2px 15px;*/
 }
-#region-contenido #contenido-ujier .list ul li a:hover {
+#region-contenido #contenido-ujier .list ul li a:hover, #region-contenido #contenido-ujier .list2 ul li a:hover {
   color: #555;
 }
 
-#region-contenido #contenido-ujier .list {
+#region-contenido #contenido-ujier td.list2{
+  padding-left:15px;
+}
+
+
+#region-contenido #contenido-ujier .list{
   padding-right:15px;
 }
+/*
+#region-contenido #contenido-ujier .list2{
+  padding-left:15px;
+}*/
+
+#region-contenido #contenido-ujier .list2 ul li{
+  padding-left:15px;
+}
+
 
 #cambioCurso {
 	text-align: right;

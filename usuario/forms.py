@@ -13,16 +13,16 @@ class ProfesorForm():
         self.accion = accion
         self.request= request
         self.profesorid = profesorid
-        self.obligatorios = ["nombre", "usuarioUJI", "rol"]
+        self.obligatorios = ["nombre", "apellidos", "usuarioUJI", "rol"]
         
         if (form_action == "crea"):
             if (accion == "nuevo"):
                 self.usuarioForm = UsuarioForm()
             else : # Edicion
                 self.usuario = usuarioPorId(profesorid)
-                self.usuario = self.usuario
                 self.usuarioForm = UsuarioForm(initial = {
                                 'nombre': self.usuario.nombre,
+                                'apellidos': self.usuario.apellidos,
                                 'usuarioUJI': self.usuario.usuarioUJI,
                                 'rol': self.usuario.rol
                 })

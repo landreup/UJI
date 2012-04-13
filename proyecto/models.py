@@ -9,7 +9,7 @@ class Proyecto(models.Model):
     tutor = models.ForeignKey(Usuario)
     supervisor = models.CharField(max_length=100, null=True)
     email = models.EmailField()
-    curso = models.ForeignKey(Curso, null=True)
+    curso = models.ForeignKey(Curso)
     
     empresa= models.CharField(max_length=100)
     telefono = models.CharField(max_length=9)

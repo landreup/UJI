@@ -3,7 +3,7 @@
 		{% for grupo in grupos %}
 		<tr>
 			<td class="list">
-				<b>{{ grupo.campo }}</b><br/>
+				<span class="list"><b>{{ grupo.campo }}</b></span><br/>
 				{% with grupo.lista as listado %}
 				{% with grupo.campo as campo %}
 					{% include 'tabla.html' %}

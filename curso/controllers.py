@@ -2,6 +2,8 @@ from curso.models import Curso
 
 from usuario.controllers import cambiaTutoresAProfesores
 
+#from evaluacion.controllers import editable
+
 import datetime
 
 def cambiarCurso(request, curso):
@@ -17,19 +19,23 @@ def listaCurso(request):
         if ( curso.curso == cursoSelec.curso ) :
             curso.esActual = True
     return cursos
-    
 
 def esCursoActual(request):
     return  ultimoCurso() == cursoSeleccionado(request)
 
 def ultimoCurso():
-    return Curso.objects.order_by("-id")[0]
+    cursos = Curso.objects.order_by("-id")
+    if cursos :
+        return cursos[0]
+    else:
+        return []
 
 def cursoSeleccionado(request):
     if 'curso' in request.session:
         curso = request.session['curso']
     else:
         curso = ultimoCurso()
+        request.session['curso'] = curso
     return curso
 
 def cursoNuevo():
@@ -46,8 +52,10 @@ def existeCurso(curso):
 def creaCurso(curso):
     existe = existeCurso(curso)
     if ( not existe ):
+            cursoAnterior = ultimoCurso()
             curso = Curso(curso=curso)
             curso.save()
             cambiaTutoresAProfesores()
+            #evaluationSystemCopy = EvaluationSystemCopy().fromCourse(cursoAnterior).toNewEvaluationSystemInCourse(curso)
             return True
     return existe
