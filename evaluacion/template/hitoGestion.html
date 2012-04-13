@@ -1,0 +1,28 @@
+{% extends 'frontend.html' %}
+
+{% block title %}{% ifequal accion "nuevo" %}Nou hite{% else %}Edició del hite{% endifequal %} | Gestió d'Hites{% endblock %}
+
+{% block ruta %}Coordinació: <a href="/coordinacio/evaluacio/">Gestió d'hites</a> | {% ifequal accion "nuevo" %}Nou hite{% else %}Edició del hite{% endifequal %}{% endblock %}
+
+{% block tituloPagina %}{% ifequal accion "nuevo" %}Nou hite{% else %}Edició del hite{% endifequal %}{% endblock %}
+
+{% block menuPagina %}{% include 'menu.html' %}{% endblock %}
+
+{% block contenido %}
+					  <form action="{% ifequal accion "nuevo" %}./nou{% else %}./edita{% endifequal %}" method="post">
+					  <table border="0" cellpadding="0" cellspacing="0" width="100%"> 
+							  	  		<tr>
+							  	  			<td width="125px"><label for="id_nombre">Nom del Hite:</label></td>
+							  	  			<td>{{ form.nombre }}</td>
+							  	  			<td>{{ form.nombre.errors }}</td>
+							  	  		</tr>
+							  	  		<tr>
+							  	  			<td width="125px"><label for="id_plazo">Durada del Hite (en setmanes):</label></td>
+							  	  			<td>{{ form.plazo }}</td>
+							  	  			<td>{{ form.plazo.errors }}</td>
+							  	  		</tr>
+					  </table>
+					  
+					  <input type="submit" value="Guarda canvis" onclick="if (!confirm('Estas segur de guardar els canvis?')) return false;"/>
+					  </form>
+{% endblock %}

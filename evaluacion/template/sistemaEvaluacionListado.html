@@ -1,0 +1,50 @@
+{% extends 'frontend.html' %}
+
+{% block title %}Gestió d'Hites{% endblock %}
+
+{% block ruta %}Coordinació: Gestió d'Hites{% endblock %}
+
+{% block tituloPagina %}Gestió d'Hites{% endblock %}
+
+{% block menuPagina %}{% include 'menu.html' %}{% endblock %}
+
+{% block contenido %}
+	<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	{% if hitos %}
+		{% for hito in hitos %}
+			<tr>
+				<td class="list">
+					<span class="list"><b>{{ hito }}</b> {% if edita %}<a href="hites/{{ hito.id }}/edita"><img src="/media/img/lapiz.png" alt="Editar" title="Editar hite"/></a> <a href="hites/{{ hito.id }}/evaluacions/nou"><img src="/media/img/mas16.png" alt="Afegir" title="Afegir evaluació"/></a> {% endif %}</span> <br/>
+					{% if hito.evaluaciones %}
+						<ul><li>
+						<table border="0" cellpadding="0" cellspacing="0" width="100%">
+						{% for evaluacion in hito.evaluaciones %}
+							<tr>
+								<td class="list2">
+									<span class="list2"><b>{{ evaluacion }}</b>{% if edita %}<a href="hites/{{ hito.id}}/evaluacions/{{ evaluacion.id }}/edita"><img src="/media/img/lapiz.png" alt="Editar" title="Editar evaluació"/></a> <a href="hites/{{ hito.id }}/evaluacions/{{ evaluacion.id }}/preguntes/nou"><img src="/media/img/mas16.png" alt="Afegir" title="Afegir pregunta"/></a> {% endif %}</span> <br/>
+									{% if evaluacion.preguntas %}
+										<ul>
+											{% for pregunta in evaluacion.preguntas %}
+												<li>{{ pregunta }} {% if edita %}<a href="hites/{{ hito.id }}/evaluacions/{{ evaluacion.id }}/preguntes/{{ pregunta.id }}/edita"><img src="/media/img/lapiz.png" alt="Editar" title="Editar pregunta"/></a>{% endif %}</li>
+											{% endfor %}									
+										</ul>
+									{% else %}
+										<ul><li>No hi han preguntes per a aquesta evaluació</li></ul> 
+									{% endif %}
+								</td>
+							</tr>
+						{% endfor %}
+						</table></li></ul>
+					{% else %}
+						<ul><li>No hi han evaluacions per a aquest hite.</li></ul>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	{% else %}
+		<tr><td>
+		No hi han hites per a aquest sistema d'evaluació.
+		</td></tr>
+	{% endif %}
+	</table> 
+{% endblock %}
