@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 
@@ -18,7 +20,7 @@ def listadoProyectos(request, vista, profesorid=""):
 
 def cambiaCurso(request, curso):
     cambiarCurso(request, curso)
-    return HttpResponseRedirect(request.path.split('curso/')[0])
+    return HttpResponseRedirect(request.path.split('curs/')[0])
     
     
 def gestionProyectos(request, accion="nuevo", alumnoid=""):

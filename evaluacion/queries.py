@@ -7,7 +7,11 @@ from curso.controllers import cursoSeleccionado
 
 class QueryEvaluationSystem():
     def getEvaluationSystemByCourse(self, course):
-        return get_object_or_404(SistemaEvaluacion, curso=course)
+        try:
+            return SistemaEvaluacion.objects.get(curso=course)
+        except SistemaEvaluacion.DoesNotExist:
+            return None
+#        return get_object_or_404(SistemaEvaluacion, curso=course)
     
     def getEvaluationSystemByCourseSelected(self, request):
         return self.getEvaluationSystemByCourse(cursoSeleccionado(request))
@@ -25,6 +29,12 @@ class QueryEvaluation():
     
     def getListEvaluationsByItem(self, item):
         return Evaluacion.objects.filter(hito=item)
+    
+    def getListEvaluationsByItemAndRol(self, item, rol):
+        return Evaluacion.objects.filter(hito=item, evaluador=rol)
+    
+    def getRoles(self):
+        return Evaluacion().getRoles()
 
 class QueryQuestion():
     def getQuestionByQuestion(self, question):
@@ -32,6 +42,7 @@ class QueryQuestion():
 
     def getListQuestionsByEvaluation(self, evaluation):
         return Pregunta.objects.filter(evaluacion=evaluation)
+    
 class QueryEvaluationSystemTreeComplete():
     def __init__(self, evaluationSystem):
         self.curso = evaluationSystem.curso
@@ -60,6 +71,9 @@ class NodeItem():
 
     def __str__(self):
         return self.item.__str__()
+    
+    def getItem(self):
+        return self.item
     
     def getName(self):
         return self.item.nombre

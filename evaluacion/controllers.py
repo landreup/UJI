@@ -1,21 +1,31 @@
 from models import SistemaEvaluacion, Hito, Evaluacion, Pregunta
 
 from queries import QueryEvaluationSystemTreeComplete, QueryEvaluationSystem
+
+from curso.controllers import cursoSeleccionado, cursoAnteriorAl
   
 def editable(request):
     return True
-  
-def listaHitos(request):
-    evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)
+
+def sistemaEvaluacionSeleccionado(request):
+    return QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)
+
+def listaHitos(evaluationSystem):
     return QueryEvaluationSystemTreeComplete(evaluationSystem).getItems()
 
-def CopyEvaluationSystem(fromCourse, toCourse):
+def copiarSistemaEvaluacionCursoAnteriorAlCursoActual(request):
+    cursoActual = cursoSeleccionado(request)
+    cursoAnterior = cursoAnteriorAl(cursoActual)
+    
+    copyEvaluationSystem(cursoAnterior, cursoActual)
+
+def copyEvaluationSystem(fromCourse, toCourse):
     newEvaluationSystem = SistemaEvaluacion()
     newEvaluationSystem.curso, newEvaluationSystem.estado = toCourse, "D"
     newEvaluationSystem.save()
     if fromCourse :
-        fromEvaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourse(fromCourse)
-        for item in fromEvaluationSystem.getItems():
+        fromEvaluationSystemTreeComplete = QueryEvaluationSystemTreeComplete(QueryEvaluationSystem().getEvaluationSystemByCourse(fromCourse))
+        for item in fromEvaluationSystemTreeComplete.getItems():
             newItem = Hito()
             newItem.nombre, newItem.plazo, newItem.orden, newItem.sistemaEvaluacion = item.getName(), item.getPeriod(), item.getOrder(), newEvaluationSystem 
             newItem.save()

@@ -43,7 +43,11 @@
 		{% endfor %}
 	{% else %}
 		<tr><td>
-		No hi han hites per a aquest sistema d'evaluació.
+		{% if sistemaEvaluacion %}
+		<p>No hi han hites per a aquest sistema d'evaluació.</p>
+		{% else %}
+		<p>No existeix cap sistema d'evaluació per a aquest curs.<form method="post"><input type="submit" value="Copiar l'estructura del sistema d'evaluació del curs pasat"/></form><p>
+		{% endif %}
 		</td></tr>
 	{% endif %}
 	</table> 

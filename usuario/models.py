@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 from django.db import models
 
 class Usuario(models.Model):
@@ -12,7 +14,10 @@ class Usuario(models.Model):
     rol = models.CharField(max_length=1, choices=ROL_CHOICES)
     
     def __str__(self):
-        return self.apellidos + ", " + self.nombre
+        return u'%s, %s'%(self.apellidos,self.nombre)
+    
+    def __unicode__(self): 
+        return u'%s, %s'%(self.apellidos,self.nombre)
     
     class Meta:
         ordering = ["apellidos"]

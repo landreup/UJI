@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os.path
 # Django settings for prova project.
 
@@ -32,7 +34,18 @@ TIME_ZONE = 'Europe/Madrid'
 
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'es'
+LANGUAGE_CODE = 'es_ES'
+
+FILE_CHARSET = 'UTF-8'
+
+DEFAULT_LOCALE = ('es_ES', 'UTF-8')
+
+LANGUAGE_LOCALES = {
+        'en': ('en_US', 'UTF-8'),
+        'es': ('es_ES', 'UTF-8'),
+        'default': DEFAULT_LOCALE,
+}
+
 
 SITE_ID = 1
 
@@ -113,6 +126,7 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(__file__), 'evaluacion/template').replace('\\', '/'),
     os.path.join(os.path.dirname(__file__), 'proyecto/template').replace('\\', '/'),
     os.path.join(os.path.dirname(__file__), 'usuario/template').replace('\\', '/'),
+    os.path.join(os.path.dirname(__file__), 'valoracion/template').replace('\\', '/'),
 )
 
 INSTALLED_APPS = (
@@ -126,6 +140,7 @@ INSTALLED_APPS = (
     'evaluacion',
     'proyecto',
     'usuario',
+    'valoracion',
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     # 'django.contrib.admin',

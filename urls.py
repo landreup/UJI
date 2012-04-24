@@ -12,6 +12,7 @@ urlpatterns += (patterns('',
                 url(r'^coordinacio/professorat/', include('usuario.urls')),
                 url(r'^coordinacio/cursos/', include('curso.urls')),
                 url(r'^coordinacio/evaluacio/', include('evaluacion.urls')),
+                url(r'^formulari/', include('valoracion.urls_formulario')),
 ))
 
 

@@ -37,6 +37,9 @@ class Evaluacion(models.Model):
     
     miembrosTribunal = models.IntegerField(null=True, blank=True)     
    
+    def getRoles(self):
+        return {"TU": "Tutor", "S": "Supervisor", "TR": "Tribunal", "A": "Alumne"}
+   
     def __str__(self):
         respuesta = ""
         for opcion in self.EVALUADOR_CHOICES :

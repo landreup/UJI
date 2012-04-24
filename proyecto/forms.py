@@ -1,14 +1,18 @@
+# -*- encoding: utf-8 -*-
+
 from django.forms import ModelForm
 
 from models import Proyecto
+from queries import QueryProject
+
 from alumno.models import Alumno
 
 from alumno.forms import AlumnoForm
 
-from alumno.controllers import alumnoPorId, creaAlumno, editaAlumno
+from alumno.controllers import alumnoPorId
 from curso.controllers import cursoSeleccionado
-from proyecto.controllers import proyectoPorId, creaProyecto, editaProyecto
 from usuario.controllers import listaTutor
+
 
 class ProyectoForm(ModelForm):
     class Meta():
@@ -36,8 +40,7 @@ class ProyectoAlumnoForm():
                             'usuarioUJI': self.alumno.usuarioUJI
                 })
                 
-                self.proyecto = proyectoPorId(self.alumno, cursoSeleccionado(request))
-            
+                self.proyecto = QueryProject().getProjectByCourseAndStudent(cursoSeleccionado(request), self.alumno)
                 self.proyectoForm = ProyectoForm(prefix='proyecto', initial={
                             'tutor': self.proyecto.tutor, 
                             'supervisor': self.proyecto.supervisor,
@@ -52,9 +55,6 @@ class ProyectoAlumnoForm():
                 self.proyectoForm.fields["tutor"].queryset = listaTutor()
                 self.proyectoForm.initial["tutor"] = self.proyecto.tutor
         else: # Leer
-            if (request.method != "POST") : 
-                # ERROR
-                pass
             self.alumnoForm = AlumnoForm(request.POST, prefix='alumno', instance=self.alumno)
             self.proyectoForm = ProyectoForm(request.POST, prefix='proyecto', instance=self.proyecto)
                 
@@ -79,8 +79,45 @@ class ProyectoAlumnoForm():
     
     def save(self):
         if (self.accion == "nuevo"):
-                creaAlumno(self.alumno)
-                creaProyecto(self.request, self.proyecto, self.alumno)
+            self.createProjectStudent()
         else : # edicion
-                editaAlumno(self.alumnoid, self.alumno)
-                editaProyecto(self.request, self.alumno, self.proyecto)
+            self.editProjectStudent()
+    
+    def createProjectStudent(self):
+        self.createStudent()
+        self.createProject()
+    
+    def createStudent(self):
+        self.alumno.save()
+    
+    def createProject(self):
+        self.proyecto.alumno = self.alumno
+        self.proyecto.curso = cursoSeleccionado(self.request)
+        self.proyecto.save()
+
+    def editProjectStudent(self):
+        self.editStudent()
+        self.editProject()
+    
+    def editStudent(self):
+        alumnoDB = alumnoPorId(self.alumnoid)
+        alumnoDB.nombre = self.alumno.nombre
+        alumnoDB.usuarioUJI = self.alumno.usuarioUJI
+        alumnoDB.save()
+        
+    def editProject(self):
+        curso = cursoSeleccionado(self.request)
+    
+        proyectoDB = proyectoPorId(self.alumno, curso)
+    
+        proyectoDB.tutor = self.proyecto.tutor
+        proyectoDB.supervisor = self.proyecto.supervisor
+        proyectoDB.email = self.proyecto.email
+        proyectoDB.empresa = self.proyecto.empresa
+        proyectoDB.telefono = self.proyecto.telefono
+        proyectoDB.titulo = self.proyecto.titulo
+        proyectoDB.inicio = self.proyecto.inicio
+        proyectoDB.dedicacionSemanal = self.proyecto.dedicacionSemanal
+        proyectoDB.otrosDatos = self.proyecto.otrosDatos
+    
+        proyectoDB.save()

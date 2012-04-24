@@ -95,8 +95,8 @@ class CampoFormProcessData():
         editation[self.form.field]()
         
     def createItem(self):
-        self.form.item.sistemaEvaluacion = QueryEvaluationSystem().byCourseSelected(self.form.request)
-        self.form.item.orden =  len(QueryItem().getListItemsByEvaluationSystem(self.form.hito.sistemaEvaluacion)) + 1
+        self.form.item.sistemaEvaluacion = QueryEvaluationSystem().getEvaluationSystemByCourseSelected(self.form.request)
+        self.form.item.orden =  len(QueryItem().getListItemsByEvaluationSystem(self.form.item.sistemaEvaluacion)) + 1
         self.form.item.save()
         
     def editItem(self):

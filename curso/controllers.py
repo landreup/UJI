@@ -30,6 +30,7 @@ def ultimoCurso():
     else:
         return []
 
+    
 def cursoSeleccionado(request):
     if 'curso' in request.session:
         curso = request.session['curso']
@@ -37,6 +38,19 @@ def cursoSeleccionado(request):
         curso = ultimoCurso()
         request.session['curso'] = curso
     return curso
+
+def cursoAnteriorAl(cursoSelec):
+    cursos = Curso.objects.order_by("-id")
+    cursoAnterior = []
+    siguiente = False
+    for curso in cursos :
+        if curso == cursoSelec :
+            siguiente = True
+        elif siguiente :
+            cursoAnterior = curso
+            break
+    return cursoAnterior
+
 
 def cursoNuevo():
     curso = int(datetime.date.today().year)

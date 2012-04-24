@@ -1,12 +1,16 @@
-# coding: latin1
+# -*- encoding: utf-8 -*-
+
 
 from django.shortcuts import get_object_or_404
 
 from usuario.models import Usuario
 
-def usuarioPorId(usuarioId):
-    return get_object_or_404(Usuario, usuarioUJI=usuarioId)
+def usuarioPorId(usuarioUJI):
+    return get_object_or_404(Usuario, usuarioUJI=usuarioUJI)
     #return Usuario.objects.get(usuarioUJI=usuarioId)
+    
+def usuarioPorUsuario(usuario):
+    return get_object_or_404(Usuario, id=usuario)
 
 def cambiarUsuario(request, usuarioid):
     usuario = usuarioPorId(usuarioid)

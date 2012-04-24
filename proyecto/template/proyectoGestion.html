@@ -19,7 +19,7 @@
 					  <table border="0" cellpadding="0" cellspacing="0" width="100%"> 
 					  	  <tr>
 					  	  	<td class="list">
-					  	  	<b>Dades Personals</b><br/>
+					  	  	<span class="list"><b>Dades Personals</b></span><br/>
 					  	  	<ul>
 						  	  	<li>
 							  	  	<table>
@@ -42,7 +42,7 @@
 						  	  	</li>
 					  	  	</ul>
 					  	  	
-					  	  	<b>Estància en Pràctiques</b><br/>
+					  	  	<span class="list"><b>Estància en Pràctiques</b></span><br/>
 					  	  	<ul>
 					  	  		<li>
 					  	  			<table>
@@ -81,7 +81,7 @@
 					  	  		</li>
 					  	  	</ul>
 					  	  	
-					  	  	<b>Projecte</b><br>
+					  	  	<span class="list"><b>Projecte</b></span><br>
 					  	  	<ul>
 					  	  		<li>
 					  	  			<table>
@@ -94,7 +94,7 @@
 					  	  		</li>
 					  	  	</ul>
 					  	  	
-					  	  	<b>Tutor</b><br/>
+					  	  	<span class="list"><b>Tutor</b></span><br/>
 					  	  	<ul>
 					  	  		<li>
 					  	  			<table>
@@ -107,7 +107,7 @@
 					  	  		</li>
 					  	  	</ul>
 					  		
-					  		<b>Altra Informació</b><br/>
+					  		<span class="list"><b>Altra Informació</b></span><br/>
 					  		<ul>
 					  			<li>
 					  			{{ form.proyectoForm.otrosDatos }}
@@ -116,11 +116,6 @@
 					  		</td>
 					  	</tr>
 					  </table>
-					  ##
-					  {{ form.alumnoForm.errors }}
-					  ##
-					  {{ form.proyectoForm.errors }}
-					  ## 
 					  <input type="submit" value="Guarda canvis" onclick="if (!confirm('Estas segur de guardar els canvis?')) return false;"/>
 					  </form>
 {% endblock %}
