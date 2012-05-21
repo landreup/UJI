@@ -1,8 +1,9 @@
 from django.db import models
 
 class Curso(models.Model):
-    curso = models.CharField(max_length=15)
+    curso = models.IntegerField()
+    fechaTope = models.DateField(null=True, blank=True)
     esActual = False
     
-    def __str__(self):
-        return self.curso
+    def __unicode__(self):
+        return unicode(self.curso) + "/" + unicode(self.curso+1)

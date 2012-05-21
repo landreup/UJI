@@ -1,1 +1,1 @@
-<td><a href="/coordinacio/projectes/curso/{{ elemento.curso }}">{{ elemento.curso }}</a></td>
+<td><a href="/coordinacio/projectes/curs/{{ elemento }}">{{ elemento }} {% if elemento.fechaTope %} | Fecha tope del projecte {{ elemento.fechaTope}}{% endif %} </a><a href="{{ elemento }}/edita/"><img src="/media/img/lapiz.png" alt="editar"/></a></td>

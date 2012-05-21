@@ -2,8 +2,7 @@ from django.shortcuts import get_object_or_404
 
 from models import SistemaEvaluacion, Hito, Evaluacion, Pregunta
 
-from curso.controllers import cursoSeleccionado
-
+from curso.queries import QueryCourse
 
 class QueryEvaluationSystem():
     def getEvaluationSystemByCourse(self, course):
@@ -11,10 +10,9 @@ class QueryEvaluationSystem():
             return SistemaEvaluacion.objects.get(curso=course)
         except SistemaEvaluacion.DoesNotExist:
             return None
-#        return get_object_or_404(SistemaEvaluacion, curso=course)
     
     def getEvaluationSystemByCourseSelected(self, request):
-        return self.getEvaluationSystemByCourse(cursoSeleccionado(request))
+        return self.getEvaluationSystemByCourse(QueryCourse().getCourseSelected(request))
     
 class QueryItem():
     def getItemByItem(self, item):
@@ -22,6 +20,26 @@ class QueryItem():
     
     def getListItemsByEvaluationSystem(self, evaluationSystem):
         return Hito.objects.filter(sistemaEvaluacion=evaluationSystem).order_by("orden")
+    
+    def getFirstItemCourse(self, course):
+        evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourse(course)
+        items = self.getListItemsByEvaluationSystem(evaluationSystem)
+        return items[0] if items else None
+    
+    def getNextItem(self, item):
+        items = Hito.objects.filter(sistemaEvaluacion=item.sistemaEvaluacion, orden__gt=item.orden).order_by("orden")
+        return items[0] if items else None
+    
+    def getBeforeItem(self, item):
+        items = Hito.objects.filter(sistemaEvaluacion=item.sistemaEvaluacion, orden__lt=item.orden).order_by("-orden")
+        return items[0] if items else None
+    
+    def hasTribunalEvaluationThisItem(self, item):
+        evaluations = QueryEvaluation().getListEvaluationsByItem(item)
+        for evaluation in evaluations:
+            if evaluation.isTribunalEvaluator():
+                return True
+        return False
 
 class QueryEvaluation():
     def getEvaluationByEvaluation(self, evaluation):
@@ -72,6 +90,9 @@ class NodeItem():
     def __str__(self):
         return self.item.__str__()
     
+    def getId(self):
+        return self.id
+        
     def getItem(self):
         return self.item
     
@@ -104,8 +125,8 @@ class NodeEvaluation():
         self.evaluation = evaluation
         self.preguntas = ListQuestions(evaluation).getList()
         
-    def __str__(self):
-        return self.evaluation.__str__()   
+    def __unicode__(self):
+        return self.evaluation.__unicode__()   
     
     def getName(self):
         return self.evaluation.nombre
@@ -113,8 +134,8 @@ class NodeEvaluation():
     def getEvaluator(self):
         return self.evaluation.evaluador
     
-    def getTribunalMembers(self):
-        return self.evaluation.miembrosTribunal
+    def getPercentage(self):
+        return self.evaluation.porcentaje
     
     def getQuestions(self):
         return self.preguntas

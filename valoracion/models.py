@@ -1,22 +1,30 @@
 from django.db import models
 
 from proyecto.models import Proyecto
-from evaluacion.models import Evaluacion, Pregunta
+from evaluacion.models import Hito, Evaluacion, Pregunta
 
 class Formulario(models.Model):
     proyecto = models.ForeignKey(Proyecto)
-    email = models.EmailField()
+    hito = models.ForeignKey(Hito)
+    rol = models.CharField(max_length=2)
+    email = models.EmailField(null=True, blank=True)
     codigo = models.CharField(max_length=100, unique=True)
-    fechaEstimada = models.DateField()
     fechaValorado = models.DateField(null=True, blank=True)
     fechaBloqueado = models.DateField(null=True, blank=True)
     
+    def isUnresolved(self):
+        return self.proyecto.isUnresolved()
+    
+    def __unicode__(self):
+        return "Valorar " + unicode(self.hito).lower() + " de " + self.proyecto.alumno.nombre + " " + self.proyecto.alumno.apellidos
+    
     class Meta:
-        unique_together= [("proyecto", "fechaEstimada", "email")]
+        unique_together= [("proyecto", "hito", "rol", "email")]
 
 class EvaluacionesFormulario(models.Model):
     evaluacion = models.ForeignKey(Evaluacion)
     formulario = models.ForeignKey(Formulario)
+    valoracionEvaluacion = models.FloatField(null=True, blank=True) 
 
 class Valoracion(models.Model):
     pregunta = models.ForeignKey(Pregunta)

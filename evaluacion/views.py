@@ -2,14 +2,16 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 
-from controllers import listaHitos, editable, sistemaEvaluacionSeleccionado, copiarSistemaEvaluacionCursoAnteriorAlCursoActual
-from forms import campoForm
+from controllers import listaHitos, editable, activable, sistemaEvaluacionSeleccionado, copiarSistemaEvaluacionCursoAnteriorAlCursoActual
+from forms import campoForm, EvaluationSystemForm
 
-from curso.controllers import listaCurso, cambiarCurso
+from curso.controllers import cambiarCurso
+
+from curso.queries import QueryCourse
 
 def listadoHitos(request):
     if request.method == 'POST':
-        if not editable():
+        if not editable(request):
             return HttpResponseForbidden
         copiarSistemaEvaluacionCursoAnteriorAlCursoActual(request)
         return HttpResponseRedirect('/coordinacio/evaluacio/')
@@ -18,10 +20,11 @@ def listadoHitos(request):
        
     hitos = listaHitos(sistemaEvaluacion) if (sistemaEvaluacion) else []
     
-    cursos = listaCurso(request)
+    cursos = QueryCourse().getListCourse(request)
     grupos = True
     edita = editable(request)
     anyadir = sistemaEvaluacion
+    activar = activable(request)
     return render_to_response('sistemaEvaluacionListado.html', locals())
 
 def gestionEvaluaciones(request, accion="nuevo", campo= "", hito="", evaluacion="", pregunta=""):
@@ -29,7 +32,7 @@ def gestionEvaluaciones(request, accion="nuevo", campo= "", hito="", evaluacion=
         return HttpResponseForbidden()
     
     if (request.method == 'POST'):
-        form = campoForm(request, accion, campo, hito, evaluacion, pregunta, "lee")
+        form = campoForm(request, accion, campo, hito, evaluacion, pregunta)
         if (form.is_valid()):
             form.save()
             return HttpResponseRedirect('/coordinacio/evaluacio/')
@@ -37,6 +40,15 @@ def gestionEvaluaciones(request, accion="nuevo", campo= "", hito="", evaluacion=
     else:
         form = campoForm(request, accion, campo, hito, evaluacion, pregunta).getForm()
     return render_to_response(campo+'Gestion.html', locals())
+
+def activaSistemaEvaluacion(request):
+    form = EvaluationSystemForm(request)
+    if request.method == 'POST':
+        if (form.is_valid()):
+            form.save()
+            return HttpResponseRedirect('/coordinacio/evaluacio/')
+        
+    return render_to_response('sistemaEvaluacionGestion.html', locals())
 
 def cambiaCurso(request, curso):
     cambiarCurso(request, curso)

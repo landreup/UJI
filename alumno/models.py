@@ -5,8 +5,10 @@ class Alumno(models.Model):
     apellidos = models.CharField(max_length=100)
     usuarioUJI = models.CharField(max_length=30, unique=True)
     
-    def __str__(self):
+    def __unicode__(self):
         return self.apellidos + ", " + self.nombre
     
+    def nombreCompleto(self):
+        return self.nombre + " " + self.apellidos
     class Meta:
         ordering = ["apellidos"]

@@ -22,6 +22,7 @@
 							  	  			<td>{{ form.tipoRespuesta.errors }}</td>
 							  	  		</tr>
 					  </table>
-					  <input type="submit" value="Guarda canvis" onclick="if (!confirm('Estas segur de guardar els canvis?')) return false;"/>
+					  <input type="submit" value="Guarda canvis"/>
+					  <input id="eliminar" name="boton" type="submit" value="Eliminar" onclick="if (!confirm('Estas segur que vols eliminar aquest camp?')) return false;"/>
 					  </form>
 {% endblock %}

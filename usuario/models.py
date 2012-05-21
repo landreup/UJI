@@ -13,6 +13,12 @@ class Usuario(models.Model):
                     )
     rol = models.CharField(max_length=1, choices=ROL_CHOICES)
     
+    def getRoles(self):
+        roles = {}
+        for rol in self.ROL_CHOICES:
+            roles[rol[0]] = rol[1]
+        return roles
+    
     def __str__(self):
         return u'%s, %s'%(self.apellidos,self.nombre)
     

@@ -1,3 +1,5 @@
+# -*- encoding: utf-8 -*-
+
 from django.shortcuts import get_object_or_404
 from models import Formulario, EvaluacionesFormulario, Valoracion
 from evaluacion.queries import QueryEvaluationSystemTreeComplete, QueryEvaluationSystem, ListItems, NodeItem, ListEvaluations, NodeEvaluation, ListQuestions,\
@@ -12,6 +14,26 @@ class QueryForm():
         
     def getFormByKey(self, key):
         return get_object_or_404(Formulario, codigo=key)
+    
+    def getListFormByProjectItemRol(self, project, item, rol):
+        try:
+            return Formulario.objects.filter(proyecto=project, hito=item, rol=rol)
+        except Formulario.DoesNotExist:
+            return None
+    
+    def getListFormByProjectItem(self, project, item):
+        try:
+            return Formulario.objects.filter(proyecto=project, hito=item)
+        except Formulario.DoesNotExist:
+            return None
+    
+    
+    def isAllFormsCompletedOfProjectItem(self, project, item):
+        listForms = Formulario.objects.filter(proyecto=project, hito=item)
+        for form in listForms:
+            if not form.fechaValorado:
+                return False
+        return True if listForms else False
     
 class QueryEvaluationForm():
     def getListEvaluationFormByForm(self, form):
@@ -63,18 +85,30 @@ class NodeItem(NodeItem):
     def getStatus(self):
         return self.status
     
-    def __str__(self):
-        return str(self.item) + " (" + self.status + ")"
+    def __unicode__(self):
+        return unicode(self.item)
         
 class ListEvaluations(ListEvaluations):
     def __init__(self, evaluations, project, puntuation):
         self.list = []
         self.puntuation = puntuation
-        self.status = "lock"
+        anyUnLock = False
+        allComplete = True
         for evaluation in evaluations:
             node = NodeEvaluation(evaluation, project, puntuation)
-            if node.getStatus()!="lock" : self.status = "unlock"  
+            if node.getStatus() == "unlock" :
+                anyUnLock = True
+                allComplete = False
+            elif node.getStatus() != "complete":
+                allComplete = False
+                
             self.list.append(node)
+        if anyUnLock :
+            self.status = "unlock"
+        elif allComplete and len(evaluations)>0:
+            self.status = "complete"
+        else:
+            self.status = "lock"
         
     def getStatus(self):
         return self.status
@@ -83,18 +117,18 @@ class NodeEvaluation(NodeEvaluation):
     def __init__(self, evaluation, project, puntuation):
         self.id = evaluation.id
         self.evaluation = evaluation
-        evaluationForm = QueryEvaluationForm().getEvaluationFormByProjectAndEvaluation(project, evaluation)
+        self.evaluationForm = QueryEvaluationForm().getEvaluationFormByProjectAndEvaluation(project, evaluation)
         self.preguntas = QueryQuestion().getListQuestionsByEvaluation(evaluation.id)
         self.value = None
         if puntuation :#and evaluationForm:
-            self.preguntas = ListQuestions(evaluationForm, evaluation.getQuestions()).getList()
+            self.preguntas = ListQuestions(self.evaluationForm, evaluation.getQuestions()).getList()
             total = 0
             if self.preguntas :
                 for question in self.preguntas :
                     total += question.getValoration()
                 self.value = float(total)/len(self.preguntas)
             # VALORAR TOTAL
-        self.status = "complete" if self.value else "unlock" if evaluationForm else "lock"
+        self.status = "complete" if self.value else "unlock" if self.evaluationForm else "lock"
         
             
     def getStatus(self):
@@ -103,8 +137,17 @@ class NodeEvaluation(NodeEvaluation):
     def getValue(self):
         return self.value
     
-    def __str__(self):
-        return str(self.evaluation) +  " (" + self.status + ")" + " " + str(self.value)
+    def getForm(self):
+        if self.status == "unlock" :
+            return self.evaluationForm.formulario.codigo
+        else :
+            return None
+    
+    def __unicode__(self):
+        name = unicode(self.evaluation)
+        if (self.status == "complete"):
+            name += u" Calificació: " + unicode(self.value)
+        return name
     
 class ListQuestions(ListQuestions):
     def __init__(self, evaluationForm, questions):
@@ -135,9 +178,9 @@ class NodeQuestion():
         else:
             return 0
     
-    def __str__(self):
-        response = str(self.question.pregunta)
+    def __unicode__(self):
+        response = unicode(self.question.pregunta)
         response += " ("
-        response += str(self.valoration)# if self.valoration!=None else "sense evaluar"
+        response += unicode(self.valoration)# if self.valoration!=None else "sense evaluar"
         response += ")"
         return response

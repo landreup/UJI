@@ -1,14 +1,18 @@
+# -*- encoding: utf-8 -*-
 from django import forms
-
 from models import Valoracion, EvaluacionesFormulario, Formulario
 from queries import QueryEvaluationForm
 
 from alumno.controllers import alumnoPorId
-from curso.controllers import cursoSeleccionado
-from evaluacion.queries import QueryEvaluation, QueryQuestion
+from curso.queries import QueryCourse
+from evaluacion.queries import QueryEvaluation, QueryQuestion, QueryItem
 from proyecto.queries import QueryProject
 
 import random, base64
+from proyecto.controllers import cambiaEstadoProyecto
+from valoracion.queries import QueryForm
+import datetime
+import time
 
 class ValorationForm():
     def __init__(self, request, evaluationForm):
@@ -24,27 +28,27 @@ class ValorationForm():
                     response = self.Response(question, int(request.POST.get(field, '')))
                     self.valorations.append(response)
         
-    def strResponseType(self, field, responseType):
+    def unicodeResponseType(self, field, responseType):
         if responseType == "A" :
-            return "<select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\" selected=\"selected\">No Apte</option><option value=\"5\">Apte</option></select>"  
+            return u"<select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\" selected=\"selected\">No Apte</option><option value=\"5\">Apte</option></select>"  
         elif responseType == "I":
-            return "<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\"/>" + \
-                   "<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\"/>" + \
-                   "<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\"/>" + \
-                   "<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\"/>" + \
-                   "<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"5\"/>"
+            return u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\"/>" + \
+                   u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\"/>" + \
+                   u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\"/>" + \
+                   u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\"/>" + \
+                   u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"5\"/>"
         else:
             return ""
         
     def fieldName(self, evaluation, question):
-        return "evaluacionFormulario" + str(evaluation.id) + "_pregunta" + str(question.id)
+        return u"evaluacionFormulario" + str(evaluation.id) + u"_pregunta" + str(question.id)
         
-    def __str__(self):
+    def __unicode__(self):
         #return str(len(self.questions))
         htmlForm = ""
         for question in self.questions :
             field = self.fieldName(self.evaluation, question)
-            htmlForm += "<label for=\"id_"+ field + "\">" + question.pregunta + "</label>" + self.strResponseType(field, question.tipoRespuesta) + "<br/>"
+            htmlForm += u"<label for=\"id_"+ field + "\">" + unicode(question.pregunta) + u"</label>" + self.unicodeResponseType(field, question.tipoRespuesta) + u"<br/>"
         return htmlForm
     
     def isValorationValid(self, response):
@@ -81,12 +85,49 @@ class ValorationForm():
         def __init__(self, question, valoration):
             self.question = question
             self.valoration = valoration
+            
+class EvaluationForm():
+    def __init__(self, request, evaluationForm):
+        self.evaluation = evaluationForm.evaluacion
+        self.evaluationForm = evaluationForm
+        
+        self.response = ""
+        self.errors = ""
+        if request.method == 'POST' :
+            field = self.fieldName()
+            if request.POST.get(field, '') :
+                self.response = request.POST.get(field, '') 
+    
+    def fieldName(self):
+        return u"evaluacionFormulario" + str(self.evaluation.id)
+    
+    def __unicode__(self):
+        field = self.fieldName()
+        value = self.response #if self.response else ""
+        response = u"<label for=\"id_"+ field + u"\">Qualificació</label>"
+        response += u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"text\" value=\"" + value + "\"/>"
+        response += self.errors
+        return response
+    
+    def is_valid(self):
+        try:
+            self.response = float(self.response)
+            return True
+        except ValueError: 
+            self.errors = u"No has introduit un número válid"
+            return False
+        
+    def save(self):
+        self.evaluationForm.valoracionEvaluacion = self.response
+        self.evaluationForm.save()
 
 class EvaluationFormForm():
     def __init__(self, request, form):
+        self.form = form
         self.evaluations=[]
+        unresolved =  form.isUnresolved()
         for evaluationForm in QueryEvaluationForm().getListEvaluationFormByForm(form):
-            self.evaluations.append(self.EvaluationFormComplete(request, evaluationForm))
+            self.evaluations.append(self.EvaluationFormComplete(request, evaluationForm, not unresolved))
         self.evaluaciones = self.evaluations
     
     def is_valid(self):
@@ -100,12 +141,18 @@ class EvaluationFormForm():
     def save(self):
         for evaluation in self.evaluations :
             evaluation.valorationForm.save()
+        self.form.fechaValorado = datetime.date.today()
+        self.form.save()
+        if QueryForm().isAllFormsCompletedOfProjectItem(self.form.proyecto, self.form.hito):
+            self.form.fechaBloqueado = datetime.date.today()
+            self.form.save()
+            cambiaEstadoProyecto(self.form.proyecto)
         
     class EvaluationFormComplete():
-        def __init__(self, request, evaluationForm):
+        def __init__(self, request, evaluationForm, questions=True):
             self.evaluation = evaluationForm.evaluacion
-            self.valorationForm = ValorationForm(request, evaluationForm)
-
+            self.valorationForm = ValorationForm(request, evaluationForm) if questions else EvaluationForm(request, evaluationForm)
+    
 class FormForm():
     class DateField():
         def __str__(self):
@@ -123,7 +170,7 @@ class FormForm():
         return True
 
     def save(self):
-        course = cursoSeleccionado(self.request)
+        course = QueryCourse().getCourseSelected(self.request)
         student = alumnoPorId(self.studentUser)
         project = QueryProject().getProjectByCourseAndStudent(course, student)
         for rol in QueryEvaluation().getRoles().keys():
@@ -132,6 +179,9 @@ class FormForm():
                 email = QueryProject().getEmailByProjectAndEvaluator(project, rol)
                 form = Formulario()
                 form.proyecto = project
+                item = QueryItem().getItemByItem(self.item)
+                form.hito = item
+                form.rol = rol
                 form.fechaEstimada = self.dateAppreciated
                 form.email = email
                 form.codigo = self.aleatoryString()

@@ -1,10 +1,10 @@
 {% extends 'frontend.html' %}
 
-{% block title %}Gestió d'Hites{% endblock %}
+{% block title %}Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endblock %}
 
-{% block ruta %}Coordinació: Gestió d'Hites{% endblock %}
+{% block ruta %}{% if "coordinacio" in request.path%}Coordinació: <a href ="/coordinacio/projectes/">Gestió de Projectes</a>{% else %}Tutorització: <a href="/professorat/projectes/">Projectes Assignats</a>{% endif %} | Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endblock %}
 
-{% block tituloPagina %}Gestió d'Hites{% endblock %}
+{% block tituloPagina %}Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endblock %}
 
 {% block menuPagina %}{% include 'menu.html' %}{% endblock %}
 
@@ -14,14 +14,14 @@
 		{% for hito in hitos %}
 			<tr>
 				<td class="list">
-					<span class="list"><b>{{ hito }}</b> {% if edita %}<a href="hites/{{ hito.id }}/edita"><img src="/media/img/lapiz.png" alt="Editar" title="Editar hite"/></a> <a href="hites/{{ hito.id }}/evaluacions/nou"><img src="/media/img/mas16.png" alt="Afegir" title="Afegir evaluació"/></a> {% endif %}</span> <br/>
+					<span class="list"><b>{{ hito }}</b> {% ifequal hito.getStatus "lock" %}<img src="/media/img/bloqueado.png" alt="(Bloquejat)" title="Hite bloquejat"/>{% ifequal project.estado "P"%}<a href="formulari/hite/{{ hito.id }}/crea/"><img src="/media/img/ir.png" alt="Activar hite" title="Clica per a activar el hite"/></a> {% endifequal %}{% else %}{% ifequal hito.getStatus "unlock" %}<img src="/media/img/pendiente.png" alt="(Pendent)" title="Hite pendent, es necesari que estiguen contestades totes les evaluacions per estar completat"/>{% else %}{% ifequal hito.getStatus "complete" %}<img src="/media/img/completado.png" alt="(Completat)" title="Hite completat"/>{% endifequal %}{% endifequal %}{% endifequal %}</span> <br/>
 					{% if hito.evaluaciones %}
 						<ul><li>
 						<table border="0" cellpadding="0" cellspacing="0" width="100%">
 						{% for evaluacion in hito.evaluaciones %}
 							<tr>
 								<td class="list2">
-									<span class="list2"><b>{{ evaluacion }}</b>{% if edita %}<a href="hites/{{ hito.id}}/evaluacions/{{ evaluacion.id }}/edita"><img src="/media/img/lapiz.png" alt="Editar" title="Editar evaluació"/></a> <a href="hites/{{ hito.id }}/evaluacions/{{ evaluacion.id }}/preguntes/nou"><img src="/media/img/mas16.png" alt="Afegir" title="Afegir pregunta"/></a> {% endif %}</span> <br/>
+									<span class="list2"><b>{{ evaluacion }}</b> {% if evaluacion.getForm %}	<a href="/formulari/{{ evaluacion.getForm }}"><img src="/media/img/ir.png" alt="Anar al formulari" title="Respon el formulari"/></a>{% endif %} {% ifequal evaluacion.getStatus "unlock" %}<img src="/media/img/pendiente.png" alt="(Pendent)" title="Evaluacio pendent"/>{% else %}{% ifequal evaluacion.getStatus "complete" %}<img src="/media/img/completado.png" alt="(Completat)" title="Evaluacio completada"/>{% endifequal %}{% endifequal %} </span> <br/>
 									{% if evaluacion.preguntas %}
 										<ul>
 											{% for pregunta in evaluacion.preguntas %}

@@ -2,37 +2,163 @@
 
 from django.forms import ModelForm
 
-from models import Proyecto
-from queries import QueryProject
+from models import Proyecto, MiembroTribunal, FechaEstimada
+from queries import QueryProject, QueryJudgeMembers, QueryEstimateDate
 
 from alumno.models import Alumno
 
 from alumno.forms import AlumnoForm
 
 from alumno.controllers import alumnoPorId
-from curso.controllers import cursoSeleccionado
-from usuario.controllers import listaTutor
+from evaluacion.queries import QueryEvaluationSystem, QueryItem
+from usuario.queries import QueryUser
+from curso.queries import QueryCourse
 
+from datetime import datetime
+from proyecto.controllers import cambiaEstadoProyecto
+from proyecto.queries import QueryStatusProjectInCourse
 
 class ProyectoForm(ModelForm):
     class Meta():
         model = Proyecto
-        exclude = ('curso', 'alumno')
+        exclude = ('curso', 'alumno', 'estado')
+
+class EstimateDateForm(ModelForm):
+    class Meta():
+        model = FechaEstimada
+        exclude = ('hito', 'proyecto')
+    
+class EstimateDateItemForm():
+    def __init__(self, request, studentUserUJI):
+        self.request = request
+        items = QueryItem().getListItemsByEvaluationSystem(QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request))
+        
+        self.project = None 
+        if studentUserUJI : self.project = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(request), alumnoPorId(studentUserUJI))       
+        
+        projectStatus = QueryStatusProjectInCourse().getProjectByProject(self.project)
+        nextItem = QueryItem().getNextItem(projectStatus.hito)
+        self.forms = []
+        self.fechas = []
+        inputDate = False
+        for item in items :
+            if self.project.estado == "C" :
+                if item == projectStatus.hito : inputDate = True
+            elif self.project.estado == "L" :
+                if item == nextItem : inputDate = True
+            if inputDate :
+                if request.method == "POST" :
+                    fecha = request.POST.get(str(item.id)+"-fecha", '')
+                    form = {"id": "id_" + str(item.id)+"-fecha", "label": item.nombre, "form": EstimateDateForm(request.POST, prefix=str(item.id))}
+                    if fecha: self.fechas.append({"item": item, "fecha": fecha})
+                else:
+                    form = {"id": "id_" + str(item.id)+"-fecha", "label": item.nombre, "form": EstimateDateForm(prefix=str(item.id))}
+                    estimateDate = QueryEstimateDate().getEstimateDateByProjectAndItem(self.project, item)
+                    if estimateDate :
+                        form["form"].initial["fecha"] = estimateDate.fecha
+                self.forms.append(form)
+    
+    def is_valid(self):
+        isValid = True
+        for fecha in self.fechas:
+            for form in self.forms:
+                fecha_id = "id_" + str(fecha["item"].id) + "-fecha"
+                if form["id"] == fecha_id :
+                    isValid = isValid and form['form'].is_valid()
+                    
+        return isValid
+    
+    def save(self, project):
+        for fecha in self.fechas:
+            fechaDB = QueryEstimateDate().getEstimateDateByProjectAndItem(project, fecha["item"])
+            if not fechaDB : fechaDB = FechaEstimada()
+            fechaDB.proyecto = project
+            fechaDB.hito = fecha["item"]
+            d = datetime.strptime(fecha["fecha"], '%d/%m/%Y')
+            date_string = d.strftime('%Y-%m-%d')
+            fechaDB.fecha = date_string 
+            fechaDB.save()
+
+class MemberJudgeForm(ModelForm):
+    class Meta():
+        model = MiembroTribunal
+        exclude = ('idMiembro', 'proyecto')
+
+class TribunalForm():
+    def __init__(self, request, studentUserUJI):
+        self.numberOfJudgeMembers = 3
+        
+        self.request = request
+        
+        self.project, self.judgeMembers = None, None
+        
+        if studentUserUJI : 
+            self.project = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), alumnoPorId(studentUserUJI))
+            self.judgeMembers = QueryJudgeMembers().getListMembersByProject(self.project)
+        
+        self.forms = []
+        self.id_members = []
+        for i in xrange(self.numberOfJudgeMembers) :
+            if request.method == 'POST':
+                id_member = request.POST.get("miembro"+str(i)+"-miembro", '')
+                form = MemberJudgeForm(request.POST, prefix="miembro"+str(i))
+                if id_member : self.id_members.append({'id': i+1, 'id_member': id_member})
+            else:
+                form = MemberJudgeForm(prefix="miembro"+str(i))
+                form.fields["miembro"].queryset = QueryUser().getListOfUser()
+                if self.judgeMembers: form.initial["miembro"] = self.judgeMembers[i].miembro
+            self.forms.append(form)
+            
+    def is_valid(self):
+        repeat = False
+        for i in xrange(len(self.id_members)):
+            for j in xrange(i+1, len(self.id_members)):
+                if self.id_members[i] == self.id_members[j] : repeat = True
+            
+        if repeat :
+            self.errors = "Se han repetido miembros del tribunal"
+            return False
+        
+        return True
+    
+    def save(self, project):
+        if not self.project : self.project = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), self.student)
+        self.judgeMembers = QueryJudgeMembers().getListMembersByProject(project)
+        for member in self.id_members:
+            user = QueryUser().getUserById(member['id_member'])
+            memberDB = MiembroTribunal()
+            if self.judgeMembers: 
+                for judgeMember in self.judgeMembers:
+                    if judgeMember.idMiembro == member['id'] :
+                        memberDB = judgeMember
+            memberDB.proyecto = project
+            memberDB.idMiembro = member['id']
+            memberDB.miembro = user
+            memberDB.save()
+
+    def __unicode__(self):
+        response = u""
+        for form in self.forms :
+            response += form.as_p()
+        return response
 
 class ProyectoAlumnoForm():
-    def __init__(self, request, accion="nuevo", alumnoid="", form_action="crea"):
+    def __init__(self, request, action="nuevo", alumnoUserUJI="", form_action="crea"):
         self.alumno = Alumno()
         self.proyecto = Proyecto()
-        self.accion = accion
+        self.action = action
         self.request = request
-        self.alumnoid = alumnoid
+        self.alumnoid = alumnoUserUJI
+        self.pendiente = None
         if (form_action == "crea"):
-            if ( accion == "nuevo" ) :
+            if ( action == "nuevo" ) :
                 self.alumnoForm = AlumnoForm(prefix='alumno')
                 self.proyectoForm = ProyectoForm(prefix='proyecto')
-                self.proyectoForm.fields["tutor"].queryset = listaTutor()
+                self.proyectoForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
+                self.tribunalForm = None
+                self.dateForm = None
             else: # Edicion
-                self.alumno = alumnoPorId(alumnoid)
+                self.alumno = alumnoPorId(alumnoUserUJI)
                 
                 self.alumnoForm = AlumnoForm(prefix='alumno', initial={
                             'nombre': self.alumno.nombre, 
@@ -40,7 +166,7 @@ class ProyectoAlumnoForm():
                             'usuarioUJI': self.alumno.usuarioUJI
                 })
                 
-                self.proyecto = QueryProject().getProjectByCourseAndStudent(cursoSeleccionado(request), self.alumno)
+                self.proyecto = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), self.alumno)
                 self.proyectoForm = ProyectoForm(prefix='proyecto', initial={
                             'tutor': self.proyecto.tutor, 
                             'supervisor': self.proyecto.supervisor,
@@ -52,22 +178,73 @@ class ProyectoAlumnoForm():
                             'dedicacionSemanal': self.proyecto.dedicacionSemanal,
                             'otrosDatos': self.proyecto.otrosDatos
                 })
-                self.proyectoForm.fields["tutor"].queryset = listaTutor()
+                self.proyectoForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
                 self.proyectoForm.initial["tutor"] = self.proyecto.tutor
+                
+                self.estado = self.proyecto.estado
+                
+                self.tribunalForm = None
+                if self.proyecto.estado == "L": 
+                    statusProject = QueryStatusProjectInCourse().getProjectByProject(self.proyecto)
+                    item = statusProject.hito if statusProject else None
+                    nextItem = QueryItem().getNextItem(item) if item else QueryItem().getFirstItemCourse(self.proyecto.curso)
+                    if QueryItem().hasTribunalEvaluationThisItem(nextItem):
+                        self.tribunalForm = TribunalForm(request, alumnoUserUJI)
+                        
+                self.dateForm = EstimateDateItemForm(request, alumnoUserUJI) if self.estado != "P" else None
+                
         else: # Leer
             self.alumnoForm = AlumnoForm(request.POST, prefix='alumno', instance=self.alumno)
+            if action != "nuevo":
+                self.tribunalForm = None
+                self.alumno = alumnoPorId(alumnoUserUJI)
+                proyecto = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), self.alumno)
+                self.estado = proyecto.estado
+                if proyecto.estado == "L": 
+                    statusProject = QueryStatusProjectInCourse().getProjectByProject(proyecto)
+                    item = statusProject.hito if statusProject else None
+                    nextItem = QueryItem().getNextItem(item) if item else QueryItem().getFirstItemCourse(proyecto.curso)
+                    
+                    if QueryItem().hasTribunalEvaluationThisItem(nextItem):
+                        self.tribunalForm = TribunalForm(request, alumnoUserUJI)
+                self.dateForm = EstimateDateItemForm(request, alumnoUserUJI) if self.estado != "P" else None
+            else:
+                self.tribunalForm = None
+                self.dateForm = None
             self.proyectoForm = ProyectoForm(request.POST, prefix='proyecto', instance=self.proyecto)
                 
-                
     def is_valid(self):
-        alumnoEsValido = self.alumnoForm.is_valid()
-        if ( not alumnoEsValido and self.accion == "editar"):
-            alumnoEsValido =True
-            if ( self.alumnoForm.data["usuarioUJI"] == self.alumnoid ):
-                alumnoEsValido = True
+        self.alumnoEsValido = self.alumnoForm.is_valid()
+        if ( not self.alumnoEsValido and self.isEditing()):
+            if ( self.alumnoForm.data["alumno-usuarioUJI"] == self.alumnoid ):
+                self.alumnoEsValido = True
+
+        if self.tribunalForm :
+            tribunalIsValid = self.tribunalForm.is_valid()
+        else:
+            tribunalIsValid = True
+
+        if self.dateForm :
+            dateIsValid = self.dateForm.is_valid()
+        else:
+            dateIsValid = True
         
-        return (alumnoEsValido and self.proyectoForm.is_valid())
+        return (self.alumnoEsValido 
+                and self.proyectoForm.is_valid() 
+                and tribunalIsValid
+                and dateIsValid
+        )
     
+    def isEditing(self):
+        return self.action == "edita"
+    
+    def isTutorValid(self, tutorId):
+        tutor = self.Tutor(tutorId)
+        valid = tutor.is_valid()
+        if not valid :
+            valid =  tutor.is_empty() and self.isEditing()
+        return valid
+        
     def getAlumnoProyecto(self):
         return self.alumno, self.proyecto
     
@@ -78,21 +255,30 @@ class ProyectoAlumnoForm():
         return self.accion
     
     def save(self):
-        if (self.accion == "nuevo"):
+        if (self.action == "nuevo"):
             self.createProjectStudent()
         else : # edicion
             self.editProjectStudent()
+        
+        
+        if self.tribunalForm : 
+            self.tribunalForm.save(self.proyecto)
+        if self.dateForm : self.dateForm.save(self.proyecto)
+        
+        cambiaEstadoProyecto(self.proyecto)
     
     def createProjectStudent(self):
         self.createStudent()
         self.createProject()
+        #self.createJudge()
     
     def createStudent(self):
         self.alumno.save()
     
     def createProject(self):
         self.proyecto.alumno = self.alumno
-        self.proyecto.curso = cursoSeleccionado(self.request)
+        self.proyecto.curso = QueryCourse().getCourseSelected(self.request)
+        self.proyecto.estado = "L"
         self.proyecto.save()
 
     def editProjectStudent(self):
@@ -105,12 +291,22 @@ class ProyectoAlumnoForm():
         alumnoDB.usuarioUJI = self.alumno.usuarioUJI
         alumnoDB.save()
         
+        self.alumno = alumnoDB
+        
     def editProject(self):
-        curso = cursoSeleccionado(self.request)
+        curso = QueryCourse().getCourseSelected(self.request)
+     
+        alumno = alumnoPorId(self.alumnoid)
+        
+        proyectoDB = QueryProject().getProjectByCourseAndStudent(curso, alumno)
     
-        proyectoDB = proyectoPorId(self.alumno, curso)
-    
-        proyectoDB.tutor = self.proyecto.tutor
+        tutorUserUJI = self.proyectoForm.data["proyecto-tutor"]
+        if self.Tutor(tutorUserUJI).is_empty() :
+            tutor = proyectoDB.tutor
+        else:
+            tutor = QueryUser().getUserById(tutorUserUJI)
+        
+        proyectoDB.tutor = tutor
         proyectoDB.supervisor = self.proyecto.supervisor
         proyectoDB.email = self.proyecto.email
         proyectoDB.empresa = self.proyecto.empresa
@@ -119,5 +315,21 @@ class ProyectoAlumnoForm():
         proyectoDB.inicio = self.proyecto.inicio
         proyectoDB.dedicacionSemanal = self.proyecto.dedicacionSemanal
         proyectoDB.otrosDatos = self.proyecto.otrosDatos
+        proyectoDB.estado = self.estado
     
         proyectoDB.save()
+        
+        self.proyecto = proyectoDB
+        
+    class Tutor():
+        def __init__(self, tutorId):
+            self.tutorId = tutorId
+            
+        def is_valid(self):
+            if (not self.is_empty()) :
+                return QueryUser().isTutor(self.tutorId)
+            else:
+                return False
+        
+        def is_empty(self):
+            return self.tutorId == ''

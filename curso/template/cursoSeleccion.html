@@ -4,9 +4,9 @@
 	<select name="curso" id="cambiaCurso">
 		{% for curso in cursos %}
 		<option value="{{ curso.id }}"
-				data-url="{{ request.path }}curs/{{ curso.curso }}"
+				data-url="{{ request.path }}curs/{{ curso }}"
 				{% if curso.esActual %}selected="selected"{% endif %}>
-				{{ curso.curso }}
+				{{ curso }}
 		</option>
     	{% endfor %}
 	</select>

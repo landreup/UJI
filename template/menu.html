@@ -1,6 +1,9 @@
 {% if grupos %}
 <span class="boton-cerrar">cerrar todos</span> | <span class="boton-abrir">abrir todos</span> | <span class="boton-cambiar">cambiar</span><br>
 {% endif %}
+{% if activar %}
+<a href="./activa/"><img alt="Nou" src="{{ STATIC_PREFIX }}img/activar.png"></a>
+{% endif %}
 {% if anyadir %}
-<a href="./nou"><img alt="Nou" src="{{ STATIC_PREFIX }}img/mas.png"></a>
+<a href="./nou"><img alt="Activar" src="{{ STATIC_PREFIX }}img/mas.png" title="Activar"></a>
 {% endif %}

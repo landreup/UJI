@@ -9,9 +9,59 @@
 {% block menuPagina %}{% include 'menu.html' %}{% endblock %}
 
 {% block contenido %}
+	{% if pendientes %}
+	<tr>
+			<td class="list">
+	<h3>Projectes Pendents de revisió per canviar de curs</h3>
 	{% with "theadProyecto.html" as cabecera %}
 		{% with "tbodyProyecto.html" as detalle %}
-			{% include 'listado.html' %}
+			{% with pendientes as listado %}
+			{% with "Pendents" as campo %}
+				{% include 'tabla.html' %}
+			{% endwith %}
+			{% endwith %}
 		{% endwith %}
 	{% endwith %}
+	{% endif %}
+	{% if enCurso %}
+	<h3>Projectes en Curs</h3>
+	{% with "theadProyecto.html" as cabecera %}
+		{% with "tbodyProyecto.html" as detalle %}
+			{% with enCurso as grupos %}
+			{% for grupo in grupos %}
+		<tr>
+			<td class="list">
+				<span class="list"><b>{{ grupo.campo }}</b></span><br/>
+				{% with "theadProyectoEnCurso.html" as cabecera %}
+				{% with "tbodyProyectoEnCurso.html" as detalle %}
+					{% with grupo.lista as listado %}
+					{% with grupo.campo as campo %}
+						{% include 'tabla.html' %}
+					{% endwith %}
+					{% endwith %}
+				{% endwith %}
+				{% endwith %}
+			</td>
+		</tr>
+			{% endfor %}
+			{% endwith %}
+		{% endwith %}
+	{% endwith %}
+	{% endif %}
+	{% if finalizados %}
+	
+	<tr>
+			<td class="list">
+	<h3>Projectes Finalitzats</h3>
+	
+	{% with "theadProyecto.html" as cabecera %}
+		{% with "tbodyProyecto.html" as detalle %}
+			{% with finalizados as listado %}
+			{% with "Projectes Finalitzats" as campo %}
+				{% include 'tabla.html' %}
+			{% endwith %}
+			{% endwith %}
+		{% endwith %}
+	{% endwith %}
+	{% endif %}
 {% endblock %}
