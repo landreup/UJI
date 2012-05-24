@@ -1,0 +1,12 @@
+{% with elemento.fecha as fecha %}
+{% with elemento.proyecto as elemento %}
+<td><a href="{{ elemento.alumno.usuarioUJI }}/evaluacio/">{{ elemento.alumno }}</a></td>
+{% if muestraTutor %}
+<td><a href="/coordinacio/projectes/{{ elemento.tutor.usuarioUJI }}/">{{ elemento.tutor }}</a></td>
+{% endif %}
+<td>{{ elemento.empresa }}</td>
+<td>{{ elemento.titulo }}</td>
+<td>{{ fecha }}</td>
+<td width="16px"><a href="{{ elemento.alumno.usuarioUJI }}/edita/"><img src="/media/img/lapiz.png" alt="editar"/></a></td>
+{% endwith %}
+{% endwith %}

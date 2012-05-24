@@ -1,0 +1,20 @@
+{% extends 'frontend.html' %}
+
+{% block title %}Edició curs {{ cursoDB }} | Gestió de Cursos{% endblock %}
+
+{% block ruta %}Coordinació: <a href="/coordinacio/cursos/">Gestió de Cursos</a> | Edició curs {{ cursoDB }}{% endblock %}
+
+{% block tituloPagina %}Edició curs {{ cursoDB }}{% endblock %}
+
+{% block contenido %}
+					 <form action="" method="post">
+					 <table>
+					 	<tr>
+					 		<td width="125px"><label for="id-fechaTope">Fecha tope d'entrega:</label></td>
+					 		<td>{{ form.fechaTope }}</td>
+					 		<td>{{ form.fechaTope.errors }}</td>
+					 	</tr>
+					 </table>
+					 <input type="submit" value="Guarda canvis"></p>
+					  </form>
+{% endblock %}
