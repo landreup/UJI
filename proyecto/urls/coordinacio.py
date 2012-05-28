@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import patterns, url, include
 
 urlpatterns = patterns('proyecto.views',
-        url(r'^$', 'listadoProyectosCoordinador',  {'vista': ["coordinador"]}),
+        url(r'^$', 'listadoProyectosCoordinador'),
         url(r'^nou$', 'gestionProyectos'),
         url(r'^(?P<profesorid>\w+)/?$', 'listadoProyectosCoordinadorProfesor'),
         url(r'^(?P<alumnoid>\w+)/edita/?$', 'gestionProyectos', {'accion': "edita"}),
