@@ -1,9 +1,8 @@
 # -*- encoding: utf-8 -*-
-
-
 from django.shortcuts import get_object_or_404
 
 from usuario.models import Usuario
+from usuario.queries import QueryUser
 
 def usuarioPorId(usuarioUJI):
     return get_object_or_404(Usuario, usuarioUJI=usuarioUJI)
@@ -11,13 +10,6 @@ def usuarioPorId(usuarioUJI):
     
 def usuarioPorUsuario(usuario):
     return get_object_or_404(Usuario, id=usuario)
-
-def cambiarUsuario(request, usuarioid):
-    usuario = usuarioPorId(usuarioid)
-    request.session['usuario'] = usuario
-
-def usuarioActivo(request):
-    return request.session['usuario']
 
 def creaUsuario(usuario):
     usuario.save()
@@ -35,17 +27,8 @@ def nombreTutor(usuarioId):
 def usuarioPorRol(rol):
     return Usuario.objects.filter(rol=rol).order_by("apellidos")
 
-def listaCoordinador():
-    return usuarioPorRol("C")
-
-def listaTutor():
-    return usuarioPorRol("T")
-
-def listaProfesor():
-    return usuarioPorRol("P")
-
 def cambiaTutoresAProfesores():
-    listadoTutores = listaTutor()
+    listadoTutores = QueryUser().getListOfTutor()
     for tutor in listadoTutores:
         tutor.rol="P"
         tutor.save()

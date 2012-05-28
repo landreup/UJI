@@ -4,21 +4,23 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 
 from forms import ProfesorForm
-from controllers import listaCoordinador, listaTutor, listaProfesor, cambiarUsuario
+from controllers import listaCoordinador, listaTutor, listaProfesor
 
 from eujierlogin import eujierlogin_coordinator
+from usuario.queries import QueryUser
 
 @eujierlogin_coordinator
 def listadoProfesores(request, login):
     grupos = [
-        {'campo': "Coordinadors", 'lista': listaCoordinador()},
-        {'campo': "Tutors", 'lista': listaTutor()},
-        {'campo': "Profesors", 'lista': listaProfesor()}
+        {'campo': "Coordinadors", 'lista': QueryUser().getListOfCoordinator()},
+        {'campo': "Tutors", 'lista': QueryUser().getListOfTutor()},
+        {'campo': "Profesors", 'lista': QueryUser().getListOfProfessor()}
     ]
     anyadir = True
     editar = True
     return render_to_response('profesorListado.html', locals())
 
+@eujierlogin_coordinator
 def gestionProfesor(request, accion="nuevo", profesorid=""):
     if (request.method == "POST" ) :
         form = ProfesorForm(request, accion, profesorid, "lee")
@@ -27,9 +29,4 @@ def gestionProfesor(request, accion="nuevo", profesorid=""):
             return HttpResponseRedirect('/coordinacio/professorat/')
     else:
         form = ProfesorForm(request, accion, profesorid)
-    return render_to_response('profesorGestion.html', locals())
-
-def cambiaUsuario(request, profesorid):
-    cambiarUsuario(request, profesorid)
-    return HttpResponseRedirect('/professorat/projectes/')
-    
+    return render_to_response('profesorGestion.html', locals())    

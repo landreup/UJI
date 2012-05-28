@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from proyecto.models import Proyecto, EstadoProyectoEnCurso,\
     ProyectoParaRevisionEnCurso
-from usuario.controllers import usuarioActivo, nombreTutor
+from usuario.controllers import nombreTutor
 from evaluacion.queries import QueryEvaluationSystem, QueryItem
 from proyecto.queries import QueryStatusProjectInCourse, QueryProject, QueryEstimateDate,\
     QueryProjectUnresolvedInCourse, QueryJudgeMembers
@@ -9,89 +9,60 @@ from usuario.queries import QueryUser
 from curso.queries import QueryCourse
 from valoracion.controllers import activaFormulario
 
-def vistaCoordinador(request):
-    if ("coordinacio" in request.path) : return True
-    else : return False
+class ProjectInCourse:
+    def __init__(self, project, date):
+        self.proyecto = project
+        self.fecha = date
 
-def vistaProfesor(request):
-    if ("professorat" in request.path) : return True
-    else : return False
-
+class GroupElement:
+    def __init__(self, listProject, campo):
+        self.campo = campo
+        self.lista = listProject
+        
+class LockGroupElement(GroupElement):
+    def __init__(self, listProject):
+        self.campo = "Projectes pendents de revisió"
+        self.lista = []
+        for element in listProject:
+            self.lista.append(ProjectInCourse(element, "No Disponible"))
+            
+class InCourseGroupElement(GroupElement):
+    def __init__(self, listProject, item):
+        self.campo = "Projectes en " + item.nombre.lower()
+        self.lista = []
+        for element in listProject:
+            estimateDate = QueryEstimateDate().getEstimateDateByProjectAndItem(element.proyecto, item)
+            date =  estimateDate.fecha.strftime("%d/%m/%Y") if estimateDate else "No disponible"
+            self.lista.append({'proyecto': element.proyecto, 'fecha': date})
+            
 def listaProyectosPendientes(request):
     return QueryProject().getListProjectByCourseSelectedStatus(request, "P")
 
 def listaProyectosFinalizados(request):
     return QueryProject().getListProjectByCourseSelectedStatus(request, "F")
 
-def gruposProyectosEnCurso(request, profesorid):
+def gruposProyectosEnCursoTodos(request):
     groups = []
-    evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)
-    #"Por Asignar"
-    lockProjects = listaProyectosPorRolStatus(request, profesorid, "L")
-    if lockProjects : groups.append({'campo': "Projectes pendents de revisió", 'lista': lockProjects})
-    
-    "Por hitos"
+    evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request) 
+    lockProjects = QueryProject().getListProjectByCourseAndStatus(evaluationSystem.curso, "L")
+    if lockProjects : groups.append(LockGroupElement(lockProjects))
+   
     for item in QueryItem().getListItemsByEvaluationSystem(evaluationSystem):
-        lista = listaProyectosPorRolYItem(request, profesorid, item)
-        if lista:
-            groups.append({'campo': "Projectes en " + item.nombre.lower(), 'lista': lista})
-    
+        lista = QueryStatusProjectInCourse().getListProjectByItem(item)
+        if lista : groups.append(InCourseGroupElement(lista, item)) 
     return groups
 
-def listaProyectosPorRolStatus(request, profesorUserUJI, status):
-    lista = []
-    user = QueryUser().getUserByUserUJI(profesorUserUJI)
+def gruposProyectosEnCursoProfesor(request, user):
+    groups = []
+    evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)
+    lockProjects = QueryProject().getListProjectByCourseStatusTutor(evaluationSystem.curso, "L", user)
+    if lockProjects : groups.append(LockGroupElement(lockProjects))
     
-    if vistaCoordinador(request):
-        if user : 
-            listaQuery = QueryProject().getListProjectByCourseSelectedStatusTutor(request, status, user)
-        else :
-            listaQuery = QueryProject().getListProjectByCourseSelectedStatus(request, status)
-    elif vistaProfesor(request):
-        #USUARIO ACTIVO !!!!!
-        
-        listaQuery = QueryProject().getListProjectByCourseSelectedStatus(request, status)
+    for item in QueryItem().getListItemsByEvaluationSystem(evaluationSystem):
+        lista = QueryStatusProjectInCourse().getListProjectByItemAndUser(item, user)
+        if lista : groups.append(InCourseGroupElement(lista, item))
     
-    if status =="L" or status =="C":
-        for elem in listaQuery:
-            date =  "No disponible"
-            lista.append({'proyecto': elem, 'fecha': date})
-    else:
-        lista = listaQuery
-    return lista
-
-def listaProyectosPorRolYItem(request, profesorUserUJI, item):
-    lista = []
-    
-    user = QueryUser().getUserByUserUJI(profesorUserUJI)
-        
-    if vistaCoordinador(request):
-        if user :
-            listaQuery = QueryStatusProjectInCourse().getListProjectByItemUser(item, user)
-        else: 
-            listaQuery = QueryStatusProjectInCourse().getListProjectByItem(item)
-    elif vistaProfesor(request):
-        #USUARIO ACTIVO !!!!!
-        
-        listaQuery = QueryStatusProjectInCourse().getListProjectByItem(item)
-    
-    
-    for elem in listaQuery:
-        estimateDate = QueryEstimateDate().getEstimateDateByProjectAndItem(elem.proyecto, item)
-        date =  estimateDate.fecha.strftime("%d/%m/%Y") if estimateDate else "No disponible"
-        lista.append({'proyecto': elem.proyecto, 'fecha': date})
-    return lista
-    
-def tituloListadoProyectos(request, profesorid):
-    if vistaProfesor(request):
-        titulo = "Projectes Assignats"
-    elif vistaCoordinador(request):
-        if profesorid :
-            titulo = "Projectes que tutoritza " + nombreTutor(profesorid)
-        else:
-            titulo = "Gestió de Projectes"
-            
-    return titulo
+    return groups
 
 def copiaProyectosEnCursoCursoActualAProyectosPendientesCursoNuevo(course):
     beforeCourse = QueryCourse().getCourseBefore(course)
@@ -126,7 +97,6 @@ def camposPorRellenarProyecto(proyecto, item):
             porRellenar += separador + "tribunal"
     
     return porRellenar
-
 
 def eliminaProyectoPorRellenar(proyecto):
     proyectoPendiente = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(proyecto)
