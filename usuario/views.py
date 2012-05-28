@@ -1,12 +1,15 @@
 # -*- encoding: utf-8 -*-
 
 from django.shortcuts import render_to_response
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect
 
 from forms import ProfesorForm
 from controllers import listaCoordinador, listaTutor, listaProfesor, cambiarUsuario
 
-def listadoProfesores(request):
+from eujierlogin import eujierlogin
+
+@eujierlogin
+def listadoProfesores(request, login):
     grupos = [
         {'campo': "Coordinadors", 'lista': listaCoordinador()},
         {'campo': "Tutors", 'lista': listaTutor()},

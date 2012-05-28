@@ -1,0 +1,20 @@
+{% extends 'frontend.html' %}
+
+{% block title %}Activar Sistema d'Evaluació | Gestió d'Hites{% endblock %}
+
+{% block ruta %}Coordinació: <a href="/coordinacio/evaluacio/">Gestió d'hites</a> | Activar Sistema d'Evaluació{% endblock %}
+
+{% block tituloPagina %}Activar Sistema d'Evaluació{% endblock %}
+
+{% block menuPagina %}{% include 'menu.html' %}{% endblock %}
+
+{% block contenido %}
+					{% if form.errors %}
+						{{ form.errors }}
+					{% else %}
+					  <form action="" method="post">
+					  <p>L'Activació del Sistema d'Evaluació implica bloquejar els canvis en aquest</p>  
+					  <input id="activar" name="boton" type="submit" value="Activar" onclick="if (!confirm('Estas segur que vols Activar el Sistema d'Evaluació?')) return false;"/>
+					  </form>
+					{% endif %}
+{% endblock %}
