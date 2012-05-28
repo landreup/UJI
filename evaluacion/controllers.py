@@ -12,10 +12,7 @@ def activable(request):
     if evaluationSystem : 
         return not evaluationSystem.isActive()
     else: return False 
-
-def sistemaEvaluacionSeleccionado(request):
-    return QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)
-
+    
 def listaHitos(evaluationSystem):
     return QueryEvaluationSystemTreeComplete(evaluationSystem).getItems()
 

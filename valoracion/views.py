@@ -10,6 +10,8 @@ from proyecto.queries import QueryProject
 from evaluacion.queries import QueryEvaluationSystem, QueryItem
 from valoracion.controllers import activaFormulario, activaValoracion
 
+from usuario.eujierlogin import eujierlogin_coordinator
+
 def estadoValoracion(request, alumnoid):
     evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)
     if not evaluationSystem:
@@ -28,15 +30,12 @@ def estadoValoracion(request, alumnoid):
     cursoActual = True # Comprobar si curso actual
     return render_to_response("sistemaEvaluacionValoradoListado.html", locals())
 
-def creaFormulario(request, alumnoid, hitoid):
+def creaFormulario(request, user, alumnoid, hitoid):
     # COMPROBAR ACCESO
     ''' Coordinador o tutor y proyecto en estado "P" y anteriores hitos completados '''
     course = QueryCourse().getCourseSelected(request)
     student = alumnoPorId(alumnoid)
     project = QueryProject().getProjectByCourseAndStudent(course, student)
-    
-    ''' Coordinador o tutor del proyecto '''
-    
     
     item = QueryItem().getItemByItem(hitoid)
     if not project : return HttpResponseNotFound()
@@ -51,12 +50,12 @@ def creaFormulario(request, alumnoid, hitoid):
         if not response:
             return HttpResponseForbidden()
         
-    
     if (request.method == "POST"):
         activaFormulario(project, item)
         return HttpResponseRedirect('/coordinacio/projectes/')
         
     return render_to_response('creaFormulario.html', locals())
+
 
 def formularioPublico(request, clave):
     formForm = QueryForm().getFormByKey(clave)
