@@ -33,11 +33,7 @@ def eujierlogin_coordinator(f, name=None):
         (login, redirect) = lsm.get_login(request)
         if not login :
             return redirect
-        
-        coordinator = QueryUser().getUserCoordinatorByUserUJI(login)
-        if not coordinator:
-            return HttpResponseForbidden()
-        
+
         return f(login=login, *args, **kwargs)
     wrapped.__doc__ = f.__doc__
     return wrapped

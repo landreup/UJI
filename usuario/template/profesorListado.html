@@ -11,6 +11,7 @@
 {% block menuPagina %}{% include 'menu.html' %}{% endblock %}
 
 {% block contenido %}
+	{{ login }}
 	{% with "detalleProfesor.html" as detalle %}
 	{% include 'listado.html' %}	  
 	{% endwith %}
