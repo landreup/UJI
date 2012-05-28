@@ -34,12 +34,6 @@ class InCourseGroupElement(GroupElement):
             estimateDate = QueryEstimateDate().getEstimateDateByProjectAndItem(element.proyecto, item)
             date =  estimateDate.fecha.strftime("%d/%m/%Y") if estimateDate else "No disponible"
             self.lista.append({'proyecto': element.proyecto, 'fecha': date})
-            
-def listaProyectosPendientes(course):
-    return QueryProject().getListProjectByCourseAndStatus(course, "P")
-
-def listaProyectosFinalizados(course):
-    return QueryProject().getListProjectByCourseAndStatus(course, "F")
 
 def gruposProyectosEnCursoTodos(course):
     groups = []
@@ -52,10 +46,10 @@ def gruposProyectosEnCursoTodos(course):
         if lista : groups.append(InCourseGroupElement(lista, item)) 
     return groups
 
-def gruposProyectosEnCursoProfesor(request, user):
+def gruposProyectosEnCursoProfesor(course, user):
     groups = []
-    evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)
-    lockProjects = QueryProject().getListProjectByCourseStatusTutor(evaluationSystem.curso, "L", user)
+    evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourse(course)
+    lockProjects = QueryProject().getListProjectByCourseStatusTutor(course, "L", user)
     if lockProjects : groups.append(LockGroupElement(lockProjects))
     
     for item in QueryItem().getListItemsByEvaluationSystem(evaluationSystem):

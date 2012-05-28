@@ -9,14 +9,16 @@ from forms import ProyectoAlumnoForm
 from curso.controllers import cambiarCurso
 from curso.queries import QueryCourse
 from usuario.eujierlogin import eujierlogin_coordinator, eujierlogin_teacher
-from proyecto.controllers import gruposProyectosEnCursoTodos, gruposProyectosEnCursoProfesor, listaProyectosPendientes, listaProyectosFinalizados
+from proyecto.controllers import gruposProyectosEnCursoTodos, gruposProyectosEnCursoProfesor
 from usuario.queries import QueryUser
+from proyecto.queries import QueryProject
 
 @eujierlogin_teacher
 def listadoProyectosProfesor(request, user=None):
+    curso = QueryCourse().getCourseSelected(request)
     titulo = "Projectes Assignats"
-    enCurso = gruposProyectosEnCursoProfesor(request, user)
-    # Finalizados
+    enCurso = gruposProyectosEnCursoProfesor(curso, user)
+    finalizados = QueryProject().getListProjectByCourseStatusTutor(curso, "F", user)
     anyadir = QueryCourse().isActualCourseSelected(request)
     cursos = QueryCourse().getListCourse(request)
     return render_to_response('proyectoListado.html', locals())
@@ -27,22 +29,23 @@ def listadoProyectosCoordinador(request, login):
     
     titulo = "Gestió de Projectes"
     muestraTutor = True
-    pendientes = listaProyectosPendientes(curso)
+    pendientes = QueryProject().getListProjectByCourseAndStatus(curso, "P")
     enCurso = gruposProyectosEnCursoTodos(curso)
-    finalizados = listaProyectosFinalizados(curso)
+    finalizados = QueryProject().getListProjectByCourseAndStatus(curso, "F")
     anyadir = QueryCourse().isActualCourseSelected(request)
     cursos = QueryCourse().getListCourse(request)
     return render_to_response('proyectoListado.html', locals())
 
 @eujierlogin_coordinator
 def listadoProyectosCoordinadorProfesor(request, login, profesorid):
+    curso = QueryCourse().getCourseSelected(request)
     user = QueryUser().getUserByUserUJI(profesorid)
     if not user:
         return HttpResponseNotFound()
     
     titulo = "Projectes que tutoritza " + user.nombre
-    enCurso = gruposProyectosEnCursoProfesor(request, user)
-    # Finalizados
+    enCurso = gruposProyectosEnCursoProfesor(curso, user)
+    finalizados = QueryProject().getListProjectByCourseStatusTutor(curso, "F", user)
     anyadir = QueryCourse().isActualCourseSelected(request)
     cursos = QueryCourse().getListCourse(request)
     return render_to_response('proyectoListado.html', locals())
