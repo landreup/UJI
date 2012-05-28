@@ -12,6 +12,8 @@ from usuario.eujierlogin import eujierlogin_coordinator, eujierlogin_teacher
 from proyecto.controllers import gruposProyectosEnCursoTodos, gruposProyectosEnCursoProfesor
 from usuario.queries import QueryUser
 from proyecto.queries import QueryProject
+from curso.decorators import courseSelected
+
 
 @eujierlogin_teacher
 def listadoProyectosProfesor(request, user):
@@ -23,9 +25,10 @@ def listadoProyectosProfesor(request, user):
     cursos = QueryCourse().getListCourse(request)
     return render_to_response('proyectoListado.html', locals())
 
+@courseSelected
 @eujierlogin_coordinator
-def listadoProyectosCoordinador(request, user):
-    curso = QueryCourse().getCourseSelected(request)
+def listadoProyectosCoordinador(request, user, course):
+    curso = course
     
     titulo = "Gestió de Projectes"
     muestraTutor = True
