@@ -15,6 +15,15 @@ class QueryUser:
         except:
             return None
     
+    def getUserByUserUJIRol(self, userUJI, rol):
+        try:
+            return Usuario.objects.get(usuarioUJI=userUJI, rol=rol)
+        except:
+            return None
+    
+    def getUserCoordinatorByUserUJI(self, userUJI):
+        return self.getUserByUserUJIRol(userUJI, "C")
+    
     def getListUserByRol(self, rol):
         return Usuario.objects.filter(rol=rol).order_by("apellidos")
     

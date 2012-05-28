@@ -6,9 +6,9 @@ from django.http import HttpResponseRedirect
 from forms import ProfesorForm
 from controllers import listaCoordinador, listaTutor, listaProfesor, cambiarUsuario
 
-from eujierlogin import eujierlogin
+from eujierlogin import eujierlogin_coordinator
 
-@eujierlogin
+@eujierlogin_coordinator
 def listadoProfesores(request, login):
     grupos = [
         {'campo': "Coordinadors", 'lista': listaCoordinador()},
