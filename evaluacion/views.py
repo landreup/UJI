@@ -9,7 +9,10 @@ from curso.controllers import cambiarCurso
 
 from curso.queries import QueryCourse
 
-def listadoHitos(request):
+from usuario.eujierlogin import eujierlogin_coordinator
+
+@eujierlogin_coordinator
+def listadoHitos(request, user):
     if request.method == 'POST':
         if not editable(request):
             return HttpResponseForbidden
@@ -27,7 +30,8 @@ def listadoHitos(request):
     activar = activable(request)
     return render_to_response('sistemaEvaluacionListado.html', locals())
 
-def gestionEvaluaciones(request, accion="nuevo", campo= "", hito="", evaluacion="", pregunta=""):
+@eujierlogin_coordinator
+def gestionEvaluaciones(request, user, accion="nuevo", campo= "", hito="", evaluacion="", pregunta=""):
     if not editable(request):
         return HttpResponseForbidden()
     
@@ -41,7 +45,8 @@ def gestionEvaluaciones(request, accion="nuevo", campo= "", hito="", evaluacion=
         form = campoForm(request, accion, campo, hito, evaluacion, pregunta).getForm()
     return render_to_response(campo+'Gestion.html', locals())
 
-def activaSistemaEvaluacion(request):
+@eujierlogin_coordinator
+def activaSistemaEvaluacion(request, user):
     form = EvaluationSystemForm(request)
     if request.method == 'POST':
         if (form.is_valid()):
@@ -50,6 +55,7 @@ def activaSistemaEvaluacion(request):
         
     return render_to_response('sistemaEvaluacionGestion.html', locals())
 
-def cambiaCurso(request, curso):
+@eujierlogin_coordinator
+def cambiaCurso(request, user, curso):
     cambiarCurso(request, curso)
     return HttpResponseRedirect(request.path.split('curs/')[0])    

@@ -5,14 +5,17 @@ from curso.controllers import cursoNuevo, creaCurso
 from curso.queries import QueryCourse
 from curso.models import Curso
 from curso.forms import CursoForm
+from usuario.eujierlogin import eujierlogin_coordinator
 
-def listadoCursos(request):
+@eujierlogin_coordinator
+def listadoCursos(request, user):
     campo =  "Cursos"
     listado = QueryCourse().getListCourse(request)
     anyadir = True
     return render_to_response('cursoListado.html', locals())
 
-def nuevoCurso(request, confirma=False):
+@eujierlogin_coordinator
+def nuevoCurso(request, user, confirma=False):
     curso = cursoNuevo()
     existe = False
     if (confirma):
@@ -22,7 +25,8 @@ def nuevoCurso(request, confirma=False):
     ocultaCurso = True
     return render_to_response('cursoNuevo.html', locals())
 
-def editaCurso(request, curso):
+@eujierlogin_coordinator
+def editaCurso(request, user, curso):
     cursoA = int(curso.split("/")[0])
     cursoB = int(curso.split("/")[1])
     if cursoA+1 != cursoB :  return HttpResponseNotFound()
