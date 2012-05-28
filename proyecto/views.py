@@ -23,11 +23,13 @@ def listadoProyectosProfesor(request, user=None):
 
 @eujierlogin_coordinator
 def listadoProyectosCoordinador(request, login):
+    curso = QueryCourse().getCourseSelected(request)
+    
     titulo = "Gestió de Projectes"
     muestraTutor = True
-    pendientes = listaProyectosPendientes(request)
-    enCurso = gruposProyectosEnCursoTodos(request)
-    finalizados = listaProyectosFinalizados(request)
+    pendientes = listaProyectosPendientes(curso)
+    enCurso = gruposProyectosEnCursoTodos(curso)
+    finalizados = listaProyectosFinalizados(curso)
     anyadir = QueryCourse().isActualCourseSelected(request)
     cursos = QueryCourse().getListCourse(request)
     return render_to_response('proyectoListado.html', locals())
