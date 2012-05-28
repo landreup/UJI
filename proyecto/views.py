@@ -22,7 +22,7 @@ def listadoProyectosProfesor(request, user=None):
     return render_to_response('proyectoListado.html', locals())
 
 @eujierlogin_coordinator
-def listadoProyectosCoordinador(request):
+def listadoProyectosCoordinador(request, login):
     titulo = "Gestió de Projectes"
     muestraTutor = True
     pendientes = listaProyectosPendientes(request)
@@ -33,7 +33,7 @@ def listadoProyectosCoordinador(request):
     return render_to_response('proyectoListado.html', locals())
 
 @eujierlogin_coordinator
-def listadoProyectosCoordinadorProfesor(request, profesorid):
+def listadoProyectosCoordinadorProfesor(request, login, profesorid):
     user = QueryUser().getUserByUserUJI(profesorid)
     if not user:
         return HttpResponseNotFound()
