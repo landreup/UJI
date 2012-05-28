@@ -1,3 +1,4 @@
+{% if user %}
 <div id="menu-secundario">
 	<ul>
 	  <li class="nivel expandido"> <a href="#">Tutorització <img alt="cerrar"
@@ -8,6 +9,7 @@
 	      <li><a href="/professorat/projectes/">Projectes assignats</a></li>
 	    </ul>
 	  </li>
+	  {% if user.esCoordinador %}
 	  <li class="nivel expandido"> <a href="#">Coordinació <img alt="cerrar"
 	        src="{{ STATIC_PREFIX }}img/icoblanco_abierto.png"
 	        height="10"
@@ -19,5 +21,7 @@
 	      <li> <a href="/coordinacio/cursos/">Gestió de Cursos</a> </li>
 	    </ul>
 	  </li>
+	  {% endif %}
 	</ul>
 </div>
+{% endif %}

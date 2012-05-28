@@ -19,6 +19,12 @@ class Usuario(models.Model):
             roles[rol[0]] = rol[1]
         return roles
     
+    def isCoordinator(self):
+        return self.rol == "C"
+    
+    def esCoordinador(self):
+        return self.isCoordinator()
+    
     def __str__(self):
         return u'%s, %s'%(self.apellidos,self.nombre)
     

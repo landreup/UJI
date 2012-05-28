@@ -59,6 +59,6 @@ def eujierlogin_coordinator(f, name=None):
         if not coordinator:
             return HttpResponseForbidden()
         
-        return f(login=login, *args, **kwargs)
+        return f(user=coordinator, *args, **kwargs)
     wrapped.__doc__ = f.__doc__
     return wrapped

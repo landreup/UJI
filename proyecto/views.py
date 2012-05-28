@@ -14,7 +14,7 @@ from usuario.queries import QueryUser
 from proyecto.queries import QueryProject
 
 @eujierlogin_teacher
-def listadoProyectosProfesor(request, user=None):
+def listadoProyectosProfesor(request, user):
     curso = QueryCourse().getCourseSelected(request)
     titulo = "Projectes Assignats"
     enCurso = gruposProyectosEnCursoProfesor(curso, user)
@@ -24,7 +24,7 @@ def listadoProyectosProfesor(request, user=None):
     return render_to_response('proyectoListado.html', locals())
 
 @eujierlogin_coordinator
-def listadoProyectosCoordinador(request, login):
+def listadoProyectosCoordinador(request, user):
     curso = QueryCourse().getCourseSelected(request)
     
     titulo = "Gestió de Projectes"
@@ -37,7 +37,7 @@ def listadoProyectosCoordinador(request, login):
     return render_to_response('proyectoListado.html', locals())
 
 @eujierlogin_coordinator
-def listadoProyectosCoordinadorProfesor(request, login, profesorid):
+def listadoProyectosCoordinadorProfesor(request, user, profesorid):
     curso = QueryCourse().getCourseSelected(request)
     user = QueryUser().getUserByUserUJI(profesorid)
     if not user:

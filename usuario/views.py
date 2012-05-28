@@ -4,13 +4,12 @@ from django.shortcuts import render_to_response
 from django.http import HttpResponseRedirect
 
 from forms import ProfesorForm
-from controllers import listaCoordinador, listaTutor, listaProfesor
 
 from eujierlogin import eujierlogin_coordinator
 from usuario.queries import QueryUser
 
 @eujierlogin_coordinator
-def listadoProfesores(request, login):
+def listadoProfesores(request, user):
     grupos = [
         {'campo': "Coordinadors", 'lista': QueryUser().getListOfCoordinator()},
         {'campo': "Tutors", 'lista': QueryUser().getListOfTutor()},
@@ -21,7 +20,7 @@ def listadoProfesores(request, login):
     return render_to_response('profesorListado.html', locals())
 
 @eujierlogin_coordinator
-def gestionProfesor(request, accion="nuevo", profesorid=""):
+def gestionProfesor(request, user, accion="nuevo", profesorid=""):
     if (request.method == "POST" ) :
         form = ProfesorForm(request, accion, profesorid, "lee")
         if (form.is_valid()):
