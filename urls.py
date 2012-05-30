@@ -16,5 +16,14 @@ urlpatterns += (patterns('',
                 url(r'^aplicacio/', include('aplicacion.urls')),
 ))
 
+""" URLs de Estudiants """
+urlpatterns += (patterns('',
+                url(r'valoracio/', 'valoracion.views.estadoValoracion')
+))
+
+""" URLs de Aplicació """
+urlpatterns += (patterns('',
+                url(r'', 'aplicacio.views.index')
+))
 
 urlpatterns += staticfiles_urlpatterns()

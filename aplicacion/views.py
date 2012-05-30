@@ -6,6 +6,8 @@ from curso.models import Curso
 from evaluacion.models import SistemaEvaluacion
 from usuario.eujierlogin import eujierlogin
 import datetime
+from alumno.queries import QueryStudent
+from usuario.queries import QueryUser
 
 @eujierlogin
 def iniciaAplicacion(request, login):
@@ -21,3 +23,17 @@ def iniciaAplicacion(request, login):
     else:
         form = ProfesorForm(request)
     return render_to_response('inicializaAplicacion.html', locals()) 
+
+@eujierlogin
+def index(request, login):
+    teacher = QueryUser().getUserByUserUJI(login)
+    if teacher :
+        if teacher.isCoordinator():
+            return HttpResponseRedirect('/coordinacio/projectes/')
+        else:
+            return HttpResponseRedirect('/professorat/projectes/')
+        
+    student = QueryStudent().getStudentByUserUJI(login)
+    if student:
+        return HttpResponseRedirect('/valoracio/')
+        
