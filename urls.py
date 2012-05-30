@@ -21,7 +21,7 @@ urlpatterns += (patterns('',
                 url(r'valoracio/', 'valoracion.views.estadoValoracion')
 ))
 
-""" URLs de Aplicació """
+""" URLs de Aplicacio """
 urlpatterns += (patterns('',
                 url(r'', 'aplicacio.views.index')
 ))
