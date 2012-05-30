@@ -21,6 +21,15 @@ def eujierlogin(f, name=None):
     wrapped.__doc__ = f.__doc__
     return wrapped
 
+def loginFromEujierlogin(request):
+    (auth, redirect) = lsm.login(request)
+    if not auth :
+        return redirect
+    (login, redirect) = lsm.get_login(request)
+    if not login :
+        return redirect
+    return login
+
 def eujierlogin_teacher(f, name=None):
     if name is None:
         name = f.func_name

@@ -15,6 +15,9 @@ class Formulario(models.Model):
     def isUnresolved(self):
         return self.proyecto.isUnresolved()
     
+    def needUJIAuthentication(self):
+        return self.rol != "S"
+    
     def __unicode__(self):
         return "Valorar " + unicode(self.hito).lower() + " de " + self.proyecto.alumno.nombre + " " + self.proyecto.alumno.apellidos
     

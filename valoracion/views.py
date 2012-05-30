@@ -10,9 +10,11 @@ from proyecto.queries import QueryProject
 from evaluacion.queries import QueryEvaluationSystem, QueryItem
 from valoracion.controllers import activaFormulario, activaValoracion
 
-from usuario.eujierlogin import eujierlogin_coordinator
+from usuario.eujierlogin import eujierlogin, loginFromEujierlogin
+from usuario.queries import QueryUser
 
-def estadoValoracion(request, alumnoid):
+@eujierlogin
+def estadoValoracion(request, login, alumnoid):    
     evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)
     if not evaluationSystem:
         return HttpResponseNotFound()
@@ -25,6 +27,12 @@ def estadoValoracion(request, alumnoid):
     project = QueryProject().getProjectByCourseAndStudent(course, student)
     hitos = QueryEvaluationSystemTreeCompleteOfProject(project, True).getList()
     
+    if login != alumnoid :
+        if login not in QueryProject().getloginByRol(project, "TU"):
+            coordinator = QueryUser().getUserCoordinatorByUserUJI(login)
+            if not coordinator : 
+                return HttpResponseForbidden()
+
     grupos = True
     activar=project.isUnresolved()
     cursoActual = True # Comprobar si curso actual
@@ -56,9 +64,25 @@ def creaFormulario(request, user, alumnoid, hitoid):
         
     return render_to_response('creaFormulario.html', locals())
 
-
-def formularioPublico(request, clave):
+def accesoFormularioPublico(request, clave):
     formForm = QueryForm().getFormByKey(clave)
+    if not formForm: return HttpResponseNotFound()
+    access = True
+    if formForm.needUJIAuthentication() :
+        access = False
+        login = loginFromEujierlogin(request)
+        if QueryProject().isUserRolinProject(formForm.project, formForm.rol, login):
+            access = True
+        else:
+            coordinador = QueryUser().getUserCoordinatorByUserUJI(login)
+            if coordinador: access = True
+            
+    if access :
+        formularioPublico(request, formForm)
+    else:
+        return HttpResponseForbidden()
+
+def formularioPublico(request, formForm):
     unresolved = formForm.isUnresolved() 
     if (request.method == "POST"):
         form = EvaluationFormForm(request, formForm)

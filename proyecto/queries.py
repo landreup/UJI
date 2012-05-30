@@ -50,22 +50,31 @@ class QueryProject():
         tutor = QueryUser().getUserByUserUJI(tutorUserUJI)
         return self.getListProjectByCourseAndTutor(Course().getByCourseSelected(request), tutor)
     
-    def getEmailByProjectAndEvaluator(self, project, rol):
-        if rol == "A" :
-            student = project.alumno
-            yield student.usuarioUJI + "@uji.es"
-        elif rol == "TU" :
-            user = project.tutor
-            yield user.usuarioUJI + "@uji.es"
-        elif rol == "S" :
-            yield project.email
-        elif rol == "TR" :
-            yield "a\@b.es"
-        elif rol == "C" :
+    def getloginByRol(self, project, rol):
+        if rol == "A":
+            return project.alumno.usuarioUJI
+        elif rol == "TU":
+            return project.tutor.usuarioUJI
+        elif rol == "C":
             coordinators = QueryUser().getListOfCoordinator()
             for coordinator in coordinators:
-                yield coordinator.usuarioUJI + "@uji.es"
-
+                yield coordinator.usuarioUJI
+        elif "TR" in rol:
+            pass
+        else:
+            return None
+        
+    
+    def getEmailByProjectAndEvaluator(self, project, rol):
+        if rol != "S":
+            for user in self.getloginByRol(project, rol):
+                yield user + "@uji.es" 
+        else:
+            yield project.email
+    
+    def isUserRolinProject(self, project, rol, login):
+        return login in self.getloginByRol(project, rol)
+        
 class QueryJudgeMembers():
     def getListMembersByProject(self, project):
         return MiembroTribunal.objects.filter(proyecto=project).order_by("idMiembro")
