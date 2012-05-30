@@ -30,7 +30,7 @@
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_usuarioUJI">Usuari UJI:</label></td>
 							  	  			<td>{{ form.usuarioForm.usuarioUJI }}</td>
-							  	  			<td>{{ form.usuarioForm.usuarioUJI.errors }}</td>
+							  	  			<td>{% if form.muestraErrorUsuario %}{{ form.usuarioForm.usuarioUJI.errors }}{% endif %}</td>
 							  	  		</tr>
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_rol">Rol:</label></td>

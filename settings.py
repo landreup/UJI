@@ -127,6 +127,7 @@ TEMPLATE_DIRS = (
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     os.path.join(os.path.dirname(__file__), 'template').replace('\\', '/'),
+    os.path.join(os.path.dirname(__file__), 'aplicacion/template').replace('\\', '/'),
     os.path.join(os.path.dirname(__file__), 'curso/template').replace('\\', '/'),
     os.path.join(os.path.dirname(__file__), 'evaluacion/template').replace('\\', '/'),
     os.path.join(os.path.dirname(__file__), 'proyecto/template').replace('\\', '/'),
@@ -141,6 +142,7 @@ INSTALLED_APPS = (
     #'django.contrib.sites',
     #'django.contrib.messages',
     'alumno',
+    'aplicacion',
     'curso',
     'evaluacion',
     'proyecto',

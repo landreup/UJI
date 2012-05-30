@@ -1,0 +1,30 @@
+{% extends 'frontend.html' %}
+
+{% block title %}Configurar Aplicació{% endblock %}
+
+{% block ruta %}Configurar Aplicació{% endblock %}
+
+{% block tituloPagina %}Configurar aplicació{% endblock %}
+
+{% block contenido %}
+					<p>Benvigut/da a la aplicació de gestió de projectes. Per iniciar amb l'aplicació necessitem que ens digues les teves dades per a donar-te d'alta com a coordinador/a.</p>
+					{{ form.usuarioForm.errors }}
+					  <form action="" method="post">
+		  		  	  	<table>
+				  	  		<tr>
+				  	  			<td width="125px"><label for="id_nombre">Nom:</label></td>
+				  	  			<td>{{ form.usuarioForm.nombre }}</td>
+				  	  			<td>{{ form.usuarioForm.nombre.errors }}</td>
+				  	  		</tr>
+				  	  		<tr>
+				  	  			<td width="125px"><label for="id_apellidos">Cognoms:</label></td>
+				  	  			<td>{{ form.usuarioForm.apellidos }}</td>
+				  	  			<td>{{ form.usuarioForm.apellidos.errors }}</td>
+				  	  		</tr>
+				  	  	</table>
+			
+					  <input id="id_usuarioUJI" type="hidden" name="usuarioUJI" value="{{ login }}"/>
+					  <input id="id_rol" type="hidden" name="rol" value="C"/>
+					  <input type="submit" value="Guarda canvis" onclick="if (!confirm('Estas segur de guardar els canvis?')) return false;"/>
+					  </form>
+{% endblock %}

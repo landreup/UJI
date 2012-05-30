@@ -2,41 +2,37 @@ from django.forms import ModelForm
 
 from models import Usuario
 from controllers import usuarioPorId, creaUsuario, editaUsuario
+from usuario.queries import QueryUser
 
 class UsuarioForm(ModelForm):
+
     class Meta():
         model = Usuario
 
 class ProfesorForm():
-    def __init__(self, request, accion="nuevo", profesorid="", form_action="crea"):
+    def __init__(self, request, accion="nuevo", profesorid=""):
         self.usuario = Usuario()
         self.accion = accion
         self.request= request
         self.profesorid = profesorid
         self.obligatorios = ["nombre", "apellidos", "usuarioUJI", "rol"]
         
-        if (form_action == "crea"):
-            if (accion == "nuevo"):
-                self.usuarioForm = UsuarioForm()
-            else : # Edicion
-                self.usuario = usuarioPorId(profesorid)
-                self.usuarioForm = UsuarioForm(initial = {
-                                'nombre': self.usuario.nombre,
-                                'apellidos': self.usuario.apellidos,
-                                'usuarioUJI': self.usuario.usuarioUJI,
-                                'rol': self.usuario.rol
-                })
-        else: # Leer
-            if (request.method != "POST") : 
-                # ERROR
-                pass
+        self.usuarioForm = UsuarioForm()
+        if self.accion == "editar" :
+            self.usuarioForm = UsuarioForm(instance = QueryUser().getUserByUserUJI(profesorid))
+            
+        if (request.method == "POST" ):
             self.usuarioForm = UsuarioForm(request.POST, instance=self.usuario)
             
     def is_valid(self):
+        self.muestraErrorUsuario = True
         esValido = self.usuarioForm.is_valid()
         if ( not esValido and self.accion == "editar"):
             if ( self.usuarioForm.data["usuarioUJI"] == self.profesorid ):
-                esValido = True
+                self.muestraErrorUsuario= False
+                if len(self.usuarioForm.errors)==1:
+                    esValido = True
+                
         return esValido
     
     def save(self):
