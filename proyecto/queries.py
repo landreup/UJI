@@ -52,9 +52,9 @@ class QueryProject():
     
     def getloginByRol(self, project, rol):
         if rol == "A":
-            return project.alumno.usuarioUJI
+            yield project.alumno.usuarioUJI
         elif rol == "TU":
-            return project.tutor.usuarioUJI
+            yield project.tutor.usuarioUJI
         elif rol == "C":
             coordinators = QueryUser().getListOfCoordinator()
             for coordinator in coordinators:
@@ -62,7 +62,7 @@ class QueryProject():
         elif "TR" in rol:
             pass
         else:
-            return None
+            yield None
         
     
     def getEmailByProjectAndEvaluator(self, project, rol):
