@@ -23,7 +23,8 @@ urlpatterns += (patterns('',
 
 """ URLs de Aplicacio """
 urlpatterns += (patterns('',
-                url(r'', 'aplicacion.views.index')
+                url(r'$', 'aplicacion.views.index'),
+                url(r'/$', 'aplicacion.views.index')
 ))
 
 urlpatterns += staticfiles_urlpatterns()
