@@ -5,6 +5,7 @@ from curso.controllers import cursoNuevo
 from curso.models import Curso
 from evaluacion.models import SistemaEvaluacion
 from usuario.eujierlogin import eujierlogin
+import datetime
 
 @eujierlogin
 def iniciaAplicacion(request, login):
@@ -12,7 +13,7 @@ def iniciaAplicacion(request, login):
         form = ProfesorForm(request)
         if (form.is_valid()):
             form.save()
-            curso = Curso(curso=cursoNuevo)
+            curso = Curso(curso=int(datetime.date.today().year))
             curso.save()
             newEvaluationSystem = SistemaEvaluacion(curso=curso, estado="D")
             newEvaluationSystem.save()
