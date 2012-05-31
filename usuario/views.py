@@ -9,7 +9,7 @@ from eujierlogin import eujierlogin_coordinator
 from usuario.queries import QueryUser
 from usuario.forms import UsuarioForm
 
-#@eujierlogin_coordinator
+@eujierlogin_coordinator
 def listadoProfesores(request, user=None):
     grupos = [
         {'campo': "Coordinadors", 'lista': QueryUser().getListOfCoordinator()},
@@ -20,7 +20,7 @@ def listadoProfesores(request, user=None):
     editar = True
     return render_to_response('profesorListado.html', locals())
 
-#@eujierlogin_coordinator
+@eujierlogin_coordinator
 def gestionProfesor(request, user=None, accion="nuevo", profesorid=""):
     if (request.method == "POST" ) :
         form = ProfesorForm(request, accion, profesorid)
