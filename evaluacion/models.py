@@ -10,8 +10,8 @@ class SistemaEvaluacion(models.Model):
                      )
     estado = models.CharField(max_length=1, choices=ESTADO_CHOICES)
 
-    def __str__(self):
-        return str(self.curso)
+    def __unicode__(self):
+        return unicode(self.curso)
     
     def isActive(self):
         return self.estado == "A"
@@ -23,7 +23,7 @@ class Hito(models.Model):
     plazo = models.IntegerField()
     orden = models.IntegerField()
           
-    def __str__(self):
+    def __unicode__(self):
         return self.nombre
     
 class Evaluacion(models.Model):
