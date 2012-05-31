@@ -11,6 +11,11 @@ class QueryEvaluationSystem():
         except SistemaEvaluacion.DoesNotExist:
             return None
     
+    def isEvaluationSystemEnabledByCourse(self, course):
+        evaluationSystem = self.getEvaluationSystemByCourse(course)
+        if evaluationSystem.isActive(): return True
+        return False
+    
     def getEvaluationSystemByCourseSelected(self, request):
         return self.getEvaluationSystemByCourse(QueryCourse().getCourseSelected(request))
     

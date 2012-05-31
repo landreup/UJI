@@ -7,6 +7,6 @@
 <td>{{ elemento.empresa }}</td>
 <td>{{ elemento.titulo }}</td>
 <td>{{ fecha }}</td>
-<td width="16px"><a href="{{ elemento.alumno.usuarioUJI }}/edita/"><img src="/media/img/lapiz.png" alt="editar"/></a></td>
+<td width="16px">{% if editar %}<a href="{{ elemento.alumno.usuarioUJI }}/edita/"><img src="/media/img/lapiz.png" alt="editar"/></a>{% endif %}</td>
 {% endwith %}
 {% endwith %}

@@ -9,6 +9,9 @@
 {% block menuPagina %}{% include 'menu.html' %}{% endblock %}
 
 {% block contenido %}
+	{% if vacio %}
+	<p>No hi han projectes en aquest curs.</p>
+	{% else %}
 	{% if pendientes %}
 	<tr>
 			<td class="list">
@@ -63,5 +66,6 @@
 			{% endwith %}
 		{% endwith %}
 	{% endwith %}
+	{% endif %}
 	{% endif %}
 {% endblock %}

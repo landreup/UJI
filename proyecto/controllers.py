@@ -9,6 +9,9 @@ from usuario.queries import QueryUser
 from curso.queries import QueryCourse
 from valoracion.controllers import activaFormulario
 
+def isEditable(course):
+    return QueryCourse().isActual(course) and QueryEvaluationSystem().isEvaluationSystemEnabledByCourse(course)
+
 class ProjectInCourse:
     def __init__(self, project, date):
         self.proyecto = project
