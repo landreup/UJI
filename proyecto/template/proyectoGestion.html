@@ -2,7 +2,7 @@
 
 {% block title %}{% if "nou" in request.path %}Nou Projecte{% else %}Edició Projecte{% endif %} | Gestió de Projectes{% endblock %}
 
-{% block ruta %}Coordinació: <a href="/coordinacio/projectes/">Gestió de Projectes</a> | {% if "nou" in request.path %}Nou Projectes{% else %}Edició Projecte{% endif %}{% endblock %}
+{% block ruta %}{% if coordinator %}Coordinació: <a href="/coordinacio/projectes/">Gestió de Projectes</a> | {% if "nou" in request.path %}Nou Projectes{% else %}Edició Projecte{% endif %}{% else %}Professorat: <a href="/professorat/projectes/">Projectes Assignats</a> | {% if "nou" in request.path %}Nou Projectes{% else %}Edició Projecte{% endif %}{% endif %}{% endblock %}
 
 {% block tituloPagina %}{% if "nou" in request.path%}Nou Projecte{% else %}Edició Projecte{% endif %}{% endblock %}
 
