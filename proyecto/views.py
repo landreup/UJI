@@ -15,7 +15,7 @@ from proyecto.queries import QueryProject
 
 from curso.decorators import courseSelected
 from usuario.eujierlogin import eujierlogin_coordinator, eujierlogin_teacher
-from alumno.controllers import alumnoPorId
+from alumno.queries import QueryStudent
 
 @courseSelected
 @eujierlogin_teacher
@@ -71,16 +71,20 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
     
     coordinator = False
     if alumnoid :
-        if not user.isCoordinator():
-            student = alumnoPorId(alumnoid)
-            project =  QueryProject().getProjectByCourseAndStudent(course, student)
-            if user != project.tutor :
+        student = QueryStudent().getStudentByUserUJI(alumnoid)
+        if student :
+            if not user.isCoordinator():
+                project =  QueryProject().getProjectByCourseAndStudent(course, student)
+                if user != project.tutor :
+                    return HttpResponseNotFound()
+            else:
+                coordinator = True
+        else: 
+            if accion != "nuevo" :
                 return HttpResponseNotFound()
-        else:
-            coordinator = True
         
     if (request.method == "POST") :
-        form = ProyectoAlumnoForm(request, accion, alumnoid, "lee")
+        form = ProyectoAlumnoForm(request, accion, alumnoid)
         if (form.is_valid()):
             form.save()
             return HttpResponseRedirect('/coordinacio/projectes/')

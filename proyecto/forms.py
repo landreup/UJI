@@ -151,7 +151,7 @@ class TribunalForm():
         return response
 
 class ProyectoAlumnoForm():
-    def __init__(self, request, action="nuevo", alumnoUserUJI=""):
+    def __init__(self, request, action="nuevo", alumnoUserUJI):
         self.alumno = Alumno()
         self.proyecto = Proyecto()
         self.tutor = None
