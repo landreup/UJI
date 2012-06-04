@@ -9,7 +9,6 @@ from alumno.models import Alumno
 
 from alumno.forms import AlumnoForm
 
-from alumno.controllers import alumnoPorId
 from evaluacion.queries import QueryEvaluationSystem, QueryItem
 from usuario.queries import QueryUser
 from curso.queries import QueryCourse
@@ -17,6 +16,7 @@ from curso.queries import QueryCourse
 from datetime import datetime
 from proyecto.controllers import cambiaEstadoProyecto
 from proyecto.queries import QueryStatusProjectInCourse
+from alumno.queries import QueryStudent
 
 class ProyectoForm(ModelForm):
     class Meta():
@@ -34,10 +34,13 @@ class EstimateDateItemForm():
         items = QueryItem().getListItemsByEvaluationSystem(QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request))
         
         self.project = None 
-        if studentUserUJI : self.project = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(request), alumnoPorId(studentUserUJI))       
+        if studentUserUJI : self.project = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(request), QueryStudent().getStudentByUserUJI(studentUserUJI))       
         
         projectStatus = QueryStatusProjectInCourse().getProjectByProject(self.project)
-        nextItem = QueryItem().getNextItem(projectStatus.hito)
+        if projectStatus :
+            nextItem = QueryItem().getNextItem(projectStatus.hito)
+        else :
+            nextItem = QueryItem().getFirstItemCourse(self.project.curso)
         self.forms = []
         self.fechas = []
         inputDate = False
@@ -93,7 +96,7 @@ class TribunalForm():
         self.project, self.judgeMembers = None, None
         
         if studentUserUJI : 
-            self.project = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), alumnoPorId(studentUserUJI))
+            self.project = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), QueryStudent().getStudentByUserUJI(studentUserUJI))
             self.judgeMembers = QueryJudgeMembers().getListMembersByProject(self.project)
         
         self.forms = []
@@ -158,7 +161,7 @@ class ProyectoAlumnoForm():
                 self.tribunalForm = None
                 self.dateForm = None
             else: # Edicion
-                self.alumno = alumnoPorId(alumnoUserUJI)
+                self.alumno = QueryStudent().getStudentByUserUJI(alumnoUserUJI)
                 
                 self.alumnoForm = AlumnoForm(prefix='alumno', initial={
                             'nombre': self.alumno.nombre, 
@@ -197,7 +200,7 @@ class ProyectoAlumnoForm():
             self.alumnoForm = AlumnoForm(request.POST, prefix='alumno', instance=self.alumno)
             if action != "nuevo":
                 self.tribunalForm = None
-                self.alumno = alumnoPorId(alumnoUserUJI)
+                self.alumno =  QueryStudent().getStudentByUserUJI(alumnoUserUJI)
                 proyecto = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), self.alumno)
                 self.estado = proyecto.estado
                 if proyecto.estado == "L": 
@@ -286,7 +289,7 @@ class ProyectoAlumnoForm():
         self.editProject()
     
     def editStudent(self):
-        alumnoDB = alumnoPorId(self.alumnoid)
+        alumnoDB = QueryStudent().getStudentByUserUJI(self.alumnoid)
         alumnoDB.nombre = self.alumno.nombre
         alumnoDB.usuarioUJI = self.alumno.usuarioUJI
         alumnoDB.save()
@@ -296,7 +299,7 @@ class ProyectoAlumnoForm():
     def editProject(self):
         curso = QueryCourse().getCourseSelected(self.request)
      
-        alumno = alumnoPorId(self.alumnoid)
+        alumno = QueryStudent().getStudentByUserUJI(self.alumnoid)
         
         proyectoDB = QueryProject().getProjectByCourseAndStudent(curso, alumno)
     
