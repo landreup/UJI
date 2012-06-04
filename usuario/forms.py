@@ -1,11 +1,9 @@
 from django.forms import ModelForm
 
 from models import Usuario
-from controllers import usuarioPorId, creaUsuario, editaUsuario
 from usuario.queries import QueryUser
 
 class UsuarioForm(ModelForm):
-
     class Meta():
         model = Usuario
 
@@ -37,6 +35,17 @@ class ProfesorForm():
     
     def save(self):
         if (self.accion == "nuevo"):
-            creaUsuario(self.usuario)
+            self.creaUsuario()
         else:
-            editaUsuario(self.profesorid, self.usuario)
+            self.editaUsuario()
+            
+    def creaUsuario(self):
+        self.usuario.save()
+        
+    def editaUsuario(self):
+        usuarioDB = QueryUser().getUserByUserUJI(self.profesorid)
+        usuarioDB.nombre = self.usuario.nombre
+        usuarioDB.apellidos = self.usuario.apellidos
+        usuarioDB.usuarioUJI = self.usuario.usuarioUJI
+        usuarioDB.rol = self.usuario.rol
+        usuarioDB.save()

@@ -15,8 +15,7 @@ from proyecto.queries import QueryProject
 
 from curso.decorators import courseSelected
 from usuario.eujierlogin import eujierlogin_coordinator, eujierlogin_teacher
-from alumno.controllers import alumnoPorAlumno, alumnoPorId
-from evaluacion.queries import QueryEvaluationSystem
+from alumno.controllers import alumnoPorId
 
 @courseSelected
 @eujierlogin_teacher
@@ -39,6 +38,7 @@ def listadoProyectosCoordinador(request, user, course):
     enCurso = gruposProyectosEnCursoTodos(course)
     finalizados = QueryProject().getListProjectByCourseAndStatus(course, "F")
     anyadir = isEditable(course)
+    editar = isEditable(course)
     vacio = not pendientes and not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
     return render_to_response('proyectoListado.html', locals())
@@ -69,12 +69,15 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
     if not isEditable(course):
         return HttpResponseForbidden()
     
+    coordinator = False
     if alumnoid :
         if not user.isCoordinator():
             student = alumnoPorId(alumnoid)
             project =  QueryProject().getProjectByCourseAndStudent(course, student)
             if user != project.tutor :
                 return HttpResponseNotFound()
+        else:
+            coordinator = True
         
     if (request.method == "POST") :
         form = ProyectoAlumnoForm(request, accion, alumnoid, "lee")
