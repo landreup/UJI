@@ -180,7 +180,8 @@ class ProyectoAlumnoForm():
         self.alumnoForm = AlumnoForm(prefix='alumno', instance=self.alumno)
         self.proyectoForm = ProyectoForm(prefix='proyecto', instance=self.proyecto)
         if not tutor :
-            tutor = self.proyecto.tutor
+            if self.proyecto :
+                tutor = self.proyecto.tutor
             self.tutorForm = TutorForm(prefix='tutor')
             self.tutorForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
             if tutor:
