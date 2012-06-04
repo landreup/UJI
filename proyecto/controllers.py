@@ -1,11 +1,9 @@
 # -*- encoding: utf-8 -*-
 from proyecto.models import Proyecto, EstadoProyectoEnCurso,\
     ProyectoParaRevisionEnCurso
-from usuario.controllers import nombreTutor
 from evaluacion.queries import QueryEvaluationSystem, QueryItem
 from proyecto.queries import QueryStatusProjectInCourse, QueryProject, QueryEstimateDate,\
     QueryProjectUnresolvedInCourse, QueryJudgeMembers
-from usuario.queries import QueryUser
 from curso.queries import QueryCourse
 from valoracion.controllers import activaFormulario
 
