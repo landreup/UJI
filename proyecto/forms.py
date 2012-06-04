@@ -181,7 +181,8 @@ class ProyectoAlumnoForm():
         
         self.alumnoForm = AlumnoForm(prefix='alumno', instance=self.alumno)
         self.proyectoForm = ProyectoForm(prefix='proyecto', instance=self.proyecto)
-        if not tutor :
+        
+        if coordinator :
             if action != "nuevo" :
                 tutor = self.proyecto.tutor
             self.tutorForm = TutorForm(prefix='tutor')
@@ -189,7 +190,8 @@ class ProyectoAlumnoForm():
             if tutor:
                 self.tutorForm.initial["tutor"] = tutor
         
-        if tutor: self.tutor = self.Tutor(tutor.id) 
+        if self.tutor:
+            self.tutor = self.Tutor(tutor.id) 
         
         if request.method == 'POST': # Leer los datos
             if action != "nuevo":
@@ -206,7 +208,8 @@ class ProyectoAlumnoForm():
             self.proyectoForm = ProyectoForm(request.POST, prefix='proyecto', instance=self.proyecto)
             if coordinator :
                 self.tutor = self.Tutor(self.proyectoForm.data["tutor-tutor"])
-                            
+        tutorAux= werfsfsa()
+                         
     def is_valid(self):
         self.alumnoEsValido = self.alumnoForm.is_valid()
         if ( not self.alumnoEsValido and self.isEditing()):
@@ -277,8 +280,6 @@ class ProyectoAlumnoForm():
     def createProject(self):
         self.proyecto.alumno = self.alumno
         self.proyecto.curso = QueryCourse().getCourseSelected(self.request)
-        tutor = self.tutor.user 
-        a = afdsfasjfl()
         self.proyecto.tutor = self.tutor.user
         self.proyecto.estado = "L"
         self.proyecto.save()
@@ -301,8 +302,6 @@ class ProyectoAlumnoForm():
         alumno = QueryStudent().getStudentByUserUJI(self.alumnoid)
         
         proyectoDB = QueryProject().getProjectByCourseAndStudent(curso, alumno)
-        tutor = self.tutor.user 
-        a = afdsfasjfl()
         proyectoDB.tutor = self.tutor.user
         proyectoDB.supervisor = self.proyecto.supervisor
         proyectoDB.email = self.proyecto.email
