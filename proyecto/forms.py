@@ -216,9 +216,10 @@ class ProyectoAlumnoForm():
             if ( self.alumnoForm.data["alumno-usuarioUJI"] == self.alumnoid ):
                 self.alumnoEsValido = True
 
+        self.tutor = self.Tutor(self.tutorId)
+        tutor = self.tutor
+        a = fasdf()
         if self.tutorForm :
-            self.tutor = self.Tutor(self.tutorId)
-            a = fasdf()
             tutorIsValid = self.tutor.is_valid()
         else:
             tutorIsValid = True
