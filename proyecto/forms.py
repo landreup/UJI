@@ -184,14 +184,13 @@ class ProyectoAlumnoForm():
         
         if coordinator :
             if action != "nuevo" :
-                tutor = self.proyecto.tutor
+                self.tutor = self.proyecto.tutor
             self.tutorForm = TutorForm(prefix='tutor')
             self.tutorForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
             if tutor:
                 self.tutorForm.initial["tutor"] = tutor
-        
-        if self.tutor:
-            self.tutor = self.Tutor(tutor.id) 
+        else:
+            self.tutor = tutor
         
         if request.method == 'POST': # Leer los datos
             if action != "nuevo":
@@ -207,9 +206,9 @@ class ProyectoAlumnoForm():
             self.alumnoForm = AlumnoForm(request.POST, prefix='alumno', instance=self.alumno)
             self.proyectoForm = ProyectoForm(request.POST, prefix='proyecto', instance=self.proyecto)
             if coordinator :
-                self.tutor = self.Tutor(self.proyectoForm.data["tutor-tutor"])
-        tutorAux  = self.tutor 
-        tutorXX= werfsfsa()
+                self.tutorId = self.proyectoForm.data["tutor-tutor"]
+            else:
+                self.tutorId = self.tutor.id
                          
     def is_valid(self):
         self.alumnoEsValido = self.alumnoForm.is_valid()
@@ -218,6 +217,8 @@ class ProyectoAlumnoForm():
                 self.alumnoEsValido = True
 
         if self.tutorForm :
+            self.tutor = self.Tutor(self.tutorId)
+            a = fasdf()
             tutorIsValid = self.tutor.is_valid()
         else:
             tutorIsValid = True
