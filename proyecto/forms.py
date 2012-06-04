@@ -217,8 +217,6 @@ class ProyectoAlumnoForm():
                 self.alumnoEsValido = True
 
         self.tutor = self.Tutor(self.tutorId)
-        tutor = self.tutor
-        a = fasdf()
         if self.tutorForm :
             tutorIsValid = self.tutor.is_valid()
         else:
