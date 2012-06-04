@@ -140,10 +140,14 @@
 					  	  				<tr>
 					  	  					<td><label for="{{ form.id }}">{{ form.label }}:</label></td>
 					  	  					<td>
-					  	  						{{ form.form.fecha }} (dd/mm/aaaa)
+					  	  						{{ form.form.fecha }}
 					  	  					</td>
 					  	  					<td>
+					  	  						{% if form.form.fecha.errors %}
 					  	  						{{ form.form.fecha.errors }}
+					  	  						{% else %}
+					  	  						(dd/mm/aaaa)
+					  	  						{% endif %}
 					  	  					</td>
 					  	  				<tr> 
 					  	  			{% endfor %}
