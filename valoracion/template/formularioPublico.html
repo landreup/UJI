@@ -1,10 +1,10 @@
 {% extends 'frontend.html' %}
 
-{% block title %}Formulario Público{% endblock %}
+{% block title %}{{ Valoración del {{ form.hito }} del alumno {{ form.proyecto.alumno.nombreCompleto}}{% endblock %}
 
-{% block ruta %}Formulario Público{% endblock %}
+{% block ruta %}{{ Valoración del {{ form.hito }} del alumno {{ form.proyecto.alumno.nombreCompleto}}{% endblock %}
 
-{% block tituloPagina %}Formulario Público{% endblock %}
+{% block tituloPagina %}{{ Valoración del {{ form.hito }} del alumno {{ form.proyecto.alumno.nombreCompleto}}{% endblock %}
 
 {% block menuPagina %}{% include 'menu.html' %}{% endblock %}
 
