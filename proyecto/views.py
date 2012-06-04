@@ -90,7 +90,8 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
         form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
         if (form.is_valid()):
             form.save()
-            return HttpResponseRedirect('/coordinacio/projectes/')
+            ruta = '/coordinacio/projectes/' if coordinator else '/professorat/projectes/' 
+            return HttpResponseRedirect(ruta)
     else: 
         form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
     
