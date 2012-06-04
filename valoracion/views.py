@@ -71,7 +71,7 @@ def accesoFormularioPublico(request, clave):
     if formForm.needUJIAuthentication() :
         access = False
         login = loginFromEujierlogin(request)
-        if QueryProject().isUserRolinProject(formForm.project, formForm.rol, login):
+        if QueryProject().isUserRolinProject(formForm.proyecto, formForm.rol, login):
             access = True
         else:
             coordinador = QueryUser().getUserCoordinatorByUserUJI(login)
