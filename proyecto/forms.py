@@ -160,13 +160,15 @@ class ProyectoAlumnoForm():
         self.alumnoid = alumnoUserUJI
         self.pendiente = None
         
+        self.tutorForm = None
         self.tribunalForm = None
         self.dateForm = None
         
+        tutor = None
         if action != "nuevo" :
             self.alumno = QueryStudent().getStudentByUserUJI(alumnoUserUJI)
             self.proyecto = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), self.alumno)
-            self.tutor = self.proyecto.tutor
+            tutor = self.proyecto.tutor
             
             self.estado = self.proyecto.estado
             if self.proyecto.estado == "L": 
@@ -181,10 +183,11 @@ class ProyectoAlumnoForm():
         self.proyectoForm = ProyectoForm(prefix='proyecto', instance=self.proyecto)
         self.tutorForm = TutorForm(prefix='tutor')
         self.tutorForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
-        if self.tutor:
-            self.tutorForm.initial["tutor"] = self.tutor
+        if tutor:
+            self.tutorForm.initial["tutor"] = tutor
+            self.tutor = self.Tutor(tutor.id)
         
-        if request.method == 'POST':
+        if request.method == 'POST': # Leer los datos
             if action != "nuevo":
                 if self.estado == "L": 
                     statusProject = QueryStatusProjectInCourse().getProjectByProject(self.proyecto)
@@ -197,9 +200,8 @@ class ProyectoAlumnoForm():
             
             self.alumnoForm = AlumnoForm(request.POST, prefix='alumno', instance=self.alumno)
             self.proyectoForm = ProyectoForm(request.POST, prefix='proyecto', instance=self.proyecto)
-            self.tutorForm = TutorForm(request.POST, prefix='tutor')
-            self.tutor = self.tutorForm.fields['tutor']
-                
+            self.tutor = self.Tutor(self.proyectoForm.data["tutor-tutor"])
+                            
     def is_valid(self):
         self.alumnoEsValido = self.alumnoForm.is_valid()
         if ( not self.alumnoEsValido and self.isEditing()):
@@ -218,6 +220,7 @@ class ProyectoAlumnoForm():
         
         return (self.alumnoEsValido 
                 and self.proyectoForm.is_valid() 
+                and self.tutor.is_valid()
                 and tribunalIsValid
                 and dateIsValid
         )
@@ -257,7 +260,6 @@ class ProyectoAlumnoForm():
     def createProjectStudent(self):
         self.createStudent()
         self.createProject()
-        #self.createJudge()
     
     def createStudent(self):
         self.alumno.save()
@@ -265,6 +267,7 @@ class ProyectoAlumnoForm():
     def createProject(self):
         self.proyecto.alumno = self.alumno
         self.proyecto.curso = QueryCourse().getCourseSelected(self.request)
+        self.proyecto.tutor = self.tutor.user
         self.proyecto.estado = "L"
         self.proyecto.save()
 
@@ -287,13 +290,13 @@ class ProyectoAlumnoForm():
         
         proyectoDB = QueryProject().getProjectByCourseAndStudent(curso, alumno)
     
-        tutorUserUJI = self.proyectoForm.data["tutor-tutor"]
-        if self.Tutor(tutorUserUJI).is_empty() :
-            tutor = proyectoDB.tutor
-        else:
-            tutor = QueryUser().getUserById(tutorUserUJI)
-        
-        proyectoDB.tutor = tutor
+#        tutorUserUJI = self.proyectoForm.data["tutor-tutor"]
+#        if self.Tutor(tutorUserUJI).is_empty() :
+#            tutor = proyectoDB.tutor
+#        else:
+#            tutor = QueryUser().getUserById(tutorUserUJI)
+#        
+        proyectoDB.tutor = self.tutor.user
         proyectoDB.supervisor = self.proyecto.supervisor
         proyectoDB.email = self.proyecto.email
         proyectoDB.empresa = self.proyecto.empresa
@@ -311,10 +314,13 @@ class ProyectoAlumnoForm():
     class Tutor():
         def __init__(self, tutorId):
             self.tutorId = tutorId
+            self.user = None
             
         def is_valid(self):
             if (not self.is_empty()) :
-                return QueryUser().isTutor(self.tutorId)
+                self.user = QueryUser().getUserById(self.tutorId)
+                if self.user.isTutor() : return True
+                else: return False
             else:
                 return False
         

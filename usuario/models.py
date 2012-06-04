@@ -25,6 +25,12 @@ class Usuario(models.Model):
     def esCoordinador(self):
         return self.isCoordinator()
     
+    def isTutor(self):
+        return self.rol == "T" or self.rol == "C"
+    
+    def esTutor(self):
+        return self.isTutor()
+    
     def __str__(self):
         return u'%s, %s'%(self.apellidos,self.nombre)
     
