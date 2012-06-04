@@ -287,7 +287,7 @@ class ProyectoAlumnoForm():
         
         proyectoDB = QueryProject().getProjectByCourseAndStudent(curso, alumno)
     
-        tutorUserUJI = self.proyectoForm.data["proyecto-tutor"]
+        tutorUserUJI = self.proyectoForm.data["tutor-tutor"]
         if self.Tutor(tutorUserUJI).is_empty() :
             tutor = proyectoDB.tutor
         else:
