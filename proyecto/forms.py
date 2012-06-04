@@ -216,9 +216,11 @@ class ProyectoAlumnoForm():
             if ( self.alumnoForm.data["alumno-usuarioUJI"] == self.alumnoid ):
                 self.alumnoEsValido = True
 
-        self.tutor = self.Tutor(self.tutorId)
+        
         if self.tutorForm :
-            tutorIsValid = self.tutor.is_valid()
+            tutor = self.Tutor(self.tutorId)
+            tutorIsValid = tutor.is_valid()
+            self.tutor = tutor.user
         else:
             tutorIsValid = True
 
@@ -281,7 +283,7 @@ class ProyectoAlumnoForm():
     def createProject(self):
         self.proyecto.alumno = self.alumno
         self.proyecto.curso = QueryCourse().getCourseSelected(self.request)
-        self.proyecto.tutor = self.tutor.user
+        self.proyecto.tutor = self.tutor
         self.proyecto.estado = "L"
         self.proyecto.save()
 
@@ -303,7 +305,7 @@ class ProyectoAlumnoForm():
         alumno = QueryStudent().getStudentByUserUJI(self.alumnoid)
         
         proyectoDB = QueryProject().getProjectByCourseAndStudent(curso, alumno)
-        proyectoDB.tutor = self.tutor.user
+        proyectoDB.tutor = self.tutor
         proyectoDB.supervisor = self.proyecto.supervisor
         proyectoDB.email = self.proyecto.email
         proyectoDB.empresa = self.proyecto.empresa
