@@ -77,11 +77,12 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
                 project =  QueryProject().getProjectByCourseAndStudent(course, student)
                 if user != project.tutor :
                     return HttpResponseNotFound()
-            else:
-                coordinator = True
         else: 
             if accion != "nuevo" :
                 return HttpResponseNotFound()
+            
+    if user.isCoordinator() :
+        coordinator = True
             
     tutor = user if not coordinator else None
         
