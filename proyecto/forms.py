@@ -164,6 +164,8 @@ class ProyectoAlumnoForm():
         self.tribunalForm = None
         self.dateForm = None
         
+        coordinator = tutor == None
+        
         if action != "nuevo" :
             self.alumno = QueryStudent().getStudentByUserUJI(alumnoUserUJI)
             self.proyecto = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), self.alumno)
@@ -202,7 +204,8 @@ class ProyectoAlumnoForm():
             
             self.alumnoForm = AlumnoForm(request.POST, prefix='alumno', instance=self.alumno)
             self.proyectoForm = ProyectoForm(request.POST, prefix='proyecto', instance=self.proyecto)
-            self.tutor = self.Tutor(self.proyectoForm.data["tutor-tutor"])
+            if coordinator :
+                self.tutor = self.Tutor(self.proyectoForm.data["tutor-tutor"])
                             
     def is_valid(self):
         self.alumnoEsValido = self.alumnoForm.is_valid()
