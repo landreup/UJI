@@ -78,7 +78,7 @@ def accesoFormularioPublico(request, clave):
             if coordinador: access = True
             
     if access :
-        formularioPublico(request, formForm)
+        return formularioPublico(request, formForm)
     else:
         return HttpResponseForbidden()
 
