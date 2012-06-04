@@ -1,5 +1,5 @@
 from usuario.forms import ProfesorForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render_to_response
 from curso.controllers import cursoNuevo
 from curso.models import Curso
@@ -36,4 +36,6 @@ def index(request, login):
     student = QueryStudent().getStudentByUserUJI(login)
     if student:
         return HttpResponseRedirect('/valoracio/')
+    else:
+        return HttpResponseNotFound()
         

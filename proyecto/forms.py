@@ -21,7 +21,12 @@ from alumno.queries import QueryStudent
 class ProyectoForm(ModelForm):
     class Meta():
         model = Proyecto
-        exclude = ('curso', 'alumno', 'estado')
+        exclude = ('curso', 'alumno', 'estado', 'tutor')
+
+class TutorForm(ModelForm):
+    class Meta():
+        model = Proyecto
+        include = ('tutor')
 
 class EstimateDateForm(ModelForm):
     class Meta():
@@ -149,6 +154,7 @@ class ProyectoAlumnoForm():
     def __init__(self, request, action="nuevo", alumnoUserUJI="", form_action="crea"):
         self.alumno = Alumno()
         self.proyecto = Proyecto()
+        self.tutorProyecto = Proyecto()
         self.action = action
         self.request = request
         self.alumnoid = alumnoUserUJI
@@ -157,32 +163,20 @@ class ProyectoAlumnoForm():
             if ( action == "nuevo" ) :
                 self.alumnoForm = AlumnoForm(prefix='alumno')
                 self.proyectoForm = ProyectoForm(prefix='proyecto')
-                self.proyectoForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
+                self.tutorForm = TutorForm(prefix='tutor')
+                self.tutorForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
                 self.tribunalForm = None
                 self.dateForm = None
             else: # Edicion
                 self.alumno = QueryStudent().getStudentByUserUJI(alumnoUserUJI)
                 
-                self.alumnoForm = AlumnoForm(prefix='alumno', initial={
-                            'nombre': self.alumno.nombre, 
-                            'apellidos': self.alumno.apellidos,
-                            'usuarioUJI': self.alumno.usuarioUJI
-                })
+                self.alumnoForm = AlumnoForm(prefix='alumno', instance=self.alumno)
                 
                 self.proyecto = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), self.alumno)
-                self.proyectoForm = ProyectoForm(prefix='proyecto', initial={
-                            'tutor': self.proyecto.tutor, 
-                            'supervisor': self.proyecto.supervisor,
-                            'email': self.proyecto.email, 
-                            'empresa': self.proyecto.empresa, 
-                            'telefono': self.proyecto.telefono,
-                            'titulo': self.proyecto.titulo,
-                            'inicio': self.proyecto.inicio,
-                            'dedicacionSemanal': self.proyecto.dedicacionSemanal,
-                            'otrosDatos': self.proyecto.otrosDatos
-                })
-                self.proyectoForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
-                self.proyectoForm.initial["tutor"] = self.proyecto.tutor
+                self.proyectoForm = ProyectoForm(prefix='proyecto', instance=self.proyecto)
+                self.tutorForm = TutorForm(prefix='tutor')
+                self.tutorForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
+                self.tutorForm.initial["tutor"] = self.proyecto.tutor
                 
                 self.estado = self.proyecto.estado
                 
@@ -215,6 +209,7 @@ class ProyectoAlumnoForm():
                 self.tribunalForm = None
                 self.dateForm = None
             self.proyectoForm = ProyectoForm(request.POST, prefix='proyecto', instance=self.proyecto)
+            self.tutorForm = TutorForm(request.POST, prefix='tutor', instance=self.tutorProyecto)
                 
     def is_valid(self):
         self.alumnoEsValido = self.alumnoForm.is_valid()
