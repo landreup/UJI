@@ -82,14 +82,16 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
         else: 
             if accion != "nuevo" :
                 return HttpResponseNotFound()
+            
+    tutor = user if not coordinator else None
         
     if (request.method == "POST") :
-        form = ProyectoAlumnoForm(request, accion, alumnoid)
+        form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
         if (form.is_valid()):
             form.save()
             return HttpResponseRedirect('/coordinacio/projectes/')
     else: 
-        form = ProyectoAlumnoForm(request, accion, alumnoid)
+        form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
     
     ocultaCurso=True
     grupos = True

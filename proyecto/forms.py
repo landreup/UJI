@@ -151,7 +151,7 @@ class TribunalForm():
         return response
 
 class ProyectoAlumnoForm():
-    def __init__(self, request, action="nuevo", alumnoUserUJI=""):
+    def __init__(self, request, action="nuevo", alumnoUserUJI="", tutor=None):
         self.alumno = Alumno()
         self.proyecto = Proyecto()
         self.tutor = None
@@ -164,11 +164,9 @@ class ProyectoAlumnoForm():
         self.tribunalForm = None
         self.dateForm = None
         
-        tutor = None
         if action != "nuevo" :
             self.alumno = QueryStudent().getStudentByUserUJI(alumnoUserUJI)
             self.proyecto = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), self.alumno)
-            tutor = self.proyecto.tutor
             
             self.estado = self.proyecto.estado
             if self.proyecto.estado == "L": 
@@ -181,11 +179,14 @@ class ProyectoAlumnoForm():
         
         self.alumnoForm = AlumnoForm(prefix='alumno', instance=self.alumno)
         self.proyectoForm = ProyectoForm(prefix='proyecto', instance=self.proyecto)
-        self.tutorForm = TutorForm(prefix='tutor')
-        self.tutorForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
-        if tutor:
-            self.tutorForm.initial["tutor"] = tutor
-            self.tutor = self.Tutor(tutor.id)
+        if not tutor :
+            tutor = self.proyecto.tutor
+            self.tutorForm = TutorForm(prefix='tutor')
+            self.tutorForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
+            if tutor:
+                self.tutorForm.initial["tutor"] = tutor
+        
+        if tutor: self.tutor = self.Tutor(tutor.id) 
         
         if request.method == 'POST': # Leer los datos
             if action != "nuevo":
@@ -208,6 +209,11 @@ class ProyectoAlumnoForm():
             if ( self.alumnoForm.data["alumno-usuarioUJI"] == self.alumnoid ):
                 self.alumnoEsValido = True
 
+        if self.tutorForm :
+            tutorIsValid = self.tutor.is_valid()
+        else:
+            tutorIsValid = True
+
         if self.tribunalForm :
             tribunalIsValid = self.tribunalForm.is_valid()
         else:
@@ -220,7 +226,7 @@ class ProyectoAlumnoForm():
         
         return (self.alumnoEsValido 
                 and self.proyectoForm.is_valid() 
-                and self.tutor.is_valid()
+                and tutorIsValid
                 and tribunalIsValid
                 and dateIsValid
         )
@@ -289,13 +295,6 @@ class ProyectoAlumnoForm():
         alumno = QueryStudent().getStudentByUserUJI(self.alumnoid)
         
         proyectoDB = QueryProject().getProjectByCourseAndStudent(curso, alumno)
-    
-#        tutorUserUJI = self.proyectoForm.data["tutor-tutor"]
-#        if self.Tutor(tutorUserUJI).is_empty() :
-#            tutor = proyectoDB.tutor
-#        else:
-#            tutor = QueryUser().getUserById(tutorUserUJI)
-#        
         proyectoDB.tutor = self.tutor.user
         proyectoDB.supervisor = self.proyecto.supervisor
         proyectoDB.email = self.proyecto.email
