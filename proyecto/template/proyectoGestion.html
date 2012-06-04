@@ -138,9 +138,9 @@
 					  	  			<table>
 					  	  			{% for form in form.dateForm.forms %}
 					  	  				<tr>
-					  	  					<td width="125px"><label for="{{ form.id }}">{{ form.label }}:</label></td>
+					  	  					<td><label for="{{ form.id }}">{{ form.label }}:</label></td>
 					  	  					<td>
-					  	  						{{ form.form.fecha }} 
+					  	  						{{ form.form.fecha }} (dd/mm/aaaa)
 					  	  					</td>
 					  	  					<td>
 					  	  						{{ form.form.fecha.errors }}
