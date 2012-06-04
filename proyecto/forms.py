@@ -299,6 +299,8 @@ class ProyectoAlumnoForm():
         alumno = QueryStudent().getStudentByUserUJI(self.alumnoid)
         
         proyectoDB = QueryProject().getProjectByCourseAndStudent(curso, alumno)
+        tutor = self.tutor.user 
+        a = afdsfasjfl()
         proyectoDB.tutor = self.tutor.user
         proyectoDB.supervisor = self.proyecto.supervisor
         proyectoDB.email = self.proyecto.email
