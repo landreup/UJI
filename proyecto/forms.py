@@ -208,7 +208,8 @@ class ProyectoAlumnoForm():
             self.proyectoForm = ProyectoForm(request.POST, prefix='proyecto', instance=self.proyecto)
             if coordinator :
                 self.tutor = self.Tutor(self.proyectoForm.data["tutor-tutor"])
-        tutorAux= werfsfsa()
+        tutorAux  = self.tutor 
+        tutorXX= werfsfsa()
                          
     def is_valid(self):
         self.alumnoEsValido = self.alumnoForm.is_valid()
