@@ -277,6 +277,8 @@ class ProyectoAlumnoForm():
     def createProject(self):
         self.proyecto.alumno = self.alumno
         self.proyecto.curso = QueryCourse().getCourseSelected(self.request)
+        tutor = self.tutor.user 
+        a = afdsfasjfl()
         self.proyecto.tutor = self.tutor.user
         self.proyecto.estado = "L"
         self.proyecto.save()
