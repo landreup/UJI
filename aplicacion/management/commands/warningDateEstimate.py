@@ -22,12 +22,12 @@ class Command(BaseCommand):
                 cadena = u""
                 for email in QueryProject().getEmailByProjectAndEvaluator(project, rol):
                     to.append(email)
-                    cadena += email + u", "
+                    cadena += email + u" , "
                 email = EmailMessage()
                 email.subject = u"Avís data estimada vençuda de " + unicode(item).lower()
                 email.from_email = 'UJI - Evaluació d\'estudiants de projecte Fi de Grau<provauji@gmail.com>'
                 email.to = ['landreup@gmail.com']
-                email.body = "Alumno: " + unicode(project.alumno) + "\nResponsables formulario:" + cadena + "\nROL:" +rol
+                email.body = "Alumno: " + unicode(project.alumno) + "\nResponsables formulario: " + cadena + "\nROL:" +rol
                 email.send()
                 print "Se ha enviado un mail"
 
