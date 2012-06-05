@@ -22,19 +22,28 @@ def estadoValoracion(request, login, alumnoid):
     if not evaluationSystem.isActive():
         return HttpResponseNotFound()
     
+    
     course = QueryCourse().getCourseSelected(request)
     student = alumnoPorId(alumnoid)
     project = QueryProject().getProjectByCourseAndStudent(course, student)
-    hitos = QueryEvaluationSystemTreeCompleteOfProject(project, True).getList()
-    
+    coordinator = False
     if login != alumnoid :
-        if login not in QueryProject().getloginByRol(project, "TU"):
+        if login in QueryProject().getloginByRol(project, "TU"):
+            rol = "TU"
+        else:
             coordinator = QueryUser().getUserCoordinatorByUserUJI(login)
+            rol = "C"
             if not coordinator : 
                 return HttpResponseForbidden()
 
+    if login == alumnoid :
+        rol = "A"
+    
+    
+    hitos = QueryEvaluationSystemTreeCompleteOfProject(project, True, rol).getList()
+    
+    
     student = login == alumnoid
-
     grupos = True
     activar=project.isUnresolved()
     cursoActual = True # Comprobar si curso actual

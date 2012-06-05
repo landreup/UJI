@@ -59,19 +59,19 @@ class QueryValoration():
         return Valoracion.objects.filter(evaluacionFormulario=evaluationForm).order_by("pregunta")
 
 class QueryEvaluationSystemTreeCompleteOfProject():
-    def __init__(self, project, puntuation=False):
+    def __init__(self, project, puntuation=False, rol = None):
         evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourse(project.curso)
         tree = QueryEvaluationSystemTreeComplete(evaluationSystem)
-        self.list = ListItems(tree.getItems(), project, puntuation).getList()
+        self.list = ListItems(tree.getItems(), project, puntuation, rol).getList()
     
     def getList(self):
         return self.list
 
 class ListItems(ListItems):
-    def __init__(self, items, project, puntuation=False):
+    def __init__(self, items, project, puntuation=False, rol=None):
         self.list = []
         for item in items:
-            listEvaluations = ListEvaluations(item.getEvaluations(), project, puntuation)
+            listEvaluations = ListEvaluations(item.getEvaluations(), project, puntuation, rol=None)
             node = NodeItem(item.getItem(), listEvaluations.getList(), listEvaluations.getStatus())
             self.list.append(node)
             
@@ -89,13 +89,13 @@ class NodeItem(NodeItem):
         return unicode(self.item)
         
 class ListEvaluations(ListEvaluations):
-    def __init__(self, evaluations, project, puntuation):
+    def __init__(self, evaluations, project, puntuation, rol=None):
         self.list = []
         self.puntuation = puntuation
         anyUnLock = False
         allComplete = True
         for evaluation in evaluations:
-            node = NodeEvaluation(evaluation, project, puntuation)
+            node = NodeEvaluation(evaluation, project, puntuation, rol=None)
             if node.getStatus() == "unlock" :
                 anyUnLock = True
                 allComplete = False
@@ -114,8 +114,9 @@ class ListEvaluations(ListEvaluations):
         return self.status
     
 class NodeEvaluation(NodeEvaluation):
-    def __init__(self, evaluation, project, puntuation):
+    def __init__(self, evaluation, project, puntuation, rol=None):
         self.id = evaluation.id
+        self.rol = rol
         self.evaluation = evaluation
         self.evaluationForm = QueryEvaluationForm().getEvaluationFormByProjectAndEvaluation(project, evaluation)
         self.preguntas = QueryQuestion().getListQuestionsByEvaluation(evaluation.id)
@@ -139,9 +140,9 @@ class NodeEvaluation(NodeEvaluation):
     
     def getForm(self):
         if self.status == "unlock" :
-            return self.evaluationForm.formulario.codigo
-        else :
-            return None
+            if self.evaluation.evaluador == self.rol:
+                return self.evaluationForm.formulario.codigo
+        return None
     
     def __unicode__(self):
         name = unicode(self.evaluation)
