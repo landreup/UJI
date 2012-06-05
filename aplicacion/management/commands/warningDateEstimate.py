@@ -24,7 +24,7 @@ class Command(BaseCommand):
                     to.append(email)
                     cadena += email + u" , "
                 email = EmailMessage()
-                email.subject = u"Avís data estimada vençuda de " + unicode(item).lower()
+                email.subject = u"Valoració del " + unicode(item).lower() + " del alumne " + unicode(project.alumno.nombreCompleto())
                 email.from_email = 'UJI - Evaluació d\'estudiants de projecte Fi de Grau<provauji@gmail.com>'
                 email.to = ['landreup@gmail.com']
                 email.body = "Alumno: " + unicode(project.alumno) + "\nResponsables formulario: " + cadena + "\nROL:" +rol
