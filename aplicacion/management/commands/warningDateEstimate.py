@@ -27,7 +27,7 @@ class Command(BaseCommand):
                 email.subject = u"Avís data estimada vençuda de " + unicode(item).lower()
                 email.from_email = 'UJI - Evaluació d\'estudiants de projecte Fi de Grau<provauji@gmail.com>'
                 email.to = ['landreup@gmail.com']
-                email.body = unicode(project.alumno) + + " " + cadena + " ROL:" +rol
+                email.body = unicode(project.alumno) + " " + cadena + " ROL:" +rol
                 email.send()
                 print "Se ha enviado un mail"
 
