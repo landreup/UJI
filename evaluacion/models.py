@@ -35,7 +35,7 @@ class Evaluacion(models.Model):
                          ('S', "Supervisor"),
                          ('TR', "Tribunal"),
                          ('A', "Alumne"),
-                         ('C', 'Coordinacio')
+                         ('C', 'Coordinador')
                          )
     
     evaluador = models.CharField(max_length=2, choices=EVALUADOR_CHOICES)     
