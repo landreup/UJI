@@ -31,6 +31,9 @@ class Usuario(models.Model):
     def esTutor(self):
         return self.isTutor()
     
+    def getMail(self):
+        return self.usuarioUJI + "@uji.es"
+    
     def __str__(self):
         return u'%s, %s'%(self.apellidos,self.nombre)
     
