@@ -35,7 +35,7 @@ def index(request, login):
         
     student = QueryStudent().getStudentByUserUJI(login)
     if student:
-        return HttpResponseRedirect('/valoracio/')
+        return HttpResponseRedirect('/valoracio/'+login+'/')
     else:
         return HttpResponseNotFound()
         

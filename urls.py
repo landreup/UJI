@@ -18,7 +18,7 @@ urlpatterns += (patterns('',
 
 """ URLs de Estudiants """
 urlpatterns += (patterns('',
-                url(r'valoracio/', 'valoracion.views.estadoValoracion')
+                url(r'valoracio/(?P<alumnoid>\w+)/', 'valoracion.views.estadoValoracion')
 ))
 
 """ URLs de Aplicacio """
