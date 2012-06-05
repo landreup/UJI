@@ -1,10 +1,10 @@
 {% extends 'frontend.html' %}
 
-{% block title %}{% if student %}Estat de la teva valoració{% else %}Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endif %}{% endblock %}
+{% block title %}{% ifequal rol "A" %}Estat de la teva valoració{% else %}Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endifequal %}{% endblock %}
 
-{% block ruta %}{% if not student %}{% if "coordinacio" in request.path%}Coordinació: <a href ="/coordinacio/projectes/">Gestió de Projectes</a>{% else %}Tutorització: <a href="/professorat/projectes/">Projectes Assignats</a>{% endif %} | Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endif %}{% endblock %}
+{% block ruta %}{% ifequal rol "A" %}{% else %}{% if "coordinacio" in request.path%}Coordinació: <a href ="/coordinacio/projectes/">Gestió de Projectes</a>{% else %}Tutorització: <a href="/professorat/projectes/">Projectes Assignats</a>{% endif %} | Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endifequal %}{% endblock %}
 
-{% block tituloPagina %}{% if student %}Estat de la teva valoració{% else %}Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endif %}{% endblock %}
+{% block tituloPagina %}{% ifequal rol "A"%}Estat de la teva valoració{% else %}Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endifequal %}{% endblock %}
 
 {% block menuPagina %}{% include 'menu.html' %}{% endblock %}
 

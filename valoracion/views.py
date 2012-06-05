@@ -42,8 +42,6 @@ def estadoValoracion(request, login, alumnoid):
     
     hitos = QueryEvaluationSystemTreeCompleteOfProject(project, True, rol).getList()
     
-    
-    student = login == alumnoid
     grupos = True
     activar=project.isUnresolved()
     cursoActual = True # Comprobar si curso actual
