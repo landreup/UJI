@@ -140,7 +140,7 @@ class NodeEvaluation(NodeEvaluation):
     
     def getForm(self):
         if self.status == "unlock" :
-            if self.evaluation.evaluador == self.rol:
+            if self.evaluation.getEvaluador() == self.rol:
                 return self.evaluationForm.formulario.codigo
         return None
     
