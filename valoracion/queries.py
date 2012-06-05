@@ -71,7 +71,7 @@ class ListItems(ListItems):
     def __init__(self, items, project, puntuation=False, rol=None):
         self.list = []
         for item in items:
-            listEvaluations = ListEvaluations(item.getEvaluations(), project, puntuation, rol=None)
+            listEvaluations = ListEvaluations(item.getEvaluations(), project, puntuation, rol)
             node = NodeItem(item.getItem(), listEvaluations.getList(), listEvaluations.getStatus())
             self.list.append(node)
             
@@ -95,7 +95,7 @@ class ListEvaluations(ListEvaluations):
         anyUnLock = False
         allComplete = True
         for evaluation in evaluations:
-            node = NodeEvaluation(evaluation, project, puntuation, rol=None)
+            node = NodeEvaluation(evaluation, project, puntuation, rol)
             if node.getStatus() == "unlock" :
                 anyUnLock = True
                 allComplete = False
@@ -140,8 +140,6 @@ class NodeEvaluation(NodeEvaluation):
     
     def getForm(self):
         if self.status == "unlock" :
-            rol = self.rol
-            fasdff= afsdf()
             if self.evaluation.getEvaluator() == self.rol or self.rol == "C" :
                 return self.evaluationForm.formulario.codigo
         return None
