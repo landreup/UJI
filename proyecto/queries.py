@@ -97,6 +97,9 @@ class QueryEstimateDate():
             return FechaEstimada.objects.get(proyecto=project, hito=item)
         except FechaEstimada.DoesNotExist:
             return None
+    
+    def getListEstimateDateByDate(self, date):
+        return FechaEstimada.objects.filter(fecha=date)
         
 class QueryStatusProjectInCourse():
     def getListProjectByItem(self, item):
