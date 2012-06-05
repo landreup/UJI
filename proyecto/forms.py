@@ -187,8 +187,7 @@ class ProyectoAlumnoForm():
                 self.tutor = self.proyecto.tutor
             self.tutorForm = TutorForm(prefix='tutor')
             self.tutorForm.fields["tutor"].queryset = QueryUser().getListOfTutorCoordinator()
-            if tutor:
-                self.tutorForm.initial["tutor"] = tutor
+            self.tutorForm.initial["tutor"] = self.tutor
         else:
             self.tutor = tutor
         

@@ -3,7 +3,7 @@ from models import Proyecto, MiembroTribunal, FechaEstimada, EstadoProyectoEnCur
 from curso.queries import Course
 from usuario.queries import QueryUser
 from proyecto.models import ProyectoParaRevisionEnCurso
-from valoracion.queries import QueryValoration, QueryForm
+from valoracion.queries import QueryForm
 
 class QueryProject():
     def getProjectByCourseAndStudent(self, course, student):
