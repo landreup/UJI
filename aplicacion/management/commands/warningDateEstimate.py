@@ -5,6 +5,7 @@ from django.core.management.base import BaseCommand
 import datetime
 from proyecto.queries import QueryEstimateDate, QueryProject
 from valoracion.queries import QueryForm
+from settings import SERVER_NAME
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
@@ -27,7 +28,7 @@ class Command(BaseCommand):
                 email.subject = u"Valoració del " + unicode(item).lower() + " del alumne " + unicode(project.alumno.nombreCompleto())
                 email.from_email = 'UJI - Evaluació d\'estudiants de projecte Fi de Grau<provauji@gmail.com>'
                 email.to = ['landreup@gmail.com']
-                email.body = "Alumno: " + unicode(project.alumno) + "\nResponsables formulario: " + cadena + "\nROL:" +rol
+                email.body = "Alumno: " + unicode(project.alumno) + "\nResponsables formulario: " + cadena + "\nROL:" +rol + "\n"+ SERVER_NAME
                 email.send()
                 print "Se ha enviado un mail"
 
