@@ -1,10 +1,10 @@
 {% extends 'frontend.html' %}
 
-{% block title %}Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endblock %}
+{% block title %}{% if student %}Estat de la teva valoració{% else %}Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endif %}{% endblock %}
 
-{% block ruta %}{% if "coordinacio" in request.path%}Coordinació: <a href ="/coordinacio/projectes/">Gestió de Projectes</a>{% else %}Tutorització: <a href="/professorat/projectes/">Projectes Assignats</a>{% endif %} | Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endblock %}
+{% block ruta %}{% if not student %}{% if "coordinacio" in request.path%}Coordinació: <a href ="/coordinacio/projectes/">Gestió de Projectes</a>{% else %}Tutorització: <a href="/professorat/projectes/">Projectes Assignats</a>{% endif %} | Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endif %}{% endblock %}
 
-{% block tituloPagina %}Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endblock %}
+{% block tituloPagina %}{% if student %}Estat de la teva valoració{% else %}Evaluació de {{ student.nombre }} {{ student.apellidos }}{% endif %}{% endblock %}
 
 {% block menuPagina %}{% include 'menu.html' %}{% endblock %}
 
@@ -25,7 +25,7 @@
 									{% if evaluacion.preguntas %}
 										<ul>
 											{% for pregunta in evaluacion.preguntas %}
-												<li>{{ pregunta }} {% if edita %}<a href="hites/{{ hito.id }}/evaluacions/{{ evaluacion.id }}/preguntes/{{ pregunta.id }}/edita"><img src="/media/img/lapiz.png" alt="Editar" title="Editar pregunta"/></a>{% endif %}</li>
+												<li>{{ pregunta }}</li>
 											{% endfor %}									
 										</ul>
 									{% else %}

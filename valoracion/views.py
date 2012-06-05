@@ -33,6 +33,8 @@ def estadoValoracion(request, login, alumnoid):
             if not coordinator : 
                 return HttpResponseForbidden()
 
+    student = login == alumnoid
+
     grupos = True
     activar=project.isUnresolved()
     cursoActual = True # Comprobar si curso actual
