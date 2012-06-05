@@ -79,7 +79,9 @@ def accesoFormularioPublico(request, clave):
     access = True
     if formForm.needUJIAuthentication() :
         access = False
-        login = loginFromEujierlogin(request)
+        login, redirect = loginFromEujierlogin(request)
+        if not login:
+            return redirect
         if QueryProject().isUserRolinProject(formForm.proyecto, formForm.rol, login):
             access = True
         else:
