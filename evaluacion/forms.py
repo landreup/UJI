@@ -161,6 +161,7 @@ class CampoFormProcessData():
     def editQuestion(self):
         questionDB = QueryQuestion().getQuestionByQuestion(self.form.questionId)
         questionDB.pregunta, questionDB.tipoRespuesta = self.form.question.pregunta, self.form.question.tipoRespuesta
+        questionDB.save()
     
     def deleteQuestion(self, questionId=None):
         questionId = questionId if questionId!= None else self.form.questionId
