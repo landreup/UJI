@@ -75,12 +75,12 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
     coordinator = False
     if alumnoid :
         student = QueryStudent().getStudentByUserUJI(alumnoid)
-        a= afasdf()
         if student :
             project =  QueryProject().getProjectByCourseAndStudent(course, student)
             revision = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(project)
             if revision : 
                 errors= mensajeError(revision)
+            a= afasdf()
             if not user.isCoordinator():
                 if user != project.tutor :
                     return HttpResponseNotFound()
