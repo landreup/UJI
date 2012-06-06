@@ -6,6 +6,9 @@ from proyecto.queries import QueryStatusProjectInCourse, QueryProject, QueryEsti
     QueryProjectUnresolvedInCourse, QueryJudgeMembers
 from curso.queries import QueryCourse
 from valoracion.controllers import activaFormulario
+from django.core.mail import send_mail
+from django.core.mail.message import EmailMessage
+from settings import SERVER_NAME
 
 def isEditable(course):
     return QueryCourse().isActual(course) and QueryEvaluationSystem().isEvaluationSystemEnabledByCourse(course)
@@ -85,20 +88,45 @@ def camposPorRellenarProyecto(proyecto, item):
     if not proyecto.dedicacionSemanal :
         separador = "|" if porRellenar else ""
         porRellenar += separador + "id_proyecto-dedicacionSemanal"
-        
+    return porRellenar
+
+def tribunalPorRellenarProyecto(proyecto, item):
     if QueryItem().hasTribunalEvaluationThisItem(item):
         if not QueryJudgeMembers().isJudgeDefinedForProject(proyecto):
-            separador = "|" if porRellenar else ""
-            porRellenar += separador + "tribunal"
-    
-    return porRellenar
+            return False
+        else:
+            return True
+    else:
+        return False
 
 def eliminaProyectoPorRellenar(proyecto):
     proyectoPendiente = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(proyecto)
     if proyectoPendiente : proyectoPendiente.delete()
 
-def cambiaEstadoProyecto(proyecto, cambiaPendiente=False):
+def emailAvisoProyectoEnRevision(project, item, warningCoordinators):
+    email = EmailMessage()
+    body = ""
+    body += u"El projecte de l'alumne" + project.alumno.nombreCompleto() + u" necesita una revisió de la teva part per poder activar el " + unicode(item).lower() + ".\n"
+    body += "\n"
+    body += u"Per favor, accedeix a l'administració del projecte y introduiex les dades necessàries.\n"
+    body += "http://" + SERVER_NAME + "/professorat/projectes/" + project.alumno.usuarioUJI + "/edita/" + ' \n'
     
+def buildErrors(textProjectIncomplete, isTribunalIncomplete, dateEstimateNextItem, item):
+    errors = ""
+    if textProjectIncomplete :
+        errors += textProjectIncomplete
+    
+    if isTribunalIncomplete:
+        separator = "|" if errors else ""
+        errors += separator + "tribunal"
+        
+    if not dateEstimateNextItem:
+        separator = "|" if errors else ""
+        errors += separator + "id_" + str(item.id) + "-fecha"
+    
+    return errors
+    
+def cambiaEstadoProyecto(proyecto, cambiaPendiente=False):
     if proyecto.estado =="L" or proyecto.estado=="C" or cambiaPendiente:
         status = QueryStatusProjectInCourse().getProjectByProject(proyecto)
         
@@ -110,11 +138,15 @@ def cambiaEstadoProyecto(proyecto, cambiaPendiente=False):
             
             isProjectIncomplete = False if textProjectIncomplete == "" else True
             
+            isTribunalIncomplete = tribunalPorRellenarProyecto(proyecto, nextItem)
+            
             dateEstimateNextItem = QueryEstimateDate().getEstimateDateByProjectAndItem(proyecto, nextItem) if nextItem else True
             
             evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourse(proyecto.curso)
             
-            if not isProjectIncomplete and dateEstimateNextItem and evaluationSystem.estado=="A":
+            if not isProjectIncomplete and not isTribunalIncomplete and dateEstimateNextItem and evaluationSystem.estado=="A":
+                revision = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(proyecto)
+                if revision : revision.delete()
                 if status : status.delete()
                 if nextItem:
                     status = EstadoProyectoEnCurso()
@@ -126,19 +158,15 @@ def cambiaEstadoProyecto(proyecto, cambiaPendiente=False):
                 proyecto.save()
                 eliminaProyectoPorRellenar(proyecto)
             else:
+                revision = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(proyecto)
+                if revision : revision.delete()
+                else :
+                    emailAvisoProyectoEnRevision(proyecto, nextItem, isTribunalIncomplete)
+                
+                textProjectIncomplete = buildErrors(textProjectIncomplete, isTribunalIncomplete, dateEstimateNextItem, nextItem)
+                                
                 pendentStatus = ProyectoParaRevisionEnCurso()
                 pendentStatus.proyecto = proyecto
-                if not dateEstimateNextItem:
-                    if isProjectIncomplete:
-                        textProjectIncomplete += "|id_"+ str(nextItem.id) + "-fecha"
-                    else: 
-                        textProjectIncomplete = "id_"+  str(nextItem.id) + "-fecha"
-                
-                if isProjectIncomplete : 
-                    textProjectIncomplete += "|Desactivado" if evaluationSystem.estado=="D" else ""
-                else : 
-                    textProjectIncomplete = "Desactivado" if evaluationSystem.estado=="D" else ""
-                  
                 pendentStatus.campos = textProjectIncomplete
                 pendentStatus.save()
                 proyecto.estado = "L"
