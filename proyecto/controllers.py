@@ -104,12 +104,20 @@ def eliminaProyectoPorRellenar(proyecto):
     if proyectoPendiente : proyectoPendiente.delete()
 
 def emailAvisoProyectoEnRevision(project, item, warningCoordinators):
-    email = EmailMessage()
     body = ""
     body += u"El projecte de l'alumne" + project.alumno.nombreCompleto() + u" necesita una revisió de la teva part per poder activar el " + unicode(item).lower() + ".\n"
     body += "\n"
     body += u"Per favor, accedeix a l'administració del projecte y introduiex les dades necessàries.\n"
     body += "http://" + SERVER_NAME + "/professorat/projectes/" + project.alumno.usuarioUJI + "/edita/" + ' \n'
+    body += "-------------------------------\n"
+    body += "Para: "
+    body += "Tutor " + project.tutor.getMail() if not warningCoordinators else "Coordinadores" 
+    email = EmailMessage()
+    email.subject = u"Necesitat d'intervenció en el projecte de l'alumne " + unicode(project.alumno.nombreCompleto())+ " per activar el " +  unicode(item).lower()
+    email.from_email = 'UJI - Evaluació d\'estudiants de projecte Fi de Grau<provauji@gmail.com>'
+    email.to = ['landreup@gmail.com', 'aramburu@uji.es', 'lopeza@uji.es']
+    email.body = body
+    email.send()
     
 def buildErrors(textProjectIncomplete, isTribunalIncomplete, dateEstimateNextItem, item):
     errors = ""
