@@ -176,7 +176,6 @@ def cambiaEstadoProyecto(proyecto, cambiaPendiente=False):
                 pendentStatus = ProyectoParaRevisionEnCurso()
                 pendentStatus.proyecto = proyecto
                 pendentStatus.campos = textProjectIncomplete
-                a= afasdfa()
                 pendentStatus.save()
                 proyecto.estado = "L"
                 proyecto.save()
