@@ -104,7 +104,7 @@ def eliminaProyectoPorRellenar(proyecto):
 
 def emailAvisoProyectoEnRevision(project, item, warningCoordinators):
     body = "" 
-    body += u"El projecte de l'alumne " + project.alumno.nombreCompleto() + u" necesita una revisió de la teva part per activar" + unicode(item).lower() + ".\n"
+    body += u"El projecte de l'alumne " + project.alumno.nombreCompleto() + u" necesita una revisió de la teva part per activar " + unicode(item).lower() + ".\n"
     body += "\n"
     body += u"Per favor, accedeix a l'administració del projecte y introduiex les dades necessàries.\n"
     body += "http://" + SERVER_NAME + "/professorat/projectes/" + project.alumno.usuarioUJI + "/edita/" + ' \n'
@@ -206,7 +206,7 @@ def mensajeError(revision):
         for field in listFields:
             errors += labelsFields[field]
             i += 1
-            errors += "," if  i != len(listFields) else "."  
+            errors += ", " if  i != len(listFields) else "."  
     elif len(listFields) == 1 :
         errors = "Per favor, ompli " + labelsFields[listFields[0]] + "."
     return errors
