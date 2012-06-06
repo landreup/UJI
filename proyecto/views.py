@@ -80,7 +80,6 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
             revision = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(project)
             if revision : 
                 errors= mensajeError(revision)
-            a= afasdf()
             if not user.isCoordinator():
                 if user != project.tutor :
                     return HttpResponseNotFound()
