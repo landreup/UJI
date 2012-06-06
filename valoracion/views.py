@@ -30,8 +30,10 @@ def estadoValoracion(request, login, alumnoid):
     if login != alumnoid :
         if login in QueryProject().getloginByRol(project, "TU"):
             rol = "TU"
+            user = QueryUser().getUserByUserUJI(login)
         else:
             coordinator = QueryUser().getUserCoordinatorByUserUJI(login)
+            user = coordinator
             rol = "C"
             if not coordinator : 
                 return HttpResponseForbidden()

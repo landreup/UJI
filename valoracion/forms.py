@@ -13,6 +13,7 @@ from proyecto.controllers import cambiaEstadoProyecto
 from valoracion.queries import QueryForm
 import datetime
 import time
+from settings import NUMBER_OF_JUDGE_MEMBERS
 
 class ValorationForm():
     def __init__(self, request, evaluationForm):
@@ -176,22 +177,23 @@ class FormForm():
         for rol in QueryEvaluation().getRoles().keys():
             evaluationsItemRol = QueryEvaluation().getListEvaluationsByItemAndRol(self.item, rol)
             if evaluationsItemRol :
-                email = QueryProject().getEmailByProjectAndEvaluator(project, rol)
-                form = Formulario()
-                form.proyecto = project
-                item = QueryItem().getItemByItem(self.item)
-                form.hito = item
-                form.rol = rol
-                form.fechaEstimada = self.dateAppreciated
-                form.email = email
-                form.codigo = self.aleatoryString()
-                form.save()
-                for evaluation in evaluationsItemRol:
-                    evaluationForm = EvaluacionesFormulario()
-                    evaluationForm.formulario = form
-                    evaluationForm.evaluacion = evaluation
-                    evaluationForm.save()
-                
+                numberForms = NUMBER_OF_JUDGE_MEMBERS if rol == "TR" else 1
+                for i in xrange(numberForms):
+                    form = Formulario()
+                    form.proyecto = project
+                    item = QueryItem().getItemByItem(self.item)
+                    form.hito = item
+                    form.rol = rol
+                    form.fechaEstimada = self.dateAppreciated
+                    form.idMiembro = i+1 if rol == "TR" else None
+                    form.codigo = self.aleatoryString()
+                    form.save()
+                    for evaluation in evaluationsItemRol:
+                        evaluationForm = EvaluacionesFormulario()
+                        evaluationForm.formulario = form
+                        evaluationForm.evaluacion = evaluation
+                        evaluationForm.save()
+            
     def aleatoryString(self):
         nbits = 100 * 6 + 1
         bits = random.getrandbits(nbits)

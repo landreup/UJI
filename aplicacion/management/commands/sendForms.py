@@ -3,7 +3,7 @@ from django.core.mail import EmailMessage
 
 from django.core.management.base import BaseCommand
 import datetime
-from proyecto.queries import QueryEstimateDate, QueryProject
+from proyecto.queries import QueryEstimateDate, QueryProject, QueryJudgeMembers
 from valoracion.queries import QueryForm
 from settings import SERVER_NAME
 from evaluacion.models import Evaluacion
@@ -22,9 +22,14 @@ class Command(BaseCommand):
                 rol = form.rol
                 to = []
                 cadena = u""
-                for email in QueryProject().getEmailByProjectAndEvaluator(project, rol):
+                if rol == "TR" :
+                    email = QueryJudgeMembers().getJudgeMemberByProjectAndMemberId(project, form.idMiembro)
                     to.append(email)
-                    cadena += email + u" , "
+                    cadena += email
+                else:
+                    for email in QueryProject().getEmailByProjectAndEvaluator(project, rol):
+                        to.append(email)
+                        cadena += email + u" , "
                 
                 roles = Evaluacion().getRoles()
                 
@@ -36,7 +41,7 @@ class Command(BaseCommand):
                 
                 body += "-------------------------------------------\n"
                 body += "Alumno: " + unicode(project.alumno) + "\n"
-                body += "Responsables formulario: " + cadena + "\n"
+                body += "Responsables formulario (para): " + cadena + "\n"
                 body += "ROL:" +rol + "\n"
                 body += "Formulario: http://" + SERVER_NAME + "/formulari/" + form.codigo
                 

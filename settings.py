@@ -11,6 +11,7 @@ ADMINS = (
 )
 
 SERVER_NAME = "eros.act.uji.es"
+NUMBER_OF_JUDGE_MEMBERS = 3
 
 MANAGERS = ADMINS
 

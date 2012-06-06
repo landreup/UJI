@@ -17,6 +17,7 @@ from datetime import datetime
 from proyecto.controllers import cambiaEstadoProyecto
 from proyecto.queries import QueryStatusProjectInCourse
 from alumno.queries import QueryStudent
+from settings import NUMBER_OF_JUDGE_MEMBERS
 
 class ProyectoForm(ModelForm):
     class Meta():
@@ -94,7 +95,7 @@ class MemberJudgeForm(ModelForm):
 
 class TribunalForm():
     def __init__(self, request, studentUserUJI):
-        self.numberOfJudgeMembers = 3
+        self.numberOfJudgeMembers = NUMBER_OF_JUDGE_MEMBERS
         
         self.request = request
         

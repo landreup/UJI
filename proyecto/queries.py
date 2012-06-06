@@ -60,7 +60,9 @@ class QueryProject():
             for coordinator in coordinators:
                 yield coordinator.usuarioUJI
         elif "TR" in rol:
-            pass
+            listTribunal = QueryJudgeMembers().getListMembersByProject(project)
+            for member in listTribunal:
+                yield member.miembro.usuarioUJI
         else:
             yield None
         
