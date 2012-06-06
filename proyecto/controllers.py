@@ -186,8 +186,8 @@ def cambiaEstadoTodosLosProyectos(curso):
 
 def getlabelsFields(course):
     labels = {}
-    labels['id_proyecto-inicio'] = 'data d\'inici'
-    labels['id_proyecto-dedicacionSemanal'] = 'dedicació semanal'
+    labels['id_proyecto-inicio'] = u"data d\'inici"
+    labels['id_proyecto-dedicacionSemanal'] = u"dedicació semanal"
     labels['tribunal'] = 'tribunal'
     for item in QueryItem().getListItemsByEvaluationSystem(QueryEvaluationSystem().getEvaluationSystemByCourse(course)):
         key = 'id_' + str(item.id) + '-fecha'
