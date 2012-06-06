@@ -67,6 +67,7 @@ def cambiaCurso(request, curso):
 @courseSelected
 @eujierlogin_teacher    
 def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
+    project = None
     if not isEditable(course):
         return HttpResponseForbidden()
     
