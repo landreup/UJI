@@ -184,20 +184,22 @@ def cambiaEstadoTodosLosProyectos(curso):
     for project in listProjects:
         cambiaEstadoProyecto(project)
 
-def getlabelsFields(request):
+def getlabelsFields(course):
     labels = {}
     labels['id_proyecto-inicio'] = 'data d\'inici'
     labels['id_proyecto-dedicacionSemanal'] = 'dedicació semanal'
     labels['tribunal'] = 'tribunal'
-    for item in QueryItem().getListItemsByEvaluationSystem(QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)):
+    for item in QueryItem().getListItemsByEvaluationSystem(QueryEvaluationSystem().getEvaluationSystemByCourse(course)):
         key = 'id_' + str(item.id) + '-fecha'
         labels[key] = 'data estimada de ' + unicode(item)
     return labels
 
-def mensajeError(request, fields):
+def mensajeError(revision):
+    fields = revision.campos
+    course = revision.proyecto.curso
     listFields = fields.split('|')
     errors = ""
-    labelsFields = getlabelsFields(request)
+    labelsFields = getlabelsFields(course)
     if len(listFields) > 1:
         errors = "Per favor, ompli els camps "
         i = 0

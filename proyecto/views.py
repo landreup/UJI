@@ -68,15 +68,19 @@ def cambiaCurso(request, curso):
 @eujierlogin_teacher    
 def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
     project = None
+    errors = None
     if not isEditable(course):
         return HttpResponseForbidden()
     
     coordinator = False
     if alumnoid :
         student = QueryStudent().getStudentByUserUJI(alumnoid)
-        if accion == "editar" : 
-            project =  QueryProject().getProjectByCourseAndStudent(course, student)
+        a= afasdf()
         if student :
+            project =  QueryProject().getProjectByCourseAndStudent(course, student)
+            revision = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(project)
+            if revision : 
+                errors= mensajeError(revision)
             if not user.isCoordinator():
                 if user != project.tutor :
                     return HttpResponseNotFound()
@@ -88,13 +92,7 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
         coordinator = True
             
     tutor = user if not coordinator else None
-    
-    if project :
-        revision = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(project)
-        if revision : 
-            errors= mensajeError(revision.campos)
-        
-        
+
     if (request.method == "POST") :
         form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
         if (form.is_valid()):
