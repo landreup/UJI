@@ -6,7 +6,6 @@ from proyecto.queries import QueryStatusProjectInCourse, QueryProject, QueryEsti
     QueryProjectUnresolvedInCourse, QueryJudgeMembers
 from curso.queries import QueryCourse
 from valoracion.controllers import activaFormulario
-from django.core.mail import send_mail
 from django.core.mail.message import EmailMessage
 from settings import SERVER_NAME
 
@@ -104,8 +103,8 @@ def eliminaProyectoPorRellenar(proyecto):
     if proyectoPendiente : proyectoPendiente.delete()
 
 def emailAvisoProyectoEnRevision(project, item, warningCoordinators):
-    body = ""
-    body += u"El projecte de l'alumne" + project.alumno.nombreCompleto() + u" necesita una revisió de la teva part per poder activar el " + unicode(item).lower() + ".\n"
+    body = "" 
+    body += u"El projecte de l'alumne " + project.alumno.nombreCompleto() + u" necesita una revisió de la teva part per activar" + unicode(item).lower() + ".\n"
     body += "\n"
     body += u"Per favor, accedeix a l'administració del projecte y introduiex les dades necessàries.\n"
     body += "http://" + SERVER_NAME + "/professorat/projectes/" + project.alumno.usuarioUJI + "/edita/" + ' \n'
@@ -113,7 +112,7 @@ def emailAvisoProyectoEnRevision(project, item, warningCoordinators):
     body += "Para: "
     body += "Tutor " + project.tutor.getMail() if not warningCoordinators else "Coordinadores" 
     email = EmailMessage()
-    email.subject = u"Necesitat d'intervenció en el projecte de l'alumne " + unicode(project.alumno.nombreCompleto())+ " per activar el " +  unicode(item).lower()
+    email.subject = u"Necesitat d'intervenció en el projecte de l'alumne " + unicode(project.alumno.nombreCompleto())+ " per activar" +  unicode(item).lower()
     email.from_email = 'UJI - Evaluació d\'estudiants de projecte Fi de Grau<provauji@gmail.com>'
     email.to = ['landreup@gmail.com', 'aramburu@uji.es', 'lopeza@uji.es']
     email.body = body
@@ -184,3 +183,29 @@ def cambiaEstadoTodosLosProyectos(curso):
     listProjects = QueryProject().getListProjectByCourseAndStatus(curso, "L")
     for project in listProjects:
         cambiaEstadoProyecto(project)
+
+def getlabelsFields(request):
+    labels = {}
+    labels['id_proyecto-inicio'] = 'data d\'inici'
+    labels['id_proyecto-dedicacionSemanal'] = 'dedicació semanal'
+    labels['tribunal'] = 'tribunal'
+    for item in QueryItem().getListItemsByEvaluationSystem(QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)):
+        key = 'id_' + str(item.id) + '-fecha'
+        labels[key] = 'data estimada de ' + unicode(item)
+    return labels
+
+def mensajeError(request, fields):
+    listFields = fields.split('|')
+    errors = ""
+    labelsFields = getlabelsFields(request)
+    if len(listFields) > 1:
+        errors = "Per favor, ompli els camps "
+        i = 0
+        for field in listFields:
+            errors += labelsFields[field]
+            i += 1
+            errors += "," if  i != len(listFields) else "."  
+    elif len(listFields) == 1 :
+        errors = "Per favor, ompli " + labelsFields[listFields[0]] + "."
+    return errors
+    

@@ -9,9 +9,10 @@ from forms import ProyectoAlumnoForm
 from curso.controllers import cambiarCurso
 from curso.queries import QueryCourse
 
-from proyecto.controllers import gruposProyectosEnCursoTodos, gruposProyectosEnCursoProfesor, isEditable
+from proyecto.controllers import gruposProyectosEnCursoTodos, gruposProyectosEnCursoProfesor, isEditable,\
+    mensajeError
 from usuario.queries import QueryUser
-from proyecto.queries import QueryProject
+from proyecto.queries import QueryProject, QueryProjectUnresolvedInCourse
 
 from curso.decorators import courseSelected
 from usuario.eujierlogin import eujierlogin_coordinator, eujierlogin_teacher
@@ -72,9 +73,10 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
     coordinator = False
     if alumnoid :
         student = QueryStudent().getStudentByUserUJI(alumnoid)
+        if accion == "editar" : 
+            project =  QueryProject().getProjectByCourseAndStudent(course, student)
         if student :
             if not user.isCoordinator():
-                project =  QueryProject().getProjectByCourseAndStudent(course, student)
                 if user != project.tutor :
                     return HttpResponseNotFound()
         else: 
@@ -85,6 +87,12 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
         coordinator = True
             
     tutor = user if not coordinator else None
+    
+    if project :
+        revision = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(project)
+        if revision : 
+            errors= mensajeError(revision.campos)
+        
         
     if (request.method == "POST") :
         form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
