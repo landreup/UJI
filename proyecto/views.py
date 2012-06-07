@@ -17,6 +17,7 @@ from proyecto.queries import QueryProject, QueryProjectUnresolvedInCourse
 from curso.decorators import courseSelected
 from usuario.eujierlogin import eujierlogin_coordinator, eujierlogin_teacher
 from alumno.queries import QueryStudent
+from datetime import datetime
 
 @courseSelected
 @eujierlogin_teacher
@@ -28,7 +29,7 @@ def listadoProyectosProfesor(request, user, course):
     editar = isEditable(course)
     vacio = not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
-    fechaTope = course.fechaTope
+    fechaTope = datetime.strptime(course.fechaTope, '%d/%m/%Y')
     return render_to_response('proyectoListado.html', locals())
 
 @courseSelected
@@ -43,7 +44,7 @@ def listadoProyectosCoordinador(request, user, course):
     editar = isEditable(course)
     vacio = not pendientes and not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
-    fechaTope = course.fechaTope
+    fechaTope = datetime.strptime(course.fechaTope, '%d/%m/%Y')
     return render_to_response('proyectoListado.html', locals())
 
 @courseSelected
@@ -60,7 +61,7 @@ def listadoProyectosCoordinadorProfesor(request, user, course, profesorid):
     editar = isEditable(course)
     vacio = not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
-    fechaTope = course.fechaTope
+    fechaTope = datetime.strptime(course.fechaTope, '%d/%m/%Y')
     return render_to_response('proyectoListado.html', locals())
     
 def cambiaCurso(request, curso):

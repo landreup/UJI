@@ -6,4 +6,4 @@ class Curso(models.Model):
     esActual = False
     
     def __unicode__(self):
-        return unicode(self.curso) + "/" + unicode(self.curso+1) + " - " + unicode(self.fechaTope)
+        return unicode(self.curso) + "/" + unicode(self.curso+1)
