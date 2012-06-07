@@ -39,7 +39,7 @@
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_alumno-usuarioUJI">Usuari UJI:</label></td>
 							  	  			<td>{{ form.alumnoForm.usuarioUJI }}</td>
-							  	  			<td>{% if not form.alumnoEsValido %}{{ form.alumnoForm.usuarioUJI.errors }}{% endif %}</td>
+							  	  			<td>{% if not form.alumnoEsValido %}{% if form.alumnoForm.usuarioUJI.errors %}{{ form.alumnoForm.usuarioUJI.errors }}{% else %}alXXXXXX{% endif %}{% endif %}</td>
 							  	  		</tr>
 							  	  	</table>
 						  	  	</li>
