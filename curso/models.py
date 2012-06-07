@@ -6,7 +6,7 @@ class Curso(models.Model):
     esActual = False
     
     def getFechaTope(self):
-        return self.fechaTope
+        return unicode(self.fechaTope)
     
     def __unicode__(self):
-        return unicode(self.curso) + "/" + unicode(self.curso+1)
+        return unicode(self.curso) + "/" + unicode(self.curso+1) + " - " + unicode(self.fechaTope)
