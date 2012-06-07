@@ -24,12 +24,12 @@ def listadoHitos(request, user, course):
     
     sistemaEvaluacion = QueryEvaluationSystem().getEvaluationSystemByCourse(course)
        
-    hitos = listaHitos(sistemaEvaluacion) if (sistemaEvaluacion) else []
+    hitos = listaHitos(sistemaEvaluacion) if (sistemaEvaluacion) else None
     
     cursos = QueryCourse().getListCourse(request)
-    grupos = True
+    grupos = hitos == None
     edita = editable(request)
-    anyadir = (sistemaEvaluacion != None)
+    anyadir = editable(request)
     activar = activable(request)
     return render_to_response('sistemaEvaluacionListado.html', locals())
 
