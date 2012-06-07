@@ -17,11 +17,11 @@ from proyecto.queries import QueryProject, QueryProjectUnresolvedInCourse
 from curso.decorators import courseSelected
 from usuario.eujierlogin import eujierlogin_coordinator, eujierlogin_teacher
 from alumno.queries import QueryStudent
-from datetime import datetime
 
 @courseSelected
 @eujierlogin_teacher
 def listadoProyectosProfesor(request, user, course):
+    tutor = user
     titulo = "Projectes Assignats"
     enCurso = gruposProyectosEnCursoProfesor(course, user)
     finalizados = QueryProject().getListProjectByCourseStatusTutor(course, "F", user)
@@ -77,6 +77,11 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid="", profeso
     if not isEditable(course):
         return HttpResponseForbidden()
     
+    profesor = QueryUser().getUserByUserUJI(profesorid) if profesorid  else None
+    
+    if profesorid and not profesor :
+        return HttpResponseNotFound()
+    
     coordinator = False
     if alumnoid :
         student = QueryStudent().getStudentByUserUJI(alumnoid)
@@ -88,6 +93,9 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid="", profeso
             if user == project.tutor :
                 tutor = user if "professorat" in request.path else None
             else:
+                if profesor:
+                    if profesor != project.tutor :
+                        return HttpResponseNotFound()
                 if not user.isCoordinator():
                     return HttpResponseNotFound()
         else: 

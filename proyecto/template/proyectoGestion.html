@@ -1,8 +1,8 @@
 {% extends 'frontend.html' %}
 
-{% block title %}{% if "nou" in request.path %}Nou Projecte{% else %}Edició Projecte{% endif %} | Gestió de Projectes{% endblock %}
+{% block title %}{% if "nou" in request.path %}Nou Projecte{% else %}Edició Projecte{% endif %} | {% if tutor %}Projectes Assignats{% else %}{% if profesor %}Projectes que tutoritza {{ profesor.nombre }} |{% endif %} Gestió de Projectes{% endblock %}
 
-{% block ruta %}{% if coordinator %}Coordinació: <a href="/coordinacio/projectes/">Gestió de Projectes</a> | {% if "nou" in request.path %}Nou Projectes{% else %}Edició Projecte{% endif %}{% else %}Professorat: <a href="/professorat/projectes/">Projectes Assignats</a> | {% if "nou" in request.path %}Nou Projectes{% else %}Edició Projecte{% endif %}{% endif %}{% endblock %}
+{% block ruta %}{% if not tutor %}Coordinació: <a href="/coordinacio/projectes/">Gestió de Projectes</a>{% if profesor %} | <a href="/coordinacio/projectes/{{ profesor.usuarioUJI }}/">Projectes que tutoritza {{ profesor.nombre }}</a>{% endif %} | {% if "nou" in request.path %}Nou Projectes{% else %}Edició Projecte{% endif %}{% else %}Professorat: <a href="/professorat/projectes/">Projectes Assignats</a> | {% if "nou" in request.path %}Nou Projectes{% else %}Edició Projecte{% endif %}{% endif %}{% endblock %}
 
 {% block tituloPagina %}{% if "nou" in request.path%}Nou Projecte{% else %}Edició Projecte{% endif %}{% endblock %}
 

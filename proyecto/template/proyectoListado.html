@@ -2,7 +2,7 @@
 
 {% block title %}{{ titulo }}{% endblock %}
 
-{% block ruta %}{% if "coordinacio" in request.path %}Coordinació:{% else %}Tutorització:{% endif %} {{ titulo }}{% endblock %}
+{% block ruta %}{% if not tutor %}Coordinació: {% if profesorid %}<a href="/coordinacio/projectes/">Gestió de projectes</a> |{% endif %}{% else %}Tutorització:{% endif %} {{ titulo }}{% endblock %}
 
 {% block tituloPagina %}{{ titulo }}{% endblock %}
 
