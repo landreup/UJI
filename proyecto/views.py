@@ -43,7 +43,7 @@ def listadoProyectosCoordinador(request, user, course):
     editar = isEditable(course)
     vacio = not pendientes and not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
-    fechaTope = course.FechaTope
+    fechaTope = course.fechaTope
     return render_to_response('proyectoListado.html', locals())
 
 @courseSelected
