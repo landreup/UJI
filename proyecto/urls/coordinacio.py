@@ -12,4 +12,5 @@ urlpatterns = patterns('proyecto.views',
 
 urlpatterns += patterns('',
                 url(r'^(?P<alumnoid>\w+)/evaluacio/', include('valoracion.urls')), 
+                url(r'^(?P<profesorid>\w+)/(?P<alumnoid>\w+)/evaluacio/', include('valoracion.urls')),
 )

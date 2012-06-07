@@ -70,7 +70,7 @@ def cambiaCurso(request, curso):
 
 @courseSelected
 @eujierlogin_teacher    
-def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
+def gestionProyectos(request, user, course, accion="nuevo", alumnoid="", profesorid=""):
     project = None
     errors = None
     tutor = None
@@ -98,7 +98,13 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
         form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
         if (form.is_valid()):
             form.save()
-            ruta = '/coordinacio/projectes/' if coordinator else '/professorat/projectes/' 
+            if tutor :
+                ruta = '/professorat/projectes/'
+            else:
+                if profesorid :
+                    ruta = '/coordinacio/projectes/' + profesorid + '/' 
+                else:
+                    ruta = '/coordinacio/projectes/'
             return HttpResponseRedirect(ruta)
     else: 
         form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
