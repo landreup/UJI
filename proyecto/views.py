@@ -69,6 +69,7 @@ def cambiaCurso(request, curso):
 def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
     project = None
     errors = None
+    tutor = None
     if not isEditable(course):
         return HttpResponseForbidden()
     
@@ -80,17 +81,14 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
             revision = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(project)
             if revision : 
                 errors= mensajeError(revision)
-            if not user.isCoordinator():
-                if user != project.tutor :
+            if user == project.tutor :
+                tutor = user
+            else:
+                if not user.isCoordinator():
                     return HttpResponseNotFound()
         else: 
             if accion != "nuevo" :
                 return HttpResponseNotFound()
-            
-    if user.isCoordinator() :
-        coordinator = True
-            
-    tutor = user if not coordinator else None
 
     if (request.method == "POST") :
         form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
