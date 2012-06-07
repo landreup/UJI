@@ -86,7 +86,7 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid=""):
             if revision : 
                 errors= mensajeError(revision)
             if user == project.tutor :
-                tutor = user
+                tutor = user if "professorat" in request.path else None
             else:
                 if not user.isCoordinator():
                     return HttpResponseNotFound()
