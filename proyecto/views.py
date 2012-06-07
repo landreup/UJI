@@ -28,6 +28,7 @@ def listadoProyectosProfesor(request, user, course):
     editar = isEditable(course)
     vacio = not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
+    fechaTope = course.fechaTope
     return render_to_response('proyectoListado.html', locals())
 
 @courseSelected
@@ -42,6 +43,7 @@ def listadoProyectosCoordinador(request, user, course):
     editar = isEditable(course)
     vacio = not pendientes and not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
+    fechaTope = course.fechaTope
     return render_to_response('proyectoListado.html', locals())
 
 @courseSelected
@@ -58,6 +60,7 @@ def listadoProyectosCoordinadorProfesor(request, user, course, profesorid):
     editar = isEditable(course)
     vacio = not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
+    fechaTope = course.fechaTope
     return render_to_response('proyectoListado.html', locals())
     
 def cambiaCurso(request, curso):
