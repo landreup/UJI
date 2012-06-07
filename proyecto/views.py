@@ -44,6 +44,7 @@ def listadoProyectosCoordinador(request, user, course):
     vacio = not pendientes and not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
     fechaTope = course.fechaTope
+    a= safasfd()
     return render_to_response('proyectoListado.html', locals())
 
 @courseSelected
