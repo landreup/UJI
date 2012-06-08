@@ -21,6 +21,7 @@ class ValorationForm():
         self.evaluation = evaluationForm.evaluacion
         self.evaluationForm = evaluationForm
         self.valorations = []
+        self._indicators = None
 
         if request.method == 'POST' :
             for question in self.questions :
@@ -31,7 +32,9 @@ class ValorationForm():
         
     def unicodeResponseType(self, field, responseType):
         if responseType == "A" :
-            return u"\t<td><select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\" selected=\"selected\">No Apte</option><option value=\"5\">Apte</option></select></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n"  
+            questionOptions =  u"\t<td><select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\" selected=\"selected\">No Apte</option><option value=\"5\">Apte</option></select></td>"
+            if self.haveIndicators(): questionOptions += "\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n"
+            return questionOptions  
         elif responseType == "I":
             return u"\t<td></td>\n\t<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\"/></td>\n\t" + \
                    u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\"/></td>\n\t" + \
@@ -45,10 +48,16 @@ class ValorationForm():
         return u"evaluacionFormulario" + str(evaluation.id) + u"_pregunta" + str(question.id)
         
     def haveIndicators(self):
-        for question in self.questions:
-            if question.tipoRespuesta == "I" :
-                return True
-        return False
+        self._indicators 
+        if self._indicators == None :
+            for question in self.questions:
+                if question.tipoRespuesta == "I" :
+                    self._indicators = True
+                    return True
+            self._indicators = False
+            return False
+        else:
+            return self._indicators
                 
         
     def __unicode__(self):
@@ -56,8 +65,6 @@ class ValorationForm():
         htmlForm = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n<tr>\n\t<td></td>\n\t<td></td>\n\t"
         if self.haveIndicators() :
             htmlForm += "<td>Muy mal</td>\n\t<td>Mal</td>\n\t<td>Aceptable</td>\n\t<td>Bien</td>\n\t<td>Muy Bien</td>\n"
-        else:
-            htmlForm += "<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n"
         htmlForm += "</tr>\n"
         for question in self.questions :
             field = self.fieldName(self.evaluation, question)
