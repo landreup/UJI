@@ -83,6 +83,7 @@ def accesoFormularioPublico(request, clave):
     formForm = QueryForm().getFormByKey(clave)
     if not formForm: return HttpResponseNotFound()
     access = True
+    user = None
     if formForm.needUJIAuthentication() :
         access = False
         login, redirect = loginFromEujierlogin(request)
@@ -90,17 +91,19 @@ def accesoFormularioPublico(request, clave):
             return redirect
         if QueryProject().isUserRolinProject(formForm.proyecto, formForm.rol, login):
             access = True
+            user = QueryUser().getUserByUserUJI(login)
         else:
             coordinador = QueryUser().getUserCoordinatorByUserUJI(login)
+            user = coordinador
             if coordinador: access = True
             
     if access :
-        return formularioPublico(request, formForm)
+        return formularioPublico(request, formForm, user)
     else:
         return HttpResponseForbidden()
 
 
-def formularioPublico(request, formForm):
+def formularioPublico(request, formForm, user):
     unresolved = formForm.isUnresolved() 
     if (request.method == "POST"):
         form = EvaluationFormForm(request, formForm)
