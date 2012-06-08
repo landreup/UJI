@@ -62,6 +62,7 @@ class ValorationForm():
         for question in self.questions :
             field = self.fieldName(self.evaluation, question)
             htmlForm += u"<tr><td><label for=\"id_"+ field + "\">" + unicode(question.pregunta) + u"</label></td>" + self.unicodeResponseType(field, question.tipoRespuesta) + u"</tr>"
+        htmlForm += "</table>"    
         return htmlForm
     
     def isValorationValid(self, response):
