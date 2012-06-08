@@ -31,25 +31,37 @@ class ValorationForm():
         
     def unicodeResponseType(self, field, responseType):
         if responseType == "A" :
-            return u"<select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\" selected=\"selected\">No Apte</option><option value=\"5\">Apte</option></select>"  
+            return u"<td><select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\" selected=\"selected\">No Apte</option><option value=\"5\">Apte</option></select></td><td></td><td></td><td></td><td></td><td></td>"  
         elif responseType == "I":
-            return u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\"/>" + \
-                   u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\"/>" + \
-                   u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\"/>" + \
-                   u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\"/>" + \
-                   u"<input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"5\"/>"
+            return u"<td></td><td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\"/></td>" + \
+                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\"/></td>" + \
+                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\"/></td>" + \
+                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\"/></td>" + \
+                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"5\"/></td>"
         else:
             return ""
         
     def fieldName(self, evaluation, question):
         return u"evaluacionFormulario" + str(evaluation.id) + u"_pregunta" + str(question.id)
         
+    def haveIndicators(self):
+        for question in self.questions:
+            if question.tipoRespuesta == "I" :
+                return True
+        return False
+                
+        
     def __unicode__(self):
         #return str(len(self.questions))
-        htmlForm = ""
+        htmlForm = "<table><th><td></td><td></td>"
+        if self.haveIndicators() :
+            htmlForm += "<td>Muy mal</td><td>Mal</td><td>Aceptable</td><td>Bien</td><td>Muy Bien</td>"
+        else:
+            htmlForm += "<td></td><td></td><td></td><td></td><td></td>"
+        htmlForm += "</th>"
         for question in self.questions :
             field = self.fieldName(self.evaluation, question)
-            htmlForm += u"<label for=\"id_"+ field + "\">" + unicode(question.pregunta) + u"</label>" + self.unicodeResponseType(field, question.tipoRespuesta) + u"<br/>"
+            htmlForm += u"<tr><td><label for=\"id_"+ field + "\">" + unicode(question.pregunta) + u"</label></td>" + self.unicodeResponseType(field, question.tipoRespuesta) + u"</tr>"
         return htmlForm
     
     def isValorationValid(self, response):
@@ -153,51 +165,51 @@ class EvaluationFormForm():
         def __init__(self, request, evaluationForm, questions=True):
             self.evaluation = evaluationForm.evaluacion
             self.valorationForm = ValorationForm(request, evaluationForm) if questions else EvaluationForm(request, evaluationForm)
-    
-class FormForm():
-    class DateField():
-        def __str__(self):
-            return "<input type=\"text\" id=\"dateAppreciated\" name=\"date\" class=\"date\"/>"
-                        
-    dateAppreciated = DateField()
-    def __init__(self, request, alumnoId, itemId):
-        self.request = request
-        self.studentUser = alumnoId
-        self.item = itemId
-        if self.request.method == "POST" :
-            self.dateAppreciated = self.request.POST.get('date', '')
-
-    def is_valid(self):
-        return True
-
-    def save(self):
-        course = QueryCourse().getCourseSelected(self.request)
-        student = alumnoPorId(self.studentUser)
-        project = QueryProject().getProjectByCourseAndStudent(course, student)
-        for rol in QueryEvaluation().getRoles().keys():
-            evaluationsItemRol = QueryEvaluation().getListEvaluationsByItemAndRol(self.item, rol)
-            if evaluationsItemRol :
-                numberForms = NUMBER_OF_JUDGE_MEMBERS if rol == "TR" else 1
-                for i in xrange(numberForms):
-                    form = Formulario()
-                    form.proyecto = project
-                    item = QueryItem().getItemByItem(self.item)
-                    form.hito = item
-                    form.rol = rol
-                    form.fechaEstimada = self.dateAppreciated
-                    form.idMiembro = i+1 if rol == "TR" else None
-                    form.codigo = self.aleatoryString()
-                    form.save()
-                    for evaluation in evaluationsItemRol:
-                        evaluationForm = EvaluacionesFormulario()
-                        evaluationForm.formulario = form
-                        evaluationForm.evaluacion = evaluation
-                        evaluationForm.save()
-            
-    def aleatoryString(self):
-        nbits = 100 * 6 + 1
-        bits = random.getrandbits(nbits)
-        uc = u"%0x" % bits
-        newlen = (len(uc) / 2) * 2 # we have to make the string an even length
-        ba = bytearray.fromhex(uc[:newlen])
-        return base64.urlsafe_b64encode(str(ba))[:100]
+#    
+#class FormForm():
+#    class DateField():
+#        def __str__(self):
+#            return "<input type=\"text\" id=\"dateAppreciated\" name=\"date\" class=\"date\"/>"
+#                        
+#    dateAppreciated = DateField()
+#    def __init__(self, request, alumnoId, itemId):
+#        self.request = request
+#        self.studentUser = alumnoId
+#        self.item = itemId
+#        if self.request.method == "POST" :
+#            self.dateAppreciated = self.request.POST.get('date', '')
+#
+#    def is_valid(self):
+#        return True
+#
+#    def save(self):
+#        course = QueryCourse().getCourseSelected(self.request)
+#        student = alumnoPorId(self.studentUser)
+#        project = QueryProject().getProjectByCourseAndStudent(course, student)
+#        for rol in QueryEvaluation().getRoles().keys():
+#            evaluationsItemRol = QueryEvaluation().getListEvaluationsByItemAndRol(self.item, rol)
+#            if evaluationsItemRol :
+#                numberForms = NUMBER_OF_JUDGE_MEMBERS if rol == "TR" else 1
+#                for i in xrange(numberForms):
+#                    form = Formulario()
+#                    form.proyecto = project
+#                    item = QueryItem().getItemByItem(self.item)
+#                    form.hito = item
+#                    form.rol = rol
+#                    form.fechaEstimada = self.dateAppreciated
+#                    form.idMiembro = i+1 if rol == "TR" else None
+#                    form.codigo = self.aleatoryString()
+#                    form.save()
+#                    for evaluation in evaluationsItemRol:
+#                        evaluationForm = EvaluacionesFormulario()
+#                        evaluationForm.formulario = form
+#                        evaluationForm.evaluacion = evaluation
+#                        evaluationForm.save()
+#            
+#    def aleatoryString(self):
+#        nbits = 100 * 6 + 1
+#        bits = random.getrandbits(nbits)
+#        uc = u"%0x" % bits
+#        newlen = (len(uc) / 2) * 2 # we have to make the string an even length
+#        ba = bytearray.fromhex(uc[:newlen])
+#        return base64.urlsafe_b64encode(str(ba))[:100]
