@@ -31,13 +31,13 @@ class ValorationForm():
         
     def unicodeResponseType(self, field, responseType):
         if responseType == "A" :
-            return u"<td><select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\" selected=\"selected\">No Apte</option><option value=\"5\">Apte</option></select></td><td></td><td></td><td></td><td></td><td></td>"  
+            return u"\t<td><select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\" selected=\"selected\">No Apte</option><option value=\"5\">Apte</option></select></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n"  
         elif responseType == "I":
-            return u"<td></td><td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\"/></td>" + \
-                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\"/></td>" + \
-                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\"/></td>" + \
-                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\"/></td>" + \
-                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"5\"/></td>"
+            return u"\t<td></td>\n\t<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\"/></td>\n\t" + \
+                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\"/></td>\n\t" + \
+                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\"/></td>\n\t" + \
+                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\"/></td>\n\t" + \
+                   u"<td><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"5\"/></td>\n"
         else:
             return ""
         
@@ -53,15 +53,15 @@ class ValorationForm():
         
     def __unicode__(self):
         #return str(len(self.questions))
-        htmlForm = "<table><th><td></td><td></td>"
+        htmlForm = "<table><th>\n\t<td></td>\n\t<td></td>\n\t"
         if self.haveIndicators() :
-            htmlForm += "<td>Muy mal</td><td>Mal</td><td>Aceptable</td><td>Bien</td><td>Muy Bien</td>"
+            htmlForm += "<td>Muy mal</td>\n\t<td>Mal</td>\n\t<td>Aceptable</td>\n\t<td>Bien</td>\n\t<td>Muy Bien</td>\n"
         else:
-            htmlForm += "<td></td><td></td><td></td><td></td><td></td>"
-        htmlForm += "</th>"
+            htmlForm += "<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n"
+        htmlForm += "</th>\n"
         for question in self.questions :
             field = self.fieldName(self.evaluation, question)
-            htmlForm += u"<tr><td><label for=\"id_"+ field + "\">" + unicode(question.pregunta) + u"</label></td>" + self.unicodeResponseType(field, question.tipoRespuesta) + u"</tr>"
+            htmlForm += u"<tr>\n\t<td><label for=\"id_"+ field + "\">" + unicode(question.pregunta) + u"</label></td>\n\t" + self.unicodeResponseType(field, question.tipoRespuesta) + u"</tr>\n"
         htmlForm += "</table>"    
         return htmlForm
     
