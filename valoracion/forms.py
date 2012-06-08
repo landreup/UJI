@@ -53,12 +53,12 @@ class ValorationForm():
         
     def __unicode__(self):
         #return str(len(self.questions))
-        htmlForm = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n<th>\n\t<td></td>\n\t<td></td>\n\t"
+        htmlForm = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n<tr>\n\t<td></td>\n\t<td></td>\n\t"
         if self.haveIndicators() :
             htmlForm += "<td>Muy mal</td>\n\t<td>Mal</td>\n\t<td>Aceptable</td>\n\t<td>Bien</td>\n\t<td>Muy Bien</td>\n"
         else:
             htmlForm += "<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n"
-        htmlForm += "</th>\n"
+        htmlForm += "</tr>\n"
         for question in self.questions :
             field = self.fieldName(self.evaluation, question)
             htmlForm += u"<tr>\n\t<td><label for=\"id_"+ field + "\">" + unicode(question.pregunta) + u"</label></td>\n\t" + self.unicodeResponseType(field, question.tipoRespuesta) + u"</tr>\n"
