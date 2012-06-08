@@ -7,11 +7,15 @@ from queries import QueryEvaluationSystemTreeCompleteOfProject, QueryForm
 from alumno.controllers import alumnoPorId
 from curso.queries import QueryCourse
 from proyecto.queries import QueryProject
-from evaluacion.queries import QueryEvaluationSystem, QueryItem
-from valoracion.controllers import activaFormulario, activaValoracion
+from evaluacion.queries import QueryEvaluationSystem, QueryItem, QueryEvaluation
+from valoracion.controllers import activaFormulario, activaValoracion,\
+    reActivaFormulario
 
-from usuario.eujierlogin import eujierlogin, loginFromEujierlogin
+from usuario.eujierlogin import eujierlogin, loginFromEujierlogin,\
+    eujierlogin_coordinator
 from usuario.queries import QueryUser
+from curso.decorators import courseSelected
+from alumno.queries import QueryStudent
 
 @eujierlogin
 def estadoValoracion(request, login, alumnoid):    
@@ -95,6 +99,7 @@ def accesoFormularioPublico(request, clave):
     else:
         return HttpResponseForbidden()
 
+
 def formularioPublico(request, formForm):
     unresolved = formForm.isUnresolved() 
     if (request.method == "POST"):
@@ -107,16 +112,42 @@ def formularioPublico(request, formForm):
     plantilla = "formEvaluacion.html" if unresolved else "formularioPublico.html"
     return render_to_response(plantilla, locals())
 
-def activarValoracion(request, alumnoid):
-    course = QueryCourse().getCourseSelected(request)
-    student = alumnoPorId(alumnoid)
-    project = QueryProject().getProjectByCourseAndStudent(course, student)
+@courseSelected
+@eujierlogin_coordinator
+def activarValoracion(request, user, course, alumnoid):
+    student = QueryStudent().getStudentByUserUJI(alumnoid)
+    if not student : return HttpResponseNotFound()
     
+    project = QueryProject().getProjectByCourseAndStudent(course, student)
+    if not project : return HttpResponseNotFound()
+                                                 
     if not project.isUnresolved(): return HttpResponseForbidden()
     
     if (request.method == "POST"):
         activaValoracion(project)
         return HttpResponseRedirect('/coordinacio/projectes/')
-
-    return render_to_response('activaValoracion.html', locals())
     
+    mensaje = u"Clica per a posar en curs l'evaluació de l'alumne " + student.nombreCompleto() + "."
+
+    return render_to_response('mensajeValoracion.html', locals())
+
+@courseSelected
+@eujierlogin_coordinator
+def reActivarValoracion(request, user, alumnoid, course, evaluacionid):
+    student = QueryStudent().getStudentByUserUJI(alumnoid)
+    if not student : return HttpResponseNotFound()
+    project = QueryProject().getProjectByCourseAndStudent(course, student)
+    if not project : return HttpResponseNotFound()
+    evaluation = QueryEvaluation().getEvaluationByEvaluation(evaluacionid)
+    if not evaluation : return HttpResponseNotFound()
+    
+    if not QueryForm().isFormCompletedOfProjectItemEvaluator(project, evaluation.getItem(), evaluation.getEvaluator()):
+        return HttpResponseForbidden()
+    
+    if ( request.method == 'POST' ):
+        reActivaFormulario(project, evaluation)
+        return HttpResponseRedirect('/coordinacio/projectes/')
+    
+    mensaje = u"Reactivar el formulari de l'evaluació " + evaluation + " de " + evaluation.getItem() + " de l'alumne " + student.nombreCompleto() + "."
+    
+    return render_to_response('mensajeValoracion.html', locals())
