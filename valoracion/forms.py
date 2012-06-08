@@ -53,7 +53,7 @@ class ValorationForm():
         
     def __unicode__(self):
         #return str(len(self.questions))
-        htmlForm = "\n<table>\n<th>\n\t<td></td>\n\t<td></td>\n\t"
+        htmlForm = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n<th>\n\t<td></td>\n\t<td></td>\n\t"
         if self.haveIndicators() :
             htmlForm += "<td>Muy mal</td>\n\t<td>Mal</td>\n\t<td>Aceptable</td>\n\t<td>Bien</td>\n\t<td>Muy Bien</td>\n"
         else:
