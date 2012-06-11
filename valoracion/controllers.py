@@ -23,7 +23,7 @@ def reActivaFormulario(proyecto, evaluation):
         for i in xrange(1, NUMBER_OF_JUDGE_MEMBERS+1):
             creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator, [evaluation], i)
     else:
-        creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator, [evaluation])
+        creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator(), [evaluation])
 
 def creaFormulario(proyecto, item, rol, evaluationsItemRol, idMiembro=None):
     form = Formulario()
