@@ -9,7 +9,8 @@ from alumno.controllers import alumnoPorId
 from curso.queries import QueryCourse
 from proyecto.queries import QueryProject
 from evaluacion.queries import QueryEvaluationSystem, QueryItem, QueryEvaluation
-from valoracion.controllers import activaFormulario, activaValoracion
+from valoracion.controllers import activaFormulario, activaValoracion,\
+    reActivaFormulario
 
 from usuario.eujierlogin import eujierlogin, loginFromEujierlogin,\
     eujierlogin_coordinator
@@ -149,7 +150,7 @@ def reActivarValoracion(request, user, alumnoid, course, evaluacionid):
         return HttpResponseForbidden()
     
     if ( request.method == 'POST' ):
-        #reActivaFormulario(project, evaluation)
+        reActivaFormulario(project, evaluation)
         return HttpResponseRedirect('/coordinacio/projectes/')
     
     mensaje = u"Reactivar el formulari de l'evaluació " + unicode(evaluation) + " de " + unicode(evaluation.getItem()) + " de l'alumne " + student.nombreCompleto() + "."
