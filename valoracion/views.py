@@ -152,6 +152,6 @@ def reActivarValoracion(request, user, alumnoid, course, evaluacionid):
         #reActivaFormulario(project, evaluation)
         return HttpResponseRedirect('/coordinacio/projectes/')
     
-    mensaje = u"Reactivar el formulari de l'evaluació " + evaluation + " de " + evaluation.getItem() + " de l'alumne " + student.nombreCompleto() + "."
+    mensaje = u"Reactivar el formulari de l'evaluació " + unicode(evaluation) + " de " + unicode(evaluation.getItem()) + " de l'alumne " + student.nombreCompleto() + "."
     
     return render_to_response('mensajeValoracion.html', locals())
