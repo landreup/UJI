@@ -142,6 +142,9 @@ class NodeEvaluation():
     def getPercentage(self):
         return self.evaluation.porcentaje
     
+    def getItem(self):
+        return self.evaluation.hito
+    
     def getQuestions(self):
         return self.preguntas
 

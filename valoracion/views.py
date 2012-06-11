@@ -17,40 +17,41 @@ from usuario.queries import QueryUser
 from curso.decorators import courseSelected
 from alumno.queries import QueryStudent
 
+@courseSelected
 @eujierlogin
-def estadoValoracion(request, login, alumnoid):    
-    evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request)
+def estadoValoracion(request, login, course, alumnoid):    
+    evaluationSystem = QueryEvaluationSystem().getEvaluationSystemByCourse(course)
     if not evaluationSystem:
         return HttpResponseNotFound()
     
     if not evaluationSystem.isActive():
         return HttpResponseNotFound()
     
-    
-    course = QueryCourse().getCourseSelected(request)
-    student = alumnoPorId(alumnoid)
-    project = QueryProject().getProjectByCourseAndStudent(course, student)
-    coordinator = False
-    if login != alumnoid :
-        if login in QueryProject().getloginByRol(project, "TU"):
-            rol = "TU"
-            user = QueryUser().getUserByUserUJI(login)
-        else:
-            coordinator = QueryUser().getUserCoordinatorByUserUJI(login)
-            user = coordinator
-            rol = "C"
-            if not coordinator : 
-                return HttpResponseForbidden()
+    student = QueryStudent().getStudentByUserUJI(alumnoid)
+    if not student : return HttpResponseNotFound()
 
+    project = QueryProject().getProjectByCourseAndStudent(course, student)
+    if not (project): return HttpResponseNotFound()
+    coordinator = False
     if login == alumnoid :
         rol = "A"
-    
+    else:
+        if login in QueryProject().getloginByRol(project, "TU") and "professorat" in request.path:
+            rol = "TU"
+            user = QueryUser().getUserByUserUJI(login)
+            if not user : return HttpResponseForbidden()
+        else:
+            coordinator = QueryUser().getUserCoordinatorByUserUJI(login)
+            if not coordinator : return HttpResponseForbidden()     
+            user = coordinator
+            rol = "C"
+            
     
     hitos = QueryEvaluationSystemTreeCompleteOfProject(project, True, rol).getList()
     
     grupos = True
     activar=project.isUnresolved()
-    cursoActual = True # Comprobar si curso actual
+    cursoActual = QueryCourse().getLastCourse() == course
     return render_to_response("sistemaEvaluacionValoradoListado.html", locals())
 
 def creaFormulario(request, user, alumnoid, hitoid):

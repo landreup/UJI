@@ -2,9 +2,9 @@ import base64
 import random
 from evaluacion.queries import QueryEvaluation, QueryItem, QueryEvaluationSystem
 from valoracion.models import EvaluacionesFormulario, Formulario
-from proyecto.queries import QueryProject
 from valoracion.queries import QueryForm
 from proyecto.models import EstadoProyectoEnCurso
+from settings import NUMBER_OF_JUDGE_MEMBERS
 
 def activaFormulario(proyecto, item):
     for rol in QueryEvaluation().getRoles().keys():
@@ -13,17 +13,24 @@ def activaFormulario(proyecto, item):
             evaluationsItemRol = QueryEvaluation().getListEvaluationsByItemAndRol(item, rol)
             if evaluationsItemRol :
                 if rol == "TR" :
-                    for email in QueryProject().getEmailByProjectAndEvaluator(proyecto, rol):
-                        creaFormulario(proyecto, item, rol, evaluationsItemRol, email)
+                    for i in xrange(1, NUMBER_OF_JUDGE_MEMBERS+1):
+                        creaFormulario(proyecto, item, rol, evaluationsItemRol, i)
                 else:
                     creaFormulario(proyecto, item, rol, evaluationsItemRol)
 
-def creaFormulario(proyecto, item, rol, evaluationsItemRol, email=None):
+def reActivaFormulario(proyecto, evaluation):
+    if evaluation.getEvaluator() == "TR":
+        for i in xrange(1, NUMBER_OF_JUDGE_MEMBERS+1):
+            creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator, [evaluation], i)
+    else:
+        creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator, [evaluation])
+
+def creaFormulario(proyecto, item, rol, evaluationsItemRol, idMiembro=None):
     form = Formulario()
     form.proyecto = proyecto
     form.hito = item
     form.rol = rol
-    if email : form.email = email
+    if idMiembro : form.idMiembro = idMiembro
     form.codigo = aleatoryString()
     form.save()
     for evaluation in evaluationsItemRol:

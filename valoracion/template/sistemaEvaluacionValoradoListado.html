@@ -21,7 +21,7 @@
 						{% for evaluacion in hito.evaluaciones %}
 							<tr>
 								<td class="list2">
-									<span class="list2"><b>{{ evaluacion }}</b> {% if evaluacion.getForm %}	<a href="/formulari/{{ evaluacion.getForm }}"><img src="/media/img/ir.png" alt="Anar al formulari" title="Respon el formulari"/></a>{% endif %} {% ifequal evaluacion.getStatus "unlock" %}<img src="/media/img/pendiente.png" alt="(Pendent)" title="Evaluacio pendent"/>{% else %}{% ifequal evaluacion.getStatus "complete" %}<img src="/media/img/completado.png" alt="(Completat)" title="Evaluacio completada"/>{% endifequal %}{% endifequal %} </span> <br/>
+									<span class="list2"><b>{{ evaluacion }}</b> {% if evaluacion.getForm %}	<a href="/formulari/{{ evaluacion.getForm }}"><img src="/media/img/ir.png" alt="Anar al formulari" title="Respon el formulari"/></a>{% endif %} {% ifequal evaluacion.getStatus "unlock" %}<img src="/media/img/pendiente.png" alt="(Pendent)" title="Evaluacio pendent"/>{% else %}{% ifequal evaluacion.getStatus "complete" %}<img src="/media/img/completado.png" alt="(Completat)" title="Evaluacio completada"/>{% endifequal %}{% endifequal %} {% if coordinator %}<a href="formulari/evaluacio/{{ evaluacion.id }}/reactivar/">Reactivar</a>  {% endif %}</span> <br/>
 									{% if evaluacion.preguntas %}
 										<ul>
 											{% for pregunta in evaluacion.preguntas %}

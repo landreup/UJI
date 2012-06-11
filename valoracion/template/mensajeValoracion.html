@@ -1,0 +1,16 @@
+{% extends 'frontend.html' %}
+
+{% block title %}Crea Formulari{% endblock %}
+
+{% block ruta %}Coordinació: Crea Formulari{% endblock %}
+
+{% block tituloPagina %}Crea Formulari{% endblock %}
+
+{% block menuPagina %}{% include 'menu.html' %}{% endblock %}
+
+{% block contenido %}
+ <form action="" method="post">
+ 	<p>{{ mensaje }}
+ 	<input type="submit" value="Activar" onclick="if (!confirm('Estas segur de activar el hite {{ student.nombreCompleto }}?')) return false;"/></p>
+ </form>
+{% endblock %}

@@ -26,14 +26,20 @@ class QueryForm():
             return Formulario.objects.filter(proyecto=project, hito=item)
         except Formulario.DoesNotExist:
             return None
-    
-    
-    def isAllFormsCompletedOfProjectItem(self, project, item):
-        listForms = Formulario.objects.filter(proyecto=project, hito=item)
+        
+    def isAllFormsCompleted(self, listForms):
         for form in listForms:
             if not form.fechaValorado:
                 return False
         return True if listForms else False
+    
+    def isAllFormsCompletedOfProjectItem(self, project, item):
+        listForms = Formulario.objects.filter(proyecto=project, hito=item)
+        return self.isAllFormsCompleted(listForms)
+
+    def isFormCompletedOfProjectItemEvaluator(self, project, item, evaluator):
+        listForms = Formulario.objects.filter(proyecto=project, hito=item, rol=evaluator)
+        return self.isAllFormsCompleted(listForms)
     
 class QueryEvaluationForm():
     def getListEvaluationFormByForm(self, form):

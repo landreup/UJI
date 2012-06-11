@@ -1,19 +1,12 @@
 # -*- encoding: utf-8 -*-
-from django import forms
-from models import Valoracion, EvaluacionesFormulario, Formulario
+from models import Valoracion
 from queries import QueryEvaluationForm
 
-from alumno.controllers import alumnoPorId
-from curso.queries import QueryCourse
-from evaluacion.queries import QueryEvaluation, QueryQuestion, QueryItem
-from proyecto.queries import QueryProject
+from evaluacion.queries import QueryQuestion
 
-import random, base64
 from proyecto.controllers import cambiaEstadoProyecto
 from valoracion.queries import QueryForm
 import datetime
-import time
-from settings import NUMBER_OF_JUDGE_MEMBERS
 
 class ValorationForm():
     def __init__(self, request, evaluationForm):
