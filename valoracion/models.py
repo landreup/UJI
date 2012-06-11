@@ -10,7 +10,7 @@ class Formulario(models.Model):
     rol = models.CharField(max_length=2)
     idMiembro = models.IntegerField(null=True, blank=True)
     codigo = models.CharField(max_length=100, unique=True)
-    fechaValorado = models.DateTimeField(null=True, blanck=True)
+    fechaValorado = models.DateTimeField(null=True, blank=True)
     
     def isUnresolved(self):
         return self.proyecto.isUnresolved()
