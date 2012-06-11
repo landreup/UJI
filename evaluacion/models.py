@@ -52,6 +52,9 @@ class Evaluacion(models.Model):
     
     def getItem(self):
         return self.hito
+    
+    def getEvaluator(self):
+        return self.evaluador
 
     def __unicode__(self):
         roles = self.getRoles()
