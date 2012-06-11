@@ -49,6 +49,9 @@ class Evaluacion(models.Model):
         for rol in self.EVALUADOR_CHOICES:
             roles[rol[0]] = rol[1]
         return roles
+    
+    def getItem(self):
+        return self.hito
 
     def __unicode__(self):
         roles = self.getRoles()

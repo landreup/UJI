@@ -141,6 +141,9 @@ class NodeEvaluation(NodeEvaluation):
     def getStatus(self):
         return self.status
     
+    def getItem(self):
+        return self.evaluation.hito
+    
     def getValue(self):
         return self.value
     
