@@ -24,6 +24,7 @@ def reActivaFormulario(proyecto, evaluation):
             creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator, [evaluation], i)
     else:
         creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator(), [evaluation])
+        # ENVIAR CORREO
 
 def creaFormulario(proyecto, item, rol, evaluationsItemRol, idMiembro=None):
     form = Formulario()
