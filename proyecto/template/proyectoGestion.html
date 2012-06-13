@@ -195,7 +195,9 @@ function rellenaFechas(){
 		var campo = document.getElementById(camposFecha[i]);
 		var duracion = campo.getAttribute('data-duracion')*7;
 		fecha.setDate(fecha.getDate()+duracion);
-		campo.value= construyeFecha();
+		if (campo.value != null){
+			campo.value= construyeFecha();
+		}
 	}
 };
 </script>
