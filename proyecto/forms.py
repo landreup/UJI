@@ -37,7 +37,8 @@ class EstimateDateForm(ModelForm):
 class EstimateDateItemForm():
     def __init__(self, request, studentUserUJI):
         self.request = request
-        items = QueryItem().getListItemsByEvaluationSystem(QueryEvaluationSystem().getEvaluationSystemByCourseSelected(request))
+        course = QueryCourse().getCourseSelected(self.request)
+        items = QueryItem().getListItemsByEvaluationSystem(QueryEvaluationSystem().getEvaluationSystemByCourse(course))
         
         self.project = None 
         if studentUserUJI : self.project = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(request), QueryStudent().getStudentByUserUJI(studentUserUJI))       
@@ -46,7 +47,7 @@ class EstimateDateItemForm():
         if projectStatus :
             nextItem = QueryItem().getNextItem(projectStatus.hito)
         else :
-            nextItem = QueryItem().getFirstItemCourse(self.project.curso)
+            nextItem = QueryItem().getFirstItemCourse(course)
         self.forms = []
         self.fechas = []
         inputDate = False
@@ -160,6 +161,7 @@ class ProyectoAlumnoForm():
         self.request = request
         self.alumnoid = alumnoUserUJI
         self.estado = None
+        self.course = QueryCourse().getCourseSelected(self.request)
         
         self.tutorForm = None
         self.tribunalForm = None
@@ -290,7 +292,7 @@ class ProyectoAlumnoForm():
     
     def createProject(self):
         self.proyecto.alumno = self.alumno
-        self.proyecto.curso = QueryCourse().getCourseSelected(self.request)
+        self.proyecto.curso = self.course
         self.proyecto.tutor = self.tutor
         self.proyecto.estado = "L"
         self.proyecto.save()
@@ -308,7 +310,7 @@ class ProyectoAlumnoForm():
         self.alumno = alumnoDB
         
     def editProject(self):
-        curso = QueryCourse().getCourseSelected(self.request)
+        curso = self.course
      
         alumno = QueryStudent().getStudentByUserUJI(self.alumnoid)
         
