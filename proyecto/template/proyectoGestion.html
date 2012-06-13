@@ -180,7 +180,7 @@ function rellenaFechas(){
 	var inicio = document.getElementById('id_proyecto-inicio');
 	var campos_fecha = [
 	                    {% for form in form.dateForm.forms %}
-	                    	{{ form.id }},
+	                    	"{{ form.id }}",
 	                    {% endfor %}
 	                    ];
 	for (i in campos_fecha) {
