@@ -144,7 +144,7 @@
 					  	  				<tr>
 					  	  					<td><label for="{{ form.id }}">{{ form.label }}:</label></td>
 					  	  					<td>
-					  	  						<input id="{{ form.id }}" type="text" data-duracion="{{ form.plazo }}" value="{{ form.form.fecha.value | date: "d/m/Y" }}"/>
+					  	  						<input id="{{ form.id }}" type="text" data-duracion="{{ form.plazo }}" value="{{ form.form.fecha.value | date }}"/>
 					  	  						{{ form.form.fecha }}
 					  	  					</td>
 					  	  					<td>
