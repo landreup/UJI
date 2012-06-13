@@ -184,8 +184,9 @@ function rellenaFechas(){
 	                    {% endfor %}
 	                    ];
 	for (i in campos_fecha) {
-		var campo = campos_fecha[i];
-		alert(campo);	
+		var campo = document.getElementById(campos_fecha[i]);
+		var duracion = campo.getAttribute('data-duracion');
+		alert(campo + "duracion: "+ duracion);	
 	}
 	
 	return false;
