@@ -159,7 +159,7 @@ class ProyectoAlumnoForm():
         self.action = action
         self.request = request
         self.alumnoid = alumnoUserUJI
-        self.pendiente = None
+        self.estado = None
         
         self.tutorForm = None
         self.tribunalForm = None
