@@ -177,8 +177,16 @@
 					  </form>
 <script type="text/javascript">
 function rellenaFechas(){
-	inicio = document.getElementById('id_proyecto-inicio');
-	alert(inicio.value);
+	var inicio = document.getElementById('id_proyecto-inicio');
+	var campos_fecha = [
+	                    {% for form in form.dateForm.forms %}
+	                    	{{ form.id }},
+	                    {% endfor %}
+	                    ]
+	for campo in campos_fecha {
+		alert(campo);	
+	}
+	
 	return false;
 };
 </script>
