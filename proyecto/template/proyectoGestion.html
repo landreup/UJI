@@ -145,7 +145,6 @@
 					  	  					<td><label for="{{ form.id }}">{{ form.label }}:</label></td>
 					  	  					<td>
 					  	  						<input id="{{ form.id }}" type="text" data-duracion="{{ form.plazo }}" value="{{ form.form.fecha.value|date }}"/>
-					  	  						{{ form.form.fecha }}
 					  	  					</td>
 					  	  					<td>
 					  	  						{% if form.form.fecha.errors %}
@@ -174,5 +173,14 @@
 					  ##
 					  {{ form.proyectoForm.errors }}
 					  <input type="submit" value="Guarda canvis" onclick="if (!confirm('Estas segur de guardar els canvis?')) return false;"/>
+					  <input type="submit" value="Hace Algo" onclick="return rellenaFechas();"/>
 					  </form>
+<script type="text/javascript">
+function rellenaFechas(){
+	inicio = document.getElementById('id_proyecto-inicio');
+	alert(inicio.value);
+	return false;
+};
+</script>
+					  
 {% endblock %}
