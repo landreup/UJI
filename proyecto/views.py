@@ -27,6 +27,7 @@ def listadoProyectosProfesor(request, user, course):
     finalizados = QueryProject().getListProjectByCourseStatusTutor(course, "F", user)
     anyadir = isEditable(course)
     editar = isEditable(course)
+    grupos = enCurso
     vacio = not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
     fechaTope = course.fechaTope.strftime('%d/%m/%Y') if course.fechaTope else None
@@ -42,6 +43,7 @@ def listadoProyectosCoordinador(request, user, course):
     finalizados = QueryProject().getListProjectByCourseAndStatus(course, "F")
     anyadir = isEditable(course)
     editar = isEditable(course)
+    grupos = enCurso
     vacio = not pendientes and not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
     fechaTope = course.fechaTope.strftime('%d/%m/%Y') if course.fechaTope else None
@@ -59,6 +61,7 @@ def listadoProyectosCoordinadorProfesor(request, user, course, profesorid):
     finalizados = QueryProject().getListProjectByCourseStatusTutor(course, "F", user)
     anyadir = isEditable(course)
     editar = isEditable(course)
+    grupos = enCurso
     vacio = not enCurso and not finalizados
     cursos = QueryCourse().getListCourse(request)
     fechaTope = course.fechaTope.strftime('%d/%m/%Y') if course.fechaTope else None
@@ -101,6 +104,8 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid="", profeso
         else: 
             if accion != "nuevo" :
                 return HttpResponseNotFound()
+    else:
+        tutor = user if "professorat" in request.path else None
 
     if (request.method == "POST") :
         form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
@@ -118,6 +123,5 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid="", profeso
         form = ProyectoAlumnoForm(request, accion, alumnoid, tutor)
     
     ocultaCurso=True
-    grupos = True
     
     return render_to_response('proyectoGestion.html', locals()) 

@@ -1,5 +1,6 @@
 from usuario.forms import ProfesorForm
-from django.http import HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponseNotFound,\
+    HttpResponseForbidden
 from django.shortcuts import render_to_response
 from curso.controllers import cursoNuevo
 from curso.models import Curso
@@ -8,9 +9,13 @@ from usuario.eujierlogin import eujierlogin
 import datetime
 from alumno.queries import QueryStudent
 from usuario.queries import QueryUser
+from curso.queries import QueryCourse
 
 @eujierlogin
 def iniciaAplicacion(request, login):
+    if QueryCourse().getLastCourse():
+        return HttpResponseForbidden()
+    
     if (request.method == "POST" ) :
         form = ProfesorForm(request)
         if (form.is_valid()):

@@ -172,12 +172,12 @@ class ProyectoAlumnoForm():
             self.proyecto = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), self.alumno)
             
             self.estado = self.proyecto.estado
-            if self.proyecto.estado == "L": 
-                statusProject = QueryStatusProjectInCourse().getProjectByProject(self.proyecto)
-                item = statusProject.hito if statusProject else None
-                nextItem = QueryItem().getNextItem(item) if item else QueryItem().getFirstItemCourse(self.proyecto.curso)
-                if QueryItem().hasTribunalEvaluationThisItem(nextItem):
-                    self.tribunalForm = TribunalForm(request, alumnoUserUJI)            
+#            if self.proyecto.estado == "L": 
+            statusProject = QueryStatusProjectInCourse().getProjectByProject(self.proyecto)
+            item = statusProject.hito if statusProject else None
+            nextItem = QueryItem().getNextItem(item) if item else QueryItem().getFirstItemCourse(self.proyecto.curso)
+            if QueryItem().hasTribunalEvaluationThisItem(nextItem):
+                self.tribunalForm = TribunalForm(request, alumnoUserUJI)            
             self.dateForm = EstimateDateItemForm(request, alumnoUserUJI) if self.estado != "P" else None
         
         self.alumnoForm = AlumnoForm(prefix='alumno', instance=self.alumno)
