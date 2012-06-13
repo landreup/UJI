@@ -91,7 +91,7 @@ def camposPorRellenarProyecto(proyecto, item):
 
 def tribunalPorRellenarProyecto(proyecto, item):
     if QueryItem().hasTribunalEvaluationThisItem(item):
-        if not QueryJudgeMembers().isJudgeDefinedForProject(proyecto):
+        if QueryJudgeMembers().isJudgeDefinedForProject(proyecto):
             return False
         else:
             return True
