@@ -171,19 +171,21 @@ class ProyectoAlumnoForm():
             self.alumno = QueryStudent().getStudentByUserUJI(alumnoUserUJI)
             self.proyecto = QueryProject().getProjectByCourseAndStudent(QueryCourse().getCourseSelected(self.request), self.alumno)
             
-            self.estado = self.proyecto.estado 
-            statusProject = QueryStatusProjectInCourse().getProjectByProject(self.proyecto)
-            item = statusProject.hito if statusProject else None
-            if self.proyecto.estado == "L":
-                nextItem = QueryItem().getNextItem(item) if item else QueryItem().getFirstItemCourse(self.proyecto.curso)
-            else:
-                nextItem = item
-            if QueryItem().hasTribunalEvaluationThisItem(nextItem):
-                self.tribunalForm = TribunalForm(request, alumnoUserUJI)            
-            self.dateForm = EstimateDateItemForm(request, alumnoUserUJI) if self.estado != "P" else None
+            
+            self.estado = self.proyecto.estado
+            if coordinator: 
+                statusProject = QueryStatusProjectInCourse().getProjectByProject(self.proyecto)
+                item = statusProject.hito if statusProject else None
+                if self.proyecto.estado == "L":
+                    nextItem = QueryItem().getNextItem(item) if item else QueryItem().getFirstItemCourse(self.proyecto.curso)
+                else:
+                    nextItem = item
+                if QueryItem().hasTribunalEvaluationThisItem(nextItem):
+                    self.tribunalForm = TribunalForm(request, alumnoUserUJI)            
         
         self.alumnoForm = AlumnoForm(prefix='alumno', instance=self.alumno)
         self.proyectoForm = ProyectoForm(prefix='proyecto', instance=self.proyecto)
+        self.dateForm = EstimateDateItemForm(request, alumnoUserUJI) if self.estado != "P" else None
         
         if coordinator :
             if action != "nuevo" :
@@ -196,17 +198,21 @@ class ProyectoAlumnoForm():
         
         if request.method == 'POST': # Leer los datos
             if action != "nuevo":
-                if self.estado == "L": 
+                if coordinator:
                     statusProject = QueryStatusProjectInCourse().getProjectByProject(self.proyecto)
                     item = statusProject.hito if statusProject else None
-                    nextItem = QueryItem().getNextItem(item) if item else QueryItem().getFirstItemCourse(self.proyecto.curso)
+                    if self.estado == "L": 
+                        nextItem = QueryItem().getNextItem(item) if item else QueryItem().getFirstItemCourse(self.proyecto.curso)
+                    else:
+                        nextItem = item
                     
                     if QueryItem().hasTribunalEvaluationThisItem(nextItem):
                         self.tribunalForm = TribunalForm(request, alumnoUserUJI)
-                self.dateForm = EstimateDateItemForm(request, alumnoUserUJI) if self.estado != "P" else None
+            
             
             self.alumnoForm = AlumnoForm(request.POST, prefix='alumno', instance=self.alumno)
             self.proyectoForm = ProyectoForm(request.POST, prefix='proyecto', instance=self.proyecto)
+            self.dateForm = EstimateDateItemForm(request, alumnoUserUJI) if self.estado != "P" else None
             if coordinator :
                 self.tutorId = self.proyectoForm.data["tutor-tutor"]
             else:
