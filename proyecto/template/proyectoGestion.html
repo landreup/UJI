@@ -72,7 +72,7 @@
 							  	  		</tr>
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_proyecto-inicio">Data d'inici</label></td>
-							  	  			<td>{{ form.proyectoForm.inicio }}</td>
+							  	  			<td><input id="id_proyecto-inicio" type="text" value="{{ form.proyectForm.inicio.value|date }}" onblur="rellenaFechas();"/></td>
 							  	  			<td><label>{{ form.proyectoForm.inicio.errors }}</label></td>
 							  	  		</tr>
 							  	  		<tr>
@@ -173,23 +173,30 @@
 					  ##
 					  {{ form.proyectoForm.errors }}
 					  <input type="submit" value="Guarda canvis" onclick="if (!confirm('Estas segur de guardar els canvis?')) return false;"/>
-					  <input type="submit" value="Hace Algo" onclick="return rellenaFechas();"/>
 					  </form>
 <script type="text/javascript">
 function rellenaFechas(){
-	var inicio = document.getElementById('id_proyecto-inicio');
-	var campos_fecha = [
+	var construyeFecha = function(){
+		var rellenoDia = (fecha.getDate() < 10 ) ? "0" : "";
+		var rellenoMes = (fecha.getMonth()< 9) ? "0" : "";
+		return rellenoDia + fecha.getUTCDate() +"/" + rellenoMes + (fecha.getUTCMonth()+1) + "/" + fecha.getFullYear();
+	};
+	
+	var camposFecha = [
 	                    {% for form in form.dateForm.forms %}
 	                    	"{{ form.id }}",
 	                    {% endfor %}
 	                    ];
-	for (i in campos_fecha) {
-		var campo = document.getElementById(campos_fecha[i]);
-		var duracion = campo.getAttribute('data-duracion');
-		alert(campo + "duracion: "+ duracion);	
-	}
 	
-	return false;
+	var inicio = document.getElementById('id_proyecto-inicio');
+	var fecha = new Date(inicio.value.substring(6,10), parseInt(inicio.value.substring(3,5))-1, inicio.value.substring(0,2));
+	fecha.setDate(fecha.getDate() + 1);
+	for (i in camposFecha) {
+		var campo = document.getElementById(camposFecha[i]);
+		var duracion = campo.getAttribute('data-duracion')*7;
+		fecha.setDate(fecha.getDate()+duracion);
+		campo.value= construyeFecha();
+	}
 };
 </script>
 					  

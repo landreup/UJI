@@ -77,8 +77,9 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid="", profeso
     project = None
     errors = None
     tutor = None
+    
     if not isEditable(course):
-        return HttpResponseForbidden()
+        return HttpResponseForbidden("mal curso")
     
     profesor = QueryUser().getUserByUserUJI(profesorid) if profesorid  else None
     

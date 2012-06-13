@@ -51,6 +51,7 @@ class EstimateDateItemForm():
         self.forms = []
         self.fechas = []
         inputDate = False
+        duration = 0
         for item in items :
             if self.project :
                 if self.project.estado == "C" :
@@ -62,14 +63,16 @@ class EstimateDateItemForm():
             if inputDate :
                 if request.method == "POST" :
                     fecha = request.POST.get(str(item.id)+"-fecha", '')
-                    form = {"id": "id_" + str(item.id)+"-fecha", "label": item.nombre, "plazo": item.plazo, "form": EstimateDateForm(request.POST, prefix=str(item.id))}
+                    form = {"id": "id_" + str(item.id)+"-fecha", "label": item.nombre, "plazo": duration+item.plazo, "form": EstimateDateForm(request.POST, prefix=str(item.id))}
                     if fecha: self.fechas.append({"item": item, "fecha": fecha})
                 else:
-                    form = {"id": "id_" + str(item.id)+"-fecha", "label": item.nombre, "plazo": item.plazo, "form": EstimateDateForm(prefix=str(item.id))}
+                    form = {"id": "id_" + str(item.id)+"-fecha", "label": item.nombre, "plazo": duration+item.plazo, "form": EstimateDateForm(prefix=str(item.id))}
                     estimateDate = QueryEstimateDate().getEstimateDateByProjectAndItem(self.project, item)
                     if estimateDate :
                         form["form"].initial["fecha"] = estimateDate.fecha
                 self.forms.append(form)
+            else:
+                duration += item.plazo
     
     def is_valid(self):
         isValid = True
