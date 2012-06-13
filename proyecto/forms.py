@@ -52,10 +52,13 @@ class EstimateDateItemForm():
         self.fechas = []
         inputDate = False
         for item in items :
-            if self.project.estado == "C" :
-                if item == projectStatus.hito : inputDate = True
-            elif self.project.estado == "L" :
-                if item == nextItem : inputDate = True
+            if self.project :
+                if self.project.estado == "C" :
+                    if item == projectStatus.hito : inputDate = True
+                elif self.project.estado == "L" :
+                    if item == nextItem : inputDate = True
+            else:
+                inputDate =True
             if inputDate :
                 if request.method == "POST" :
                     fecha = request.POST.get(str(item.id)+"-fecha", '')
