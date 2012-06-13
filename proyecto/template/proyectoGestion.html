@@ -179,7 +179,7 @@ function rellenaFechas(){
 	var construyeFecha = function(){
 		var rellenoDia = (fecha.getDate() < 10 ) ? "0" : "";
 		var rellenoMes = (fecha.getMonth()< 9) ? "0" : "";
-		return rellenoDia + fecha.getUTCDate() +"/" + rellenoMes + (fecha.getUTCMonth()+1) + "/" + fecha.getFullYear();
+		return rellenoDia + fecha.getDate() +"/" + rellenoMes + (fecha.getMonth()+1) + "/" + fecha.getFullYear();
 	};
 	
 	var camposFecha = [
