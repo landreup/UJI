@@ -182,8 +182,9 @@ function rellenaFechas(){
 	                    {% for form in form.dateForm.forms %}
 	                    	{{ form.id }},
 	                    {% endfor %}
-	                    ]
-	for campo in campos_fecha {
+	                    ];
+	for (i in campos_fecha) {
+		var campo = campos_fecha[i];
 		alert(campo);	
 	}
 	
