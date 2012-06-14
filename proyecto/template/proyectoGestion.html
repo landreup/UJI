@@ -193,7 +193,7 @@ background-color: #FFD700;
 <script type="text/javascript">
 var camposFecha = [
                    {% for form in form.dateForm.forms %}
-                   	"{{ form.id }}",
+                   	"id_{{ form.id }}",
                    {% endfor %}
                    ];
 
