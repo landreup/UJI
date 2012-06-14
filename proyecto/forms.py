@@ -63,7 +63,7 @@ class EstimateDateItemForm():
             if inputDate :
                 if request.method == "POST" :
                     fecha = request.POST.get(str(item.id)+"-fecha", '')
-                    form = {"id": "id_" + str(item.id)+"-fecha", "label": item.nombre, "plazo": duration+item.plazo, "form": EstimateDateForm(request.POST, prefix=str(item.id))}
+                    form = {"id": str(item.id)+"-fecha", "label": item.nombre, "plazo": duration+item.plazo, "form": EstimateDateForm(request.POST, prefix=str(item.id))}
                     if fecha: self.fechas.append({"item": item, "fecha": fecha})
                 else:
                     form = {"id": "id_" + str(item.id)+"-fecha", "label": item.nombre, "plazo": duration+item.plazo, "form": EstimateDateForm(prefix=str(item.id))}
