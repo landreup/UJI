@@ -72,7 +72,9 @@
 							  	  		</tr>
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_proyecto-inicio">Data d'inici</label></td>
-							  	  			<td><input id="id_proyecto-inicio" type="text" value="{{ form.proyectForm.inicio.value|date }}" onblur="rellenaFechas();"/></td>
+							  	  			<td><input name="proyecto-inicio" id="id_proyecto-inicio" type="text" value="{{ form.proyectForm.inicio.value|date }}" onblur="rellenaFechas();"/>
+							  	  			{{ form.proyectoForm.inicio }}
+							  	  			</td>
 							  	  			<td><label>{{ form.proyectoForm.inicio.errors }}</label></td>
 							  	  		</tr>
 							  	  		<tr>
@@ -173,20 +175,34 @@
 					  ##
 					  {{ form.proyectoForm.errors }}
 					  <input type="submit" value="Guarda canvis" onclick="if (!confirm('Estas segur de guardar els canvis?')) return false;"/>
+					  <input type="submit" value="Hace algo" onclick="return compruebaCampos();"/>
 					  </form>
+
+<style type="text/css">
+.ok{
+background-color: #CCFFCC;
+}
+.no_ok{
+background-color: #FF0000;
+}
+.war{
+background-color: #FFD700;
+}
+</style>
+					  
 <script type="text/javascript">
+var camposFecha = [
+                   {% for form in form.dateForm.forms %}
+                   	"{{ form.id }}",
+                   {% endfor %}
+                   ];
+
 function rellenaFechas(){
 	var construyeFecha = function(){
 		var rellenoDia = (fecha.getDate() < 10 ) ? "0" : "";
 		var rellenoMes = (fecha.getMonth()< 9) ? "0" : "";
 		return rellenoDia + fecha.getDate() +"/" + rellenoMes + (fecha.getMonth()+1) + "/" + fecha.getFullYear();
 	};
-	
-	var camposFecha = [
-	                    {% for form in form.dateForm.forms %}
-	                    	"{{ form.id }}",
-	                    {% endfor %}
-	                    ];
 	
 	var inicio = document.getElementById('id_proyecto-inicio');
 	var fecha = new Date(inicio.value.substring(6,10), parseInt(inicio.value.substring(3,5))-1, inicio.value.substring(0,2));
@@ -199,6 +215,36 @@ function rellenaFechas(){
 			campo.value= construyeFecha();
 		}
 	}
+};
+
+function compruebaCampos(){
+	var tipoFecha = "^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4}$";
+	var tipoEstudianteUJI = "^al[0-9]{6}$";
+	var tipoNada = "";
+	var compruebaCampo= function(campo, regex, obligatorio){
+		if (campo.value.match(regex)) campo.style.backgroundColor = "#99FF99";
+		else 
+			if (campo.value) campo.style.backgroundColor = "#FF6666";
+			else 
+				if (obligatorio) campo.style.backgroundColor = "#FFFFAA";
+				else campo.style.backgroundColor = "#FFFFFF";
+	};
+	
+	var userUJI = document.getElementById('id_alumno-usuarioUJI');
+	compruebaCampo(userUJI, tipoEstudianteUJI, true);
+	
+	var fecha = document.getElementById('id_proyecto-inicio');
+	
+	compruebaCampo(fecha, tipoFecha, true);
+	
+	for (i in camposFecha){
+		var campo = document.getElementById(camposFecha[i]);
+		compruebaCampo(campo, tipoFecha, false);
+	}
+	
+	
+	
+	return false;
 };
 </script>
 					  
