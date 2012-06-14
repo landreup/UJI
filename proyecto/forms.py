@@ -66,7 +66,7 @@ class EstimateDateItemForm():
                     form = {"id": str(item.id)+"-fecha", "label": item.nombre, "plazo": duration+item.plazo, "form": EstimateDateForm(request.POST, prefix=str(item.id))}
                     if fecha: self.fechas.append({"item": item, "fecha": fecha})
                 else:
-                    form = {"id": "id_" + str(item.id)+"-fecha", "label": item.nombre, "plazo": duration+item.plazo, "form": EstimateDateForm(prefix=str(item.id))}
+                    form = {"id": str(item.id)+"-fecha", "label": item.nombre, "plazo": duration+item.plazo, "form": EstimateDateForm(prefix=str(item.id))}
                     estimateDate = QueryEstimateDate().getEstimateDateByProjectAndItem(self.project, item)
                     if estimateDate :
                         form["form"].initial["fecha"] = estimateDate.fecha
