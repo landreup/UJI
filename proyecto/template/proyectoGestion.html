@@ -72,7 +72,8 @@
 							  	  		</tr>
 							  	  		<tr>
 							  	  			<td width="125px"><label for="id_proyecto-inicio">Data d'inici</label></td>
-							  	  			<td><input name="proyecto-inicio" id="id_proyecto-inicio" type="text" value="{{ form.proyectForm.inicio.value|date }}" onblur="rellenaFechas();"/>
+							  	  			<td>
+							  	  			<input type="text" name="proyecto-inicio" value="{{ form.proyectForm.inicio.value|date }}" id="id_proyecto-inicio" onblur="rellenaFechas();">
 							  	  			{{ form.proyectoForm.inicio }}
 							  	  			</td>
 							  	  			<td><label>{{ form.proyectoForm.inicio.errors }}</label></td>
