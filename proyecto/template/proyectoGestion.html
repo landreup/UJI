@@ -221,7 +221,7 @@ function compruebaCampos(){
 	var tipoFecha = "^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4}$";
 	var tipoEstudianteUJI = "^al[0-9]{6}$";
 	var tipoAlgo = "^.+$";
-	var tipoEmail = "/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3,4})+$/";
+	var tipoEmail = "^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3,4})+$";
 	var tipoTelefono = "^[0-9]{9}$";
 	var compruebaCampo= function(condicionesAnalizar){
 		campo = document.getElementById(condicionesAnalizar.campo);
