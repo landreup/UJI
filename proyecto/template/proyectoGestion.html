@@ -297,7 +297,7 @@ function compruebaCampos(){
 	];
   var errores = [
   {% for error in camposErrores %}
-  	{{ error }},
+  	"{{ error }}",
   {% endfor %}
   ];
 	
