@@ -76,10 +76,11 @@ def cambiaCurso(request, curso):
 def gestionProyectos(request, user, course, accion="nuevo", alumnoid="", profesorid=""):
     project = None
     errors = None
+    camposErrores = None
     tutor = None
     
     if not isEditable(course):
-        return HttpResponseForbidden("mal curso")
+        return HttpResponseForbidden()
     
     profesor = QueryUser().getUserByUserUJI(profesorid) if profesorid  else None
     
@@ -94,6 +95,7 @@ def gestionProyectos(request, user, course, accion="nuevo", alumnoid="", profeso
             revision = QueryProjectUnresolvedInCourse().getProjectUnresolvedByProject(project)
             if revision : 
                 errors= mensajeError(revision)
+                camposErrores = revision.campos.split(",") 
             if user == project.tutor :
                 tutor = user if "professorat" in request.path else None
             else:

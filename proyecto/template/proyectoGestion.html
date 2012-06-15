@@ -220,8 +220,13 @@ function rellenaFechas(){
 function compruebaCampos(){
 	var tipoFecha = "^(0[1-9]|[1-2][0-9]|3[0-1])/(0[1-9]|1[0-2])/[0-9]{4}$";
 	var tipoEstudianteUJI = "^al[0-9]{6}$";
-	var tipoNada = "";
-	var compruebaCampo= function(campo, regex, obligatorio){
+	var tipoAlgo = "^.+$";
+	var tipoEmail = "^$";
+	var tipoTelefono = "^[0-9]{9}$";
+	var compruebaCampo= function(condicionesAnalizar){
+		campo = document.getElementById(condicionesAnalizar.campo);
+		regex = condicionesAnalizar.validador
+		obligatorio = condicionesAnalizar.obligatorio
 		if (campo.value.match(regex)) campo.style.backgroundColor = "#99FF99";
 		else 
 			if (campo.value) campo.style.backgroundColor = "#FF6666";
@@ -230,20 +235,85 @@ function compruebaCampos(){
 				else campo.style.backgroundColor = "#FFFFFF";
 	};
 	
-	var userUJI = document.getElementById('id_alumno-usuarioUJI');
-	compruebaCampo(userUJI, tipoEstudianteUJI, true);
-	
-	var fecha = document.getElementById('id_proyecto-inicio');
-	
-	compruebaCampo(fecha, tipoFecha, true);
+	var campos = [
+  {
+	campo: "id_alumno-nombre",
+	validador: tipoAlgo,
+	obligatorio: true
+  },
+  {
+  	campo: "id_alumno-apellidos",
+  	validador: tipoAlgo,
+  	obligatorio: true
+  },
+  {
+	campo: "id_alumno-usuarioUJI",
+	validador: tipoEstudianteUJI,
+	obligatorio: true
+  },
+  {
+  	campo: "id_proyecto-empresa",
+  	validador: tipoAlgo,
+  	obligatorio: true
+  },
+  {
+  	campo: "id_proyecto-supervisor",
+  	validador: tipoAlgo,
+  	obligatorio: true
+  },
+  {
+  	campo: "id_proyecto-email",
+  	validador: tipoAlgo,
+  	obligatorio: true
+  },
+  {
+  	campo: "id_proyecto-telefono",
+  	validador: tipoTelefono,
+  	obligatorio: true
+  },
+  {
+  	campo: "id_proyecto-inicio",
+  	validador: tipoFecha,
+  	obligatorio: {% if "id_proyecto-inicio" in camposErrores %} true {% else %} false {% endif %}
+  },
+  {
+  	campo: "id_proyecto-dedicacionSemanal",
+  	validador: tipoAlgo,
+  	obligatorio: {% if "id_proyecto-dedicacionSemanal" in camposErrores %} true {% else %} false {% endif %}
+  },
+  {
+  	campo: "id_proyecto-titulo",
+  	validador: tipoAlgo,
+  	obligatorio: false
+  },
+  {% if form.tutorForm %}	
+  {
+	  	campo: "id_tutor-tutor",
+	  	validador: tipoAlgo,
+	  	obligatorio: true
+  },
+  {% endif %}
+	              
+	];
+  var errores = [
+  {% for error in camposErrores %}
+  	{{ error }},
+  {% endfor %}
+  ];
 	
 	for (i in camposFecha){
-		var campo = document.getElementById(camposFecha[i]);
-		compruebaCampo(campo, tipoFecha, false);
-	}
+		var obligatorio = false;
+		if (camposFecha[i] in errores) obligatorio = true;
+		campos[campos.length] = {
+				  	campo: camposFecha[i],
+				  	validador: tipoFecha,
+				  	obligatorio: obligatorio
+		}
+	};	
 	
-	
-	
+	for (i in campos){
+		compruebaCampo(campos[i]);
+	}	
 	return false;
 };
 </script>
