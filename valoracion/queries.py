@@ -183,7 +183,6 @@ class ListQuestions(ListQuestions):
             node = NodeQuestion(question)
             for evaluationForm in evaluationForms:
                 valoration = QueryValoration().valorationByEvaluationFormAndQuestion(evaluationForm, question)
-                a = afasdfsa()
                 if valoration : node.addValoration(valoration)
             self.list.append(node)
             
