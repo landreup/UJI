@@ -145,7 +145,8 @@ class NodeEvaluation(NodeEvaluation):
                 for valoration in question.getValoration():
                     parcial += valoration
                     i += 1.0
-                total += parcial / i
+                if i > 0.0 :
+                    total += parcial / i
             self.value = float(total)/len(self.preguntas)
             
     def getStatus(self):
