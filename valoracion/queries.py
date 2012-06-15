@@ -65,7 +65,7 @@ class QueryValoration():
     def valorationByEvaluationFormAndQuestion(self, evaluationForm, question):
         id = evaluationForm.id
         questionId = question.id
-        valoraciones =Valoracion.objects.filter(evaluacionFormulario=evaluationForm)
+        valoraciones = Valoracion.objects.filter(evaluacionFormulario=evaluationForm, pregunta=question)
         
         return valoraciones
     
@@ -179,6 +179,7 @@ class NodeEvaluation(NodeEvaluation):
 class ListQuestions(ListQuestions):
     def __init__(self, evaluationForms, questions):
         self.list = []
+        a= afasdfs()
         for question in questions:
             node = NodeQuestion(question)
             for evaluationForm in evaluationForms:
