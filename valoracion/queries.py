@@ -134,7 +134,7 @@ class NodeEvaluation(NodeEvaluation):
         if puntuation :#and evaluationForm:
             self.preguntas = ListQuestions(self.evaluationForms, evaluation.getQuestions()).getList()
             self.calculatePuntuation()
-        self.status = "complete" if self.value else "unlock" if self.evaluationForm else "lock"
+        self.status = "complete" if self.value else "unlock" if self.evaluationForms else "lock"
      
     def calculatePuntuation(self):    
         total = 0
