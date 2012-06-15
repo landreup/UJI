@@ -51,16 +51,20 @@ class QueryEvaluationForm():
         except EvaluacionesFormulario.DoesNotExist:
             return None
         
-    def getEvaluationFormByProjectAndEvaluation(self, project, evaluation) :
+    def getEvaluationFormsByProjectAndEvaluation(self, project, evaluation) :
         forms = QueryForm().getListFormByProject(project)
-        evaluationForm = None
+        evaluationForms = []
         for form in forms :
-            evaluationForm = self.getEvaluationFormByFormAndEvaluation(form, evaluation)
-            if evaluationForm :
-                break
-        return evaluationForm
+            if not form.fechaValorado:
+                evaluationForm = self.getEvaluationFormByFormAndEvaluation(form, evaluation)
+                if evaluationForm :
+                    evaluationForms.append(evaluationForm)
+        return evaluationForms
 
 class QueryValoration():
+    def valorationByEvaluationFormAndQuestion(self, evaluationForm, question):
+        return Valoracion.objects.filter(evaluacionFormulario=evaluationForm, pregunta=question)
+    
     def getListValorationsByEvaluationForm(self, evaluationForm): 
         return Valoracion.objects.filter(evaluacionFormulario=evaluationForm).order_by("pregunta")
 
@@ -124,19 +128,25 @@ class NodeEvaluation(NodeEvaluation):
         self.id = evaluation.id
         self.rol = rol
         self.evaluation = evaluation
-        self.evaluationForm = QueryEvaluationForm().getEvaluationFormByProjectAndEvaluation(project, evaluation)
+        self.evaluationForms = QueryEvaluationForm().getEvaluationFormsByProjectAndEvaluation(project, evaluation)
         self.preguntas = QueryQuestion().getListQuestionsByEvaluation(evaluation.id)
         self.value = None
         if puntuation :#and evaluationForm:
-            self.preguntas = ListQuestions(self.evaluationForm, evaluation.getQuestions()).getList()
-            total = 0
-            if self.preguntas :
-                for question in self.preguntas :
-                    total += question.getValoration()
-                self.value = float(total)/len(self.preguntas)
-            # VALORAR TOTAL
+            self.preguntas = ListQuestions(self.evaluationForms, evaluation.getQuestions()).getList()
+            self.calculatePuntuation()
         self.status = "complete" if self.value else "unlock" if self.evaluationForm else "lock"
-        
+     
+    def calculatePuntuation(self):    
+        total = 0
+        if self.preguntas :
+            for question in self.preguntas :
+                i = 0.0
+                parcial = 0
+                for valoration in question.getValoration():
+                    parcial += valoration
+                    i += 1.0
+                total += parcial / i
+            self.value = float(total)/len(self.preguntas)
             
     def getStatus(self):
         return self.status
@@ -147,11 +157,13 @@ class NodeEvaluation(NodeEvaluation):
     def getValue(self):
         return self.value
     
-    def getForm(self):
+    def getForms(self):
         if self.status == "unlock" :
             if self.evaluation.getEvaluator() == self.rol or self.rol == "C" :
-                return self.evaluationForm.formulario.codigo
-        return None
+                for evaluationForm in self.evaluationForms:
+                    yield evaluationForm.formulario.codigo
+            else : yield None
+        else : yield None
     
     def __unicode__(self):
         name = unicode(self.evaluation)
@@ -160,37 +172,34 @@ class NodeEvaluation(NodeEvaluation):
         return name
     
 class ListQuestions(ListQuestions):
-    def __init__(self, evaluationForm, questions):
+    def __init__(self, evaluationForms, questions):
         self.list = []
-        valorations = QueryValoration().getListValorationsByEvaluationForm(evaluationForm)
         for question in questions:
             node = NodeQuestion(question)
-            for valoration in valorations:
-                if question == valoration.pregunta :
-                    node.setValoration(valoration)
-                    break
+            for evaluationForm in evaluationForms:
+                valoration = QueryValoration().valorationByEvaluationFormAndQuestion(evaluationForm, question)
+                node.addValoration(valoration)
             self.list.append(node)
-        
+            
     def getList(self):
         return self.list
 
 class NodeQuestion():
     def __init__(self, question):
         self.question = question
-        self.valoration = None
+        self.valorations = []
         
-    def setValoration(self, valoration):
-        self.valoration = valoration.respuesta
+    def addValoration(self, valoration):
+        self.valorations.append(valoration.respuesta)
     
     def getValoration(self):
-        if self.valoration:
-            return int(self.valoration)
-        else:
-            return 0
+        for valoration in self.valorations:
+            yield int(valoration)
     
     def __unicode__(self):
         response = unicode(self.question.pregunta)
-        response += " ("
-        response += unicode(self.valoration)# if self.valoration!=None else "sense evaluar"
-        response += ")"
+        for valoration in self.valorations:
+            response += " ("
+            response += unicode(valoration)# if self.valoration!=None else "sense evaluar"
+            response += ")"
         return response
