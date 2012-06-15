@@ -64,6 +64,7 @@ class QueryEvaluationForm():
 class QueryValoration():
     def valorationByEvaluationFormAndQuestion(self, evaluationForm, question):
         valoraciones =Valoracion.objects.filter(evaluacionFormulario=evaluationForm, pregunta=question)
+        a= afsdfsa()
         return valoraciones
     
     def getListValorationsByEvaluationForm(self, evaluationForm): 
