@@ -23,7 +23,8 @@ class Command(BaseCommand):
                 to = []
                 cadena = u""
                 if rol == "TR" :
-                    email = QueryJudgeMembers().getJudgeMemberByProjectAndMemberId(project, form.idMiembro)
+                    miembro = QueryJudgeMembers().getJudgeMemberByProjectAndMemberId(project, form.idMiembro)
+                    email = miembro.getMail()
                     to.append(email)
                     cadena += email
                 else:

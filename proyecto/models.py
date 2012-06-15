@@ -49,6 +49,9 @@ class MiembroTribunal(models.Model):
     def __unicode__(self):
         return unicode(self.idMiembro) + ".- " + unicode(self.miembro) + " - " + unicode(self.proyecto)
     
+    def getMail(self):
+        return self.miembro.getMail()
+    
     class Meta:
         unique_together = [("proyecto", "idMiembro")]
 
