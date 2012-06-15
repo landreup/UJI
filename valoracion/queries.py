@@ -133,6 +133,8 @@ class NodeEvaluation(NodeEvaluation):
         self.rol = rol
         self.evaluation = evaluation
         self.evaluationForms = QueryEvaluationForm().getEvaluationFormsByProjectAndEvaluation(project, evaluation)
+        evaluationForms = self.evaluationForms
+        a = afasdf()
         self.preguntas = QueryQuestion().getListQuestionsByEvaluation(evaluation.id)
         self.value = None
         if puntuation :#and evaluationForm:
@@ -179,7 +181,6 @@ class NodeEvaluation(NodeEvaluation):
 class ListQuestions(ListQuestions):
     def __init__(self, evaluationForms, questions):
         self.list = []
-        a= afasdfs()
         for question in questions:
             node = NodeQuestion(question)
             for evaluationForm in evaluationForms:
