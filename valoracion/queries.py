@@ -55,10 +55,9 @@ class QueryEvaluationForm():
         forms = QueryForm().getListFormByProject(project)
         evaluationForms = []
         for form in forms :
-            if not form.fechaValorado:
-                evaluationForm = self.getEvaluationFormByFormAndEvaluation(form, evaluation)
-                if evaluationForm :
-                    evaluationForms.append(evaluationForm)
+            evaluationForm = self.getEvaluationFormByFormAndEvaluation(form, evaluation)
+            if evaluationForm :
+                evaluationForms.append(evaluationForm)
         return evaluationForms
 
 class QueryValoration():
@@ -133,8 +132,6 @@ class NodeEvaluation(NodeEvaluation):
         self.rol = rol
         self.evaluation = evaluation
         self.evaluationForms = QueryEvaluationForm().getEvaluationFormsByProjectAndEvaluation(project, evaluation)
-        evaluationForms = self.evaluationForms
-        a = afasdf()
         self.preguntas = QueryQuestion().getListQuestionsByEvaluation(evaluation.id)
         self.value = None
         if puntuation :#and evaluationForm:
