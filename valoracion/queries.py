@@ -62,11 +62,10 @@ class QueryEvaluationForm():
 
 class QueryValoration():
     def valorationByEvaluationFormAndQuestion(self, evaluationForm, question):
-        id = evaluationForm.id
-        questionId = question.id
-        valoraciones = Valoracion.objects.filter(evaluacionFormulario=evaluationForm, pregunta=question)
-        
-        return valoraciones
+        try:
+            return Valoracion.objects.get(evaluacionFormulario=evaluationForm, pregunta=question)
+        except Valoracion.DoesNotExist:
+            return None
     
     def getListValorationsByEvaluationForm(self, evaluationForm): 
         return Valoracion.objects.filter(evaluacionFormulario=evaluationForm).order_by("pregunta")
