@@ -34,6 +34,8 @@ class Command(BaseCommand):
                 
                 roles = Evaluacion().getRoles()
                 
+                roles["TR"] = "miembro del tribunal"
+                
                 body = ""
                 body += u"Como " + roles[rol].lower() + u" del alumno " + project.alumno.nombreCompleto() + u" se necesita tu valoración de " + unicode(item).lower() + ".\n"
                 body += "\n"
