@@ -28,7 +28,7 @@ class QueryForm():
             if rol == "TR":
                 return listForms[:NUMBER_OF_JUDGE_MEMBERS]
             else:
-                return listForms[0]
+                return [listForms[0]]
         return []
         
     def isAllFormsCompleted(self, listForms):
