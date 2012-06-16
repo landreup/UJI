@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from models import Formulario, EvaluacionesFormulario, Valoracion
 from evaluacion.queries import QueryEvaluationSystemTreeComplete, QueryEvaluationSystem, ListItems, NodeItem, ListEvaluations, NodeEvaluation, ListQuestions,\
     QueryQuestion
+from settings import NUMBER_OF_JUDGE_MEMBERS
 
 class QueryForm():
     def getListFormByProject(self, project):
@@ -16,16 +17,19 @@ class QueryForm():
         return get_object_or_404(Formulario, codigo=key)
     
     def getListFormByProjectItemRol(self, project, item, rol):
-        try:
-            return Formulario.objects.filter(proyecto=project, hito=item, rol=rol)
-        except Formulario.DoesNotExist:
-            return None
+        return Formulario.objects.filter(proyecto=project, hito=item, rol=rol)
     
     def getListFormByProjectItem(self, project, item):
-        try:
-            return Formulario.objects.filter(proyecto=project, hito=item)
-        except Formulario.DoesNotExist:
-            return None
+        return Formulario.objects.filter(proyecto=project, hito=item)
+
+    def getLastFormsByProjectItemRol(self, project, item, rol):
+        listForms = Formulario.objects.filter(proyecto=project, hito=item, rol=rol).order_by("-id")
+        if listForms:
+            if rol == "TR":
+                return listForms[:NUMBER_OF_JUDGE_MEMBERS]
+            else:
+                return listForms[0]
+        return []
         
     def isAllFormsCompleted(self, listForms):
         for form in listForms:
@@ -52,7 +56,7 @@ class QueryEvaluationForm():
             return None
         
     def getEvaluationFormsByProjectAndEvaluation(self, project, evaluation) :
-        forms = QueryForm().getListFormByProject(project)
+        forms = QueryForm().getLastFormsByProjectItemRol(project, evaluation.item, evaluation.evaluador)
         evaluationForms = []
         for form in forms :
             evaluationForm = self.getEvaluationFormByFormAndEvaluation(form, evaluation)
@@ -140,7 +144,7 @@ class NodeEvaluation(NodeEvaluation):
         forms = []
         for evaluationForm in self.evaluationForms:
             forms.append(evaluationForm.formulario)
-    
+        allComplete = QueryForm().isAllFormsCompleted(forms)
         self.status = "complete" if self.value else "unlock" if not QueryForm().isAllFormsCompleted(forms) else "unlock" 
      
     def calculatePuntuation(self):    

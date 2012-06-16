@@ -15,6 +15,10 @@ class Formulario(models.Model):
     def isUnresolved(self):
         return self.proyecto.isUnresolved()
     
+    def isCompleted(self):
+        if self.fechaValorado : return True
+        else : return False
+    
     def needUJIAuthentication(self):
         return self.rol != "S"
     
