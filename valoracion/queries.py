@@ -30,6 +30,23 @@ class QueryForm():
             else:
                 return [listForms[0]]
         return []
+    
+    def getFormsRolByProjectItemRol(self, project, item, rol):
+        listForms =  Formulario.objects.filter(proyecto=project, hito=item, rol=rol).order_by("-id")
+        i = 0
+        formsRol = []
+        while (i<len(listForms)):
+            forms= []
+            if rol == "TR":
+                for j in xrange(NUMBER_OF_JUDGE_MEMBERS):
+                    forms.append(listForms[i+j])
+                i += NUMBER_OF_JUDGE_MEMBERS
+            else:
+                forms.append(listForms[i])
+            formsRol.append(forms)
+            i += 1 
+            
+        return formsRol
         
     def isAllFormsCompleted(self, listForms):
         for form in listForms:
@@ -56,13 +73,14 @@ class QueryEvaluationForm():
             return None
         
     def getLastEvaluationFormsByProjectAndEvaluation(self, project, evaluation) :
-        forms = QueryForm().getListFormByProjectItemRol(project, evaluation.getItem(), evaluation.getEvaluator())
+        formsRol = QueryForm().getFormsRolByProjectItemRol(project, evaluation.getItem(), evaluation.getEvaluator())
         evaluationForms = []
-        for form in forms :
-            evaluationForm = self.getEvaluationFormByFormAndEvaluation(form, evaluation)
-            if evaluationForm :
-                evaluationForms.append(evaluationForm)
-                break
+        for formRol in formsRol :
+            for form in formRol:
+                evaluationForm = self.getEvaluationFormByFormAndEvaluation(form, evaluation)
+                if evaluationForm :
+                    evaluationForms.append(evaluationForm)
+                    break
         return evaluationForms
 
 class QueryValoration():
