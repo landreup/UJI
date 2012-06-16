@@ -85,7 +85,7 @@ class ValorationForm():
         return True
     
     def is_valid(self):
-        if (self.isAllQuestionsValorated()) :
+        if (not self.isAllQuestionsValorated()) :
             self.errors = "Hi han questions sense respondre." 
             return False
         
