@@ -80,7 +80,7 @@ class QueryEvaluationForm():
                 evaluationForm = self.getEvaluationFormByFormAndEvaluation(form, evaluation)
                 if evaluationForm :
                     evaluationForms.append(evaluationForm)
-                    break
+            if evaluationForms != [] : return evaluationForms
         return evaluationForms
 
 class QueryValoration():
