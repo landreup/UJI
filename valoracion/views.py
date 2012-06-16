@@ -111,7 +111,10 @@ def formularioPublico(request, formForm, user):
         form = EvaluationFormForm(request, formForm)
         if (form.is_valid()):
             form.save()
-            return HttpResponseRedirect('/coordinacio/projectes/')
+            title = "Valoració rebuda"
+            mensaje = u"S'ha rebut la teva valoració. \n\n Gràcies."
+    
+            return render_to_response('mensajeValoracion.html', locals())
     else:
         form = EvaluationFormForm(request, formForm)
     plantilla = "formEvaluacion.html" if unresolved else "formularioPublico.html"
@@ -131,6 +134,8 @@ def activarValoracion(request, user, course, alumnoid):
     if (request.method == "POST"):
         activaValoracion(project)
         return HttpResponseRedirect('/coordinacio/projectes/')
+    
+    title = "Activar valoració"
     
     mensaje = u"Clica per a posar en curs l'evaluació de l'alumne " + student.nombreCompleto() + "."
 
@@ -153,6 +158,7 @@ def reActivarValoracion(request, user, alumnoid, course, evaluacionid):
         reActivaFormulario(project, evaluation)
         return HttpResponseRedirect(request.path.split('formali/evaluacio/')[0])
     
+    title = "Reactivar formulari"
     mensaje = u"Reactivar el formulari de l'evaluació " + unicode(evaluation) + " de " + unicode(evaluation.getItem()) + " de l'alumne " + student.nombreCompleto() + "."
     
     return render_to_response('mensajeValoracion.html', locals())

@@ -1,16 +1,17 @@
 {% extends 'frontend.html' %}
 
-{% block title %}Crea Formulari{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
-{% block ruta %}Coordinació: Crea Formulari{% endblock %}
+{% block ruta %}{{ title }}{% endblock %}
 
-{% block tituloPagina %}Crea Formulari{% endblock %}
+{% block tituloPagina %}{{ title }}{% endblock %}
 
 {% block menuPagina %}{% include 'menu.html' %}{% endblock %}
 
 {% block contenido %}
  <form action="" method="post">
- 	<p>{{ mensaje }}
+ 	<p>{{ mensaje }} 
+ 	{{ request.path }}
  	<input type="submit" value="Activar" onclick="if (!confirm('Estas segur de activar el hite {{ student.nombreCompleto }}?')) return false;"/></p>
  </form>
 {% endblock %}

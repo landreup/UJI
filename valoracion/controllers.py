@@ -41,8 +41,8 @@ def avisoMail(form):
     roles["TR"] = "membre del tribunal"
     
     body = ""
-    body += u"S'ha reactivat la valoració de "+ item.nombre.lower()
-    body += u", com a " + roles[rol].lower() + u" del alumne " + project.alumno.nombreCompleto() + u" es necesita la teua valoració.\n"
+    body += u"S'ha reactivat la valoració de "+ item.nombre.lower() + ".\n\n"
+    body += u"Com a " + roles[rol].lower() + u" del alumne " + project.alumno.nombreCompleto() + u" es necesita la teua valoració.\n"
     body += "\n"
     body += u"Per favor, contesta el siguient formulari per a completar la valoració.\n"
     body += "http://" + SERVER_NAME + "/formulari/" + form.codigo + ' \n'
