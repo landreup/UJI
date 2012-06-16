@@ -135,7 +135,7 @@ class NodeEvaluation(NodeEvaluation):
         self.id = evaluation.id
         self.rol = rol
         self.evaluation = evaluation
-        self.evaluationForms = QueryEvaluationForm().getEvaluationFormsByProjectAndEvaluation(project, evaluation)
+        self.evaluationForms = QueryEvaluationForm().getLastEvaluationFormsByProjectAndEvaluation(project, evaluation)
         self.preguntas = QueryQuestion().getListQuestionsByEvaluation(evaluation.id)
         self.value = None
         if puntuation :#and evaluationForm:
