@@ -17,10 +17,10 @@ class QueryForm():
         return get_object_or_404(Formulario, codigo=key)
     
     def getListFormByProjectItemRol(self, project, item, rol):
-        return Formulario.objects.filter(proyecto=project, hito=item, rol=rol)
+        return Formulario.objects.filter(proyecto=project, hito=item, rol=rol).order_by("-id")
     
     def getListFormByProjectItem(self, project, item):
-        return Formulario.objects.filter(proyecto=project, hito=item)
+        return Formulario.objects.filter(proyecto=project, hito=item).order_by("-id")
 
     def getLastFormsByProjectItemRol(self, project, item, rol):
         listForms = Formulario.objects.filter(proyecto=project, hito=item, rol=rol).order_by("-id")
@@ -55,13 +55,14 @@ class QueryEvaluationForm():
         except EvaluacionesFormulario.DoesNotExist:
             return None
         
-    def getEvaluationFormsByProjectAndEvaluation(self, project, evaluation) :
-        forms = QueryForm().getLastFormsByProjectItemRol(project, evaluation.getItem(), evaluation.getEvaluator())
+    def getLastEvaluationFormsByProjectAndEvaluation(self, project, evaluation) :
+        forms = QueryForm().getListFormsByProjectItemRol(project, evaluation.getItem(), evaluation.getEvaluator())
         evaluationForms = []
         for form in forms :
             evaluationForm = self.getEvaluationFormByFormAndEvaluation(form, evaluation)
             if evaluationForm :
                 evaluationForms.append(evaluationForm)
+                break
         return evaluationForms
 
 class QueryValoration():
