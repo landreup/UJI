@@ -202,7 +202,8 @@ class NodeEvaluation(NodeEvaluation):
         if self.status == "unlock" :
             if self.evaluation.getEvaluator() == self.rol or self.rol == "C" :
                 for evaluationForm in self.evaluationForms:
-                    yield evaluationForm.formulario.codigo
+                    if not evaluationForm.formulario.isCompleted():
+                        yield evaluationForm.formulario.codigo
             else : yield None
         else : yield None
     
