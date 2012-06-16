@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 import base64
 import random
 from evaluacion.queries import QueryEvaluation, QueryItem, QueryEvaluationSystem
