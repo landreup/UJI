@@ -15,25 +15,28 @@ class ValorationForm():
         self.evaluationForm = evaluationForm
         self.valorations = []
         self._indicators = None
-
-        if request.method == 'POST' :
-            for question in self.questions :
+        
+        questions = QueryQuestion().getListQuestionsByEvaluation(evaluationForm.evaluacion)
+        for question in questions:
+            valoration = None
+            if request.method == 'POST' :
                 field = self.fieldName(self.evaluation, question)
                 if request.POST.get(field, '') :
-                    response = self.Response(question, int(request.POST.get(field, '')))
-                    self.valorations.append(response)
+                    valoration = int(request.POST.get(field, ''))
+            response = self.Response(question, valoration)
+            self.valorations.append(response)
         
-    def unicodeResponseType(self, field, responseType):
+    def unicodeResponseType(self, field, responseType, valoration):
         if responseType == "A" :
-            questionOptions =  u"\t<td><select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\" selected=\"selected\">No Apte</option><option value=\"5\">Apte</option></select></td>"
+            questionOptions =  u"\t<td><select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\"  " + "selected=\"selected\"" if valoration==1 else "" + ">No Apte</option><option value=\"5\" " + "selected=\"selected\"" if valoration==5 else "" + ">Apte</option></select></td>"
             if self.haveIndicators(): questionOptions += "\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n"
             return questionOptions  
         elif responseType == "I":
-            return u"\t<td></td>\n\t<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\"/></td>\n\t" + \
-                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\"/></td>\n\t" + \
-                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\"/></td>\n\t" + \
-                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\"/></td>\n\t" + \
-                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"5\"/></td>\n"
+            return u"\t<td></td>\n\t<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\" " + "selected=\"selected\"" if valoration==1 else "" + "/></td>\n\t" + \
+                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\" " + "selected=\"selected\"" if valoration==2 else "" + "/></td>\n\t" + \
+                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\" " + "selected=\"selected\"" if valoration==3 else "" + "/></td>\n\t" + \
+                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\" " + "selected=\"selected\"" if valoration==4 else "" + "/></td>\n\t" + \
+                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"5\" " + "selected=\"selected\"" if valoration==5 else "" + "/></td>\n"
         else:
             return ""
         
@@ -43,8 +46,8 @@ class ValorationForm():
     def haveIndicators(self):
         self._indicators 
         if self._indicators == None :
-            for question in self.questions:
-                if question.tipoRespuesta == "I" :
+            for valoration in self.valorations:
+                if valoration.question.tipoRespuesta == "I" :
                     self._indicators = True
                     return True
             self._indicators = False
@@ -60,9 +63,10 @@ class ValorationForm():
         if self.haveIndicators() :
             htmlForm += "<td width=\"" + ANCHO_COLUMNA + "px\" style=\"text-align: center;\">Muy mal</td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\" style=\"text-align: center;\">Muy Bien</td>\n"
         htmlForm += "</tr>\n"
-        for question in self.questions :
+        for valoration in self.valorations :
+            question = valoration.question
             field = self.fieldName(self.evaluation, question)
-            htmlForm += u"<tr>\n\t<td><label for=\"id_"+ field + "\">" + unicode(question.pregunta) + u"</label></td>\n\t" + self.unicodeResponseType(field, question.tipoRespuesta) + u"</tr>\n"
+            htmlForm += u"<tr>\n\t<td><label for=\"id_"+ field + "\">" + unicode(question.pregunta) + u"</label></td>\n\t" + self.unicodeResponseType(field, question.tipoRespuesta, valoration.valoration) + u"</tr>\n"
         htmlForm += "</table>"    
         return htmlForm
     
@@ -74,8 +78,14 @@ class ValorationForm():
         else:
             return False
     
+    def isAllQuestionsValorated(self):
+        for valoration in self.valorations:
+            if valoration.valoration == None:
+                return False
+        return True
+    
     def is_valid(self):
-        if (len(self.questions) != len(self.valorations)) :
+        if (self.isAllQuestionsValorated()) :
             self.errors = "Hi han questions sense respondre." 
             return False
         
