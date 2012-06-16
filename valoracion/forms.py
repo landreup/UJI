@@ -29,7 +29,7 @@ class ValorationForm():
             if self.haveIndicators(): questionOptions += "\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n"
             return questionOptions  
         elif responseType == "I":
-            return u"\t<td></td>\n\t<td style=\text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\"/></td>\n\t" + \
+            return u"\t<td></td>\n\t<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\"/></td>\n\t" + \
                    u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\"/></td>\n\t" + \
                    u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\"/></td>\n\t" + \
                    u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\"/></td>\n\t" + \
@@ -58,7 +58,7 @@ class ValorationForm():
         ANCHO_COLUMNA = "25"
         htmlForm = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n<tr>\n\t<td></td>\n\t<td></td>\n\t"
         if self.haveIndicators() :
-            htmlForm += "<td width=\"" + ANCHO_COLUMNA + "px\" style=\text-align: center;\">Muy mal</td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\" style=\text-align: center;\">Muy Bien</td>\n"
+            htmlForm += "<td width=\"" + ANCHO_COLUMNA + "px\" style=\"text-align: center;\">Muy mal</td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\" style=\"text-align: center;\">Muy Bien</td>\n"
         htmlForm += "</tr>\n"
         for question in self.questions :
             field = self.fieldName(self.evaluation, question)
