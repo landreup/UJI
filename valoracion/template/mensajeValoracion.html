@@ -10,8 +10,9 @@
 
 {% block contenido %}
  <form action="" method="post">
- 	<p>{{ mensaje }} 
- 	{{ request.path }}
+ 	<p>{{ mensaje }}
+ 	{% if not ocultaActivar %}
  	<input type="submit" value="Activar" onclick="if (!confirm('Estas segur de activar el hite {{ student.nombreCompleto }}?')) return false;"/></p>
+ 	{% endif %}
  </form>
 {% endblock %}

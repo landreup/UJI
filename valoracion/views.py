@@ -112,6 +112,7 @@ def formularioPublico(request, formForm, user):
         if (form.is_valid()):
             form.save()
             title = "Valoració rebuda"
+            ocultaActivar = True
             mensaje = u"S'ha rebut la teva valoració. \n\n Gràcies."
     
             return render_to_response('mensajeValoracion.html', locals())
@@ -156,7 +157,7 @@ def reActivarValoracion(request, user, alumnoid, course, evaluacionid):
     
     if ( request.method == 'POST' ):
         reActivaFormulario(project, evaluation)
-        return HttpResponseRedirect(request.path.split('formali/evaluacio/')[0])
+        return HttpResponseRedirect(request.path.split('formulari/evaluacio/')[0])
     
     title = "Reactivar formulari"
     mensaje = u"Reactivar el formulari de l'evaluació " + unicode(evaluation) + " de " + unicode(evaluation.getItem()) + " de l'alumne " + student.nombreCompleto() + "."
