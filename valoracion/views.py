@@ -151,7 +151,7 @@ def reActivarValoracion(request, user, alumnoid, course, evaluacionid):
     
     if ( request.method == 'POST' ):
         reActivaFormulario(project, evaluation)
-        return HttpResponseRedirect('/coordinacio/projectes/')
+        return HttpResponseRedirect(request.path.split('formali/evaluacio/')[0])
     
     mensaje = u"Reactivar el formulari de l'evaluació " + unicode(evaluation) + " de " + unicode(evaluation.getItem()) + " de l'alumne " + student.nombreCompleto() + "."
     
