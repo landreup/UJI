@@ -159,12 +159,22 @@ class NodeEvaluation(NodeEvaluation):
         if puntuation :#and evaluationForm:
             self.preguntas = ListQuestions(self.evaluationForms, evaluation.getQuestions()).getList()
             self.calculatePuntuation()
-
+        
+        self.defineStatus()
+        
+     
+    def defineStatus(self):
         forms = []
         for evaluationForm in self.evaluationForms:
             forms.append(evaluationForm.formulario)
-        allComplete = QueryForm().isAllFormsCompleted(forms)
-        self.status = "complete" if self.value else "unlock" if not QueryForm().isAllFormsCompleted(forms) else "unlock" 
+        
+        if QueryForm().isAllFormsCompleted(forms):
+            status = "complete"
+        elif len(self.evaluationForms)==0:
+            status = "lock"
+        else:
+            status = "unlock"
+        self.status = status
      
     def calculatePuntuation(self):    
         total = 0
