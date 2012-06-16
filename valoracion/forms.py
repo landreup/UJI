@@ -55,9 +55,9 @@ class ValorationForm():
         
     def __unicode__(self):
         #return str(len(self.questions))
-        htmlForm = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n<tr>\n\t<td></td>\n\t<td></td>\n\t"
+        htmlForm = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n<tr>\n\t<td></td>\n\t<td width=\"20px\"></td>\n\t"
         if self.haveIndicators() :
-            htmlForm += "<td>Muy mal</td>\n\t<td>Mal</td>\n\t<td>Aceptable</td>\n\t<td>Bien</td>\n\t<td>Muy Bien</td>\n"
+            htmlForm += "<td width=\"20px\">Muy mal</td>\n\t<td width=\"20px\"></td>\n\t<td width=\"20px\"></td>\n\t<td width=\"20px\"></td>\n\t<td width=\"20px\">Muy Bien</td>\n"
         htmlForm += "</tr>\n"
         for question in self.questions :
             field = self.fieldName(self.evaluation, question)
