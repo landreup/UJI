@@ -4,7 +4,10 @@ from evaluacion.queries import QueryEvaluation, QueryItem, QueryEvaluationSystem
 from valoracion.models import EvaluacionesFormulario, Formulario
 from valoracion.queries import QueryForm
 from proyecto.models import EstadoProyectoEnCurso
-from settings import NUMBER_OF_JUDGE_MEMBERS
+from settings import NUMBER_OF_JUDGE_MEMBERS, SERVER_NAME
+from proyecto.queries import QueryProject, QueryJudgeMembers
+from aplicacion.mail import EvaluaMailMessage
+from evaluacion.models import Evaluacion
 
 def activaFormulario(proyecto, item):
     for rol in QueryEvaluation().getRoles().keys():
@@ -14,17 +17,46 @@ def activaFormulario(proyecto, item):
             if evaluationsItemRol :
                 if rol == "TR" :
                     for i in xrange(1, NUMBER_OF_JUDGE_MEMBERS+1):
-                        creaFormulario(proyecto, item, rol, evaluationsItemRol, i)
+                        form = creaFormulario(proyecto, item, rol, evaluationsItemRol, i)
                 else:
-                    creaFormulario(proyecto, item, rol, evaluationsItemRol)
+                    form = creaFormulario(proyecto, item, rol, evaluationsItemRol)
+
+def avisoMail(form):
+    item = form.hito
+    project = form.proyecto
+    rol = form.rol
+    subject = u"Reactivació de " + item.getName().lower() + " del projecte de l'alumne " + unicode(project.alumno.nombreCompleto())
+    to = []
+    if rol != "TR":
+        for email in QueryProject().getEmailByProjectAndEvaluator(project, rol) : to.append(email)
+    else:
+        miembro = QueryJudgeMembers().getJudgeMemberByProjectAndMemberId(project, form.idMiembro)
+        to.append(miembro.getMail())
+  
+    email = EvaluaMailMessage(to, subject)
+    
+    roles = Evaluacion().getRoles()
+                
+    roles["TR"] = "membre del tribunal"
+    
+    body = ""
+    body += "S'ha reactivat la valoració de "+ item.getName().lower()
+    body += u", com a " + roles[rol].lower() + u" del alumne " + project.alumno.nombreCompleto() + u" es necesita la teua valoració.\n"
+    body += "\n"
+    body += u"Per favor, contesta el siguient formulari per a completar la valoració.\n"
+    body += "http://" + SERVER_NAME + "/formulari/" + form.codigo + ' \n'
+    
+    email.defineMessage(body)
+    email.send()
 
 def reActivaFormulario(proyecto, evaluation):
     if evaluation.getEvaluator() == "TR":
         for i in xrange(1, NUMBER_OF_JUDGE_MEMBERS+1):
-            creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator, [evaluation], i)
+            form = creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator, [evaluation], i)
+            avisoMail(form)
     else:
-        creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator(), [evaluation])
-        # ENVIAR CORREO
+        form = creaFormulario(proyecto, evaluation.getItem(), evaluation.getEvaluator(), [evaluation])
+        avisoMail(form)
 
 def creaFormulario(proyecto, item, rol, evaluationsItemRol, idMiembro=None):
     form = Formulario()
@@ -39,6 +71,7 @@ def creaFormulario(proyecto, item, rol, evaluationsItemRol, idMiembro=None):
         evaluationForm.formulario = form
         evaluationForm.evaluacion = evaluation
         evaluationForm.save()
+    return form
 
 def aleatoryString():
     nbits = 100 * 6 + 1

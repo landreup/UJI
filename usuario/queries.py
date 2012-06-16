@@ -42,6 +42,12 @@ class QueryUser:
     def getListOfTutorCoordinator(self):
         return Usuario.objects.filter(Q(rol="T") | Q(rol="C"))
     
+    def getMailCoordinator(self):
+        mails = []
+        for coordinator in self.getListOfCoordinator():
+            mails.append(coordinator.getMail())
+        return mails
+    
     def isTutor(self, userId):
         user = self.getUserById(userId)
         if user :

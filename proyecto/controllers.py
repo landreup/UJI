@@ -7,7 +7,9 @@ from proyecto.queries import QueryStatusProjectInCourse, QueryProject, QueryEsti
 from curso.queries import QueryCourse
 from valoracion.controllers import activaFormulario
 from django.core.mail.message import EmailMessage
+from aplicacion.mail import EvaluaMailMessage
 from settings import SERVER_NAME
+from usuario.queries import QueryUser
 
 def isEditable(course):
     return QueryCourse().isActual(course) and QueryEvaluationSystem().isEvaluationSystemEnabledByCourse(course)
@@ -103,19 +105,19 @@ def eliminaProyectoPorRellenar(proyecto):
     if proyectoPendiente : proyectoPendiente.delete()
 
 def emailAvisoProyectoEnRevision(project, item, warningCoordinators):
+    subject = u"Necesitat d'intervenció en el projecte de l'alumne " + unicode(project.alumno.nombreCompleto())+ " per activar" +  unicode(item).lower()
+    if warningCoordinators:
+        to = QueryUser().getMailCoordinator()
+    else:
+        to = project.tutor.getMail()
+    email = EvaluaMailMessage(to, subject)
     body = "" 
     body += u"El projecte de l'alumne " + project.alumno.nombreCompleto() + u" necesita una revisió de la teva part per activar " + unicode(item).lower() + ".\n"
     body += "\n"
     body += u"Per favor, accedeix a l'administració del projecte y introduiex les dades necessàries.\n"
     body += "http://" + SERVER_NAME + "/professorat/projectes/" + project.alumno.usuarioUJI + "/edita/" + ' \n'
-    body += "-------------------------------\n"
-    body += "Para: "
-    body += "Tutor " + project.tutor.getMail() if not warningCoordinators else "Coordinadores" 
-    email = EmailMessage()
-    email.subject = u"Necesitat d'intervenció en el projecte de l'alumne " + unicode(project.alumno.nombreCompleto())+ " per activar" +  unicode(item).lower()
-    email.from_email = 'UJI - Evaluació d\'estudiants de projecte Fi de Grau<provauji@gmail.com>'
-    email.to = ['landreup@gmail.com', 'aramburu@uji.es', 'lopeza@uji.es']
-    email.body = body
+    
+    email.defineMessage(body)
     email.send()
     
 def buildErrors(textProjectIncomplete, isTribunalIncomplete, dateEstimateNextItem, item):
