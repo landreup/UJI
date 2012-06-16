@@ -26,7 +26,7 @@ def avisoMail(form):
     item = form.hito
     project = form.proyecto
     rol = form.rol
-    subject = u"Reactivació de " + item.getName().lower() + " del projecte de l'alumne " + unicode(project.alumno.nombreCompleto())
+    subject = u"Reactivació de " + item.nombre.lower() + " del projecte de l'alumne " + unicode(project.alumno.nombreCompleto())
     to = []
     if rol != "TR":
         for email in QueryProject().getEmailByProjectAndEvaluator(project, rol) : to.append(email)
@@ -41,7 +41,7 @@ def avisoMail(form):
     roles["TR"] = "membre del tribunal"
     
     body = ""
-    body += "S'ha reactivat la valoració de "+ item.getName().lower()
+    body += "S'ha reactivat la valoració de "+ item.nombre.lower()
     body += u", com a " + roles[rol].lower() + u" del alumne " + project.alumno.nombreCompleto() + u" es necesita la teua valoració.\n"
     body += "\n"
     body += u"Per favor, contesta el siguient formulari per a completar la valoració.\n"
