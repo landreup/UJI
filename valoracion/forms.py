@@ -28,15 +28,15 @@ class ValorationForm():
         
     def unicodeResponseType(self, field, responseType, valoration):
         if responseType == "A" :
-            questionOptions =  u"\t<td><select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\"  " + "selected=\"selected\"" if valoration==1 else "" + ">No Apte</option><option value=\"5\" " + "selected=\"selected\"" if valoration==5 else "" + ">Apte</option></select></td>"
+            questionOptions =  u"\t<td><select id=\"id_"+ field +"\" name=\""+ field +"\"><option value=\"1\"  " + ("selected=\"selected\"" if valoration==1 else "") + ">No Apte</option><option value=\"5\" " + ("selected=\"selected\"" if valoration==5 else "") + ">Apte</option></select></td>"
             if self.haveIndicators(): questionOptions += "\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n\t<td></td>\n"
             return questionOptions  
         elif responseType == "I":
-            return u"\t<td></td>\n\t<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\" " + "selected=\"selected\"" if valoration==1 else "" + "/></td>\n\t" + \
-                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\" " + "selected=\"selected\"" if valoration==2 else "" + "/></td>\n\t" + \
-                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\" " + "selected=\"selected\"" if valoration==3 else "" + "/></td>\n\t" + \
-                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\" " + "selected=\"selected\"" if valoration==4 else "" + "/></td>\n\t" + \
-                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"5\" " + "selected=\"selected\"" if valoration==5 else "" + "/></td>\n"
+            return u"\t<td></td>\n\t<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"1\" " + ("selected=\"selected\"" if valoration==1 else "") + "/></td>\n\t" + \
+                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"2\" " + ("selected=\"selected\"" if valoration==2 else "") + "/></td>\n\t" + \
+                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"3\" " + ("selected=\"selected\"" if valoration==3 else "") + "/></td>\n\t" + \
+                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"4\" " + ("selected=\"selected\"" if valoration==4 else "") + "/></td>\n\t" + \
+                   u"<td style=\"text-align: center;\"><input id=\"id_"+ field + "\" name=\"" + field + "\" type=\"radio\" value=\"5\" " + ("selected=\"selected\"" if valoration==5 else "") + "/></td>\n"
         else:
             return ""
         
