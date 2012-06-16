@@ -55,7 +55,7 @@ class ValorationForm():
         
     def __unicode__(self):
         #return str(len(self.questions))
-        ANCHO_COLUMNA = "40"
+        ANCHO_COLUMNA = "30"
         htmlForm = "\n<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\">\n<tr>\n\t<td></td>\n\t<td></td>\n\t"
         if self.haveIndicators() :
             htmlForm += "<td width=\"" + ANCHO_COLUMNA + "px\">Muy mal</td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\"></td>\n\t<td width=\"" + ANCHO_COLUMNA + "px\">Muy Bien</td>\n"
