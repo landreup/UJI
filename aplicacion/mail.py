@@ -9,7 +9,7 @@ class EvaluaMailMessage():
         self.email.to = ['landreup@gmail.com', 'aramburu@uji.es', 'lopeza@uji.es']
         self.email.subject = subject
         self.foot = "\n---------------------------------\n"  
-        self.foot = "Para: "
+        self.foot += "Para: "
         for email in to:
             self.foot += email + ","
         self.foot +=  "\n"
@@ -17,7 +17,7 @@ class EvaluaMailMessage():
     def defineReceivers(self, to):
         self.email.to = ['landreup@gmail.com', 'aramburu@uji.es', 'lopeza@uji.es']
         self.foot = "\n---------------------------------\n"  
-        self.foot = "Para: "
+        self.foot += "Para: "
         for email in to:
             self.foot += email + ","
         self.foot +=  "\n"
