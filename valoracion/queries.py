@@ -56,7 +56,7 @@ class QueryEvaluationForm():
             return None
         
     def getLastEvaluationFormsByProjectAndEvaluation(self, project, evaluation) :
-        forms = QueryForm().getListFormsByProjectItemRol(project, evaluation.getItem(), evaluation.getEvaluator())
+        forms = QueryForm().getListFormByProjectItemRol(project, evaluation.getItem(), evaluation.getEvaluator())
         evaluationForms = []
         for form in forms :
             evaluationForm = self.getEvaluationFormByFormAndEvaluation(form, evaluation)
