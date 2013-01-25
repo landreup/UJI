@@ -310,7 +310,7 @@ class ProyectoAlumnoForm():
     def editStudent(self):
         alumnoDB = QueryStudent().getStudentByUserUJI(self.alumnoid)
         alumnoDB.nombre = self.alumno.nombre
-        alumnoDB.apelliods = self.alumno.apellidos
+        alumnoDB.apellidos = self.alumno.apellidos
         alumnoDB.usuarioUJI = self.alumno.usuarioUJI
         alumnoDB.save()
         
